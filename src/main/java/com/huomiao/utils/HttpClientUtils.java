@@ -1,4 +1,4 @@
-package org.huomiao.utils;
+package com.huomiao.utils;
 
 /**
  * Copyright: Copyright (C) 2022, Inc. All rights reserved.
@@ -8,6 +8,7 @@ package org.huomiao.utils;
  */
 
 import com.alibaba.fastjson.JSONObject;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;

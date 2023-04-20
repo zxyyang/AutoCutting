@@ -1,8 +1,10 @@
-package org.huomiao.service;
+package com.huomiao.service.iml;
 
 
-import org.huomiao.utils.HttpClientUtils;
+
+import com.huomiao.utils.HttpClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 
@@ -13,15 +15,15 @@ import org.springframework.stereotype.Service;
  * @since: 2023/4/19 16:37
  */
 
-@Service
+@Component
 public class JsonAnalysis {
 
     @Autowired
     private HttpClientUtils httpClientUtils;
 
     public String getPlayerUrl(Object jsonUrl,Object videoUrl){
-        String s = httpClientUtils.doGet(String.valueOf(jsonUrl) + videoUrl);
-        return s;
+        String result = httpClientUtils.doGet(String.valueOf(jsonUrl) + videoUrl);
+        return result;
     }
 
 
