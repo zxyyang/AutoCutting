@@ -9,11 +9,14 @@ import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.support.MultiThreadDownloadProgressPrinter;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
+import com.huomiao.vo.PathVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
+
+import static com.huomiao.vo.PathVo.DIR;
 
 
 /**
@@ -26,8 +29,6 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @Slf4j
 public class JsonAnalysis {
-
-    public static final String DIR = "C:\\Users\\74044\\Desktop\\files\\";
     @Autowired
     private HttpClientUtils httpClientUtils;
 

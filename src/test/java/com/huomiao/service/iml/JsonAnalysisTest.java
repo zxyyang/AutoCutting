@@ -1,6 +1,7 @@
 package com.huomiao.service.iml;
 
 import com.alibaba.fastjson.JSONObject;
+import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,9 @@ public class JsonAnalysisTest {
 
     @Autowired
     public JsonAnalysis jsonAnalysis;
+
+    @Autowired
+    FfmpegUtils ffmpegUtils;
 
     @Test
   public   void getPlayerUrl() throws InterruptedException {
@@ -35,9 +39,11 @@ public class JsonAnalysisTest {
 //                System.err.println("解析失败！");
 //            }
 //        }
-        int i = jsonAnalysis.cutM3u8("", "");
-        System.err.println(i);
+//        int i = jsonAnalysis.cutM3u8("", "");
+//        System.err.println(i);
 //        String s = jsonAnalysis.downLoadVideo(playerUrl);
 //        System.err.println(s);
+
+        ffmpegUtils.mergeFile("C:\\Users\\74044\\Desktop\\files\\m3u8\\1260.ts");
     }
 }

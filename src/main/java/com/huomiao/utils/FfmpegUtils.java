@@ -1,15 +1,18 @@
 package com.huomiao.utils;
 
 import cn.hutool.core.date.StopWatch;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
 import org.springframework.stereotype.Component;
 import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.huomiao.vo.PathVo.DIR;
 
 /**
  * Copyright: Copyright (C) 2022, Inc. All rights reserved.
@@ -60,7 +63,7 @@ public class FfmpegUtils {
                // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
                 .append(" -hls_list_size 0 -strict -2  -f hls -threads ")
                 // 线程数，10个线程，10个左右最优
-                .append(Runtime.getRuntime().availableProcessors()*8)
+                .append(Runtime.getRuntime().availableProcessors()*3)
                 .append(" -preset ultrafast ")
                 // 输出位置
                 .append(outVideoPath)
@@ -88,7 +91,32 @@ public class FfmpegUtils {
         return res;
     }
 
-
+    //创建一个方法，判断改文件是不是目录或者文件，运用递归，直到是文件为止。
+    @SneakyThrows
+    public File mergeFile(String m3u8Name){
+        byte[] imgByte = file2byte("img\\img.png");
+        byte[] m3u8Byte = file2byte(DIR+m3u8Name);
+        File file = new File(DIR+m3u8Name.replace(".ts","png"));
+        FileOutputStream outputStream  =new FileOutputStream(file);
+        outputStream.write(imgByte);
+        outputStream.write(m3u8Byte);
+        outputStream.close();
+        return file;
+    }
+    public static byte[] file2byte(String path)
+    {
+        try {
+            FileInputStream in =new FileInputStream(new File(path));
+            //当文件没有结束时，每次读取一个字节显示
+            byte[] data=new byte[in.available()];
+            in.read(data);
+            in.close();
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 /**
  * 命令详解：
  * ffmpeg -i xxx/xxx.mp4 -ss 00:00:01 -frames:v 1 xxx/xxx.png
