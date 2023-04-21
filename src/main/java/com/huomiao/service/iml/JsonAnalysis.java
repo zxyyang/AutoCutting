@@ -3,6 +3,8 @@ package com.huomiao.service.iml;
 
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.ArrayUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.huomiao.download.Downloader;
 import com.huomiao.download.FileDownloader;
 import com.huomiao.download.MultiThreadFileDownloader;
@@ -13,7 +15,10 @@ import com.huomiao.vo.PathVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.io.File;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static com.huomiao.vo.PathVo.DIR;
@@ -57,5 +62,53 @@ public class JsonAnalysis {
             return execute;
     }
 
+    public String pushOss(String api, String contentType, String cookie, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
+        if (Objects.isNull(api)){
+            log.error("api为空！");
+            return null;
+        }
+        Map<String,String> headerMap = new HashMap<>();
+        headerMap.put("Cookie",cookie);
+        JSONObject info = new JSONObject();
+        FileBody  bin = new FileBody(file);
+        info.put(formName,file);
+        JSONObject jsonObject =new JSONObject();
+        try {
+             jsonObject = httpClientUtils.doPost(api, info, headerMap, contentType);
+        }catch (Exception e){
+            log.error("图床出错：{}",ExceptionUtil.stacktraceToString(e));
+            return null;
+        }
+        String jsonStr = jsonObject.toJSONString();
+        if (Objects.nonNull(errorStr) &&  jsonStr.contains(errorStr)){
+            log.info("存在错误返回判定词");
+            return null;
+        }
+        String[] split = reUrl.split("\\.");
+        ArrayList<String> splitList = new ArrayList<>(Arrays.asList(split));
+        JSONObject url = new JSONObject();
+        String urlStr = new String();
+        if (CollectionUtils.isEmpty(splitList)){
+            return jsonObject.toJSONString();
+        }
+        if (splitList.size() == 1){
+            return jsonObject.getString(splitList.get(0));
+        }else {
+            for (String code : splitList) {
+                url = jsonObject.getJSONObject(code);
+            }
+        }
+        if (Objects.isNull(url)){
+            return null;
+        }
+        urlStr = url.toJSONString();
+        if (Objects.nonNull(preUrlStr)){
+            urlStr = preUrlStr+urlStr;
+        }
+        if (Objects.nonNull(nextUrlStr)){
+            urlStr = urlStr+nextUrlStr;
+        }
+        return urlStr;
+    }
 
 }

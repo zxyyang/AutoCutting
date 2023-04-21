@@ -17,10 +17,12 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 import java.util.Objects;
 @Component
 public class HttpClientUtils {
@@ -140,6 +142,59 @@ public class HttpClientUtils {
             s.setContentEncoding("application/json");
             post.setEntity(s);
 
+            // 发送请求
+            HttpResponse httpResponse = client.execute(post);
+
+            // 获取响应输入流
+            InputStream inStream = httpResponse.getEntity().getContent();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, "utf-8"));
+            StringBuilder strber = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null)
+                strber.append(line + "\n");
+            inStream.close();
+
+            result = strber.toString();
+            System.out.println(result);
+            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                System.out.println("请求服务器成功，做相应处理");
+            } else {
+                System.out.println("请求服务端失败");
+            }
+
+        } catch (Exception e) {
+            System.out.println("请求异常");
+            throw new RuntimeException(e);
+        }
+
+        return JSONObject.parseObject(result);
+    }
+    public  JSONObject doPost(String path, JSONObject Info,String fileName,File file, Map<String,String> headerMap, String contentType) {
+        HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost(path);
+        if (Objects.nonNull(contentType)) {
+            post.setHeader("Content-Type", contentType);
+        }else {
+            post.setHeader("Content-Type", "application/json");
+        }
+        post.addHeader("Authorization", "Basic YWRtaW46");
+        if (!CollectionUtils.isEmpty(headerMap)){
+            headerMap.forEach((k,v)->{
+                post.addHeader(k,v);
+            });
+        }
+        String result = "";
+
+        try {
+            StringEntity s = new StringEntity(Info.toString(), "utf-8");
+            s.setContentEncoding("application/json");
+            post.setEntity(s);
+            //文件上传
+            //TODO 文件上传
+            MultipartEntity muit = new MultipartEntity();
+            FileBody fileBody = new FileBody(file);
+            muit.addPart("file", fileBody);
+            post.setEntity(muit);
             // 发送请求
             HttpResponse httpResponse = client.execute(post);
 
