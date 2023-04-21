@@ -2,12 +2,12 @@
   <artifact type="exploded-war" name="AutoCutting:Web exploded">
     <output-path>$PROJECT_DIR$/out/artifacts/AutoCutting_Web_exploded</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="AutoCutting/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="AutoCutting" />
         </element>
       </element>
+      <element id="javaee-facet-resources" facet="AutoCutting/web/Web" />
     </root>
   </artifact>
 </component>
