@@ -70,6 +70,61 @@
             <version>1.18.22</version>
             <scope>compile</scope>
         </dependency>
+        <!-- ffmpeg视频解析包 -->
+        <!-- ffmpeg视频解析包 -->
+        <!-- https://mvnrepository.com/artifact/ws.schild/jave-core -->
+<!--        <dependency>-->
+<!--            <groupId>com.huomiao</groupId>-->
+<!--            <artifactId>javacl-core</artifactId>-->
+<!--            <scope>system</scope>-->
+<!--            <version>3.2.0</version>-->
+<!--            <systemPath>${project.basedir}/src/main/resources/lib/jave-core-3.2.0.jar</systemPath>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.slf4j</groupId>-->
+<!--                    <artifactId>slf4j-api</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.huomiao</groupId>-->
+<!--            <artifactId>jave-all-deps</artifactId>-->
+<!--            <scope>system</scope>-->
+<!--            <version>3.2.0</version>-->
+<!--            <systemPath>${project.basedir}/src/main/resources/lib/jave-all-deps-3.2.0.jar</systemPath>-->
+<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/ws.schild/jave-all-deps -->
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-all-deps</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-core</artifactId>
+            <version>3.3.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- ffmpeg win64版本 -->
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-nativebin-win64</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <!-- ffmpeg linux64版本 -->
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-nativebin-linux64</artifactId>
+            <version>3.3.1</version>
+        </dependency>
 
     </dependencies>
 

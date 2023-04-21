@@ -7,6 +7,7 @@ import com.huomiao.download.Downloader;
 import com.huomiao.download.FileDownloader;
 import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.support.MultiThreadDownloadProgressPrinter;
+import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class JsonAnalysis {
     @Autowired
     private HttpClientUtils httpClientUtils;
 
-
+    @Autowired
+    private FfmpegUtils ffmpegUtils;
 
     public String getPlayerUrl(Object jsonUrl,Object videoUrl){
         String result = httpClientUtils.doGet(String.valueOf(jsonUrl) + videoUrl);
@@ -47,6 +49,11 @@ public class JsonAnalysis {
         }
 
         return down;
+    }
+
+    public int cutM3u8(String inPath,String outPath){
+        int execute = ffmpegUtils.execute(DIR + "38e7977d4c24435f.mp4", DIR + "m3u8\\1.m3u8");
+            return execute;
     }
 
 
