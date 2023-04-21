@@ -41,19 +41,19 @@ public class JsonAnalysis {
     }
 
     public String downLoadVideo(String url,String fromUrl)  {
-        String down = new String();
+        String fileName = new String();
         try {
             MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*2);
-            down = multiThreadFileDownloader.download(url, DIR, fromUrl);
+            fileName = multiThreadFileDownloader.download(url, DIR, fromUrl);
         }catch (Exception e){
             log.error("文件下载失败：{}", ExceptionUtil.stacktraceToString(e));
         }
-
-        return down;
+        //名字中带有格式
+        return fileName;
     }
 
-    public int cutM3u8(String inPath,String outPath){
-        int execute = ffmpegUtils.execute(DIR + "38e7977d4c24435f.mp4", DIR + "m3u8\\1.m3u8");
+    public int cutM3u8(String name){
+        int execute = ffmpegUtils.execute(DIR + name+".mp4", DIR + name+".m3u8");
             return execute;
     }
 
