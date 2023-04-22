@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PathVo {
-    public static final String DIR  = "C:\\Users\\74044\\Desktop\\files\\";
+    public static final String DIR  = "D:\\Desktop\\files\\";
 }

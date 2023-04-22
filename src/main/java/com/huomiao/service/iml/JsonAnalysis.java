@@ -13,6 +13,7 @@ import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.vo.PathVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.entity.mime.content.FileBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -62,46 +63,52 @@ public class JsonAnalysis {
             return execute;
     }
 
-    public String pushOss(String api, String contentType, String cookie, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
+    public String pushOss(String api, String cookie, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
         if (Objects.isNull(api)){
             log.error("api为空！");
             return null;
         }
         Map<String,String> headerMap = new HashMap<>();
         headerMap.put("Cookie",cookie);
-        JSONObject info = new JSONObject();
-        FileBody  bin = new FileBody(file);
-        info.put(formName,file);
         JSONObject jsonObject =new JSONObject();
         try {
-             jsonObject = httpClientUtils.doPost(api, info, headerMap, contentType);
+            Map<String, File> files = new HashMap<>();
+            files.put(formName,file);
+            String respond = httpClientUtils.uploadFiles(api, headerMap, null, files, null, null);
+            if (Objects.nonNull(errorStr) &&  respond.contains(errorStr)){
+                log.info("存在错误返回判定词");
+                return null;
+            }
+            jsonObject = JSONObject.parseObject(respond);
+          //  System.err.println(jsonObject);
         }catch (Exception e){
             log.error("图床出错：{}",ExceptionUtil.stacktraceToString(e));
             return null;
         }
-        String jsonStr = jsonObject.toJSONString();
-        if (Objects.nonNull(errorStr) &&  jsonStr.contains(errorStr)){
-            log.info("存在错误返回判定词");
-            return null;
-        }
         String[] split = reUrl.split("\\.");
         ArrayList<String> splitList = new ArrayList<>(Arrays.asList(split));
-        JSONObject url = new JSONObject();
+        JSONObject url = jsonObject;
         String urlStr = new String();
         if (CollectionUtils.isEmpty(splitList)){
-            return jsonObject.toJSONString();
+            return url.toJSONString();
         }
         if (splitList.size() == 1){
-            return jsonObject.getString(splitList.get(0));
+            return url.getString(splitList.get(0));
         }else {
-            for (String code : splitList) {
-                url = jsonObject.getJSONObject(code);
+            for (int i = 0; i < splitList.size(); i++) {
+                String code = splitList.get(i);
+                if (i == splitList.size()-1){
+                    urlStr = url.getString(code);
+                }
+                else {
+                url = url.getJSONObject(code);
+                }
             }
         }
-        if (Objects.isNull(url)){
-            return null;
-        }
-        urlStr = url.toJSONString();
+       if (Objects.isNull(urlStr)){
+           log.error("未获取到url！");
+           return null;
+       }
         if (Objects.nonNull(preUrlStr)){
             urlStr = preUrlStr+urlStr;
         }

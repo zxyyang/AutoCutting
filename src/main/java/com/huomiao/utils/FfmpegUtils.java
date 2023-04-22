@@ -48,27 +48,52 @@ public class FfmpegUtils {
      * @param inVideoPath  输入视频的地址
      * @param outVideoPath 输出视频的地址
      */
+    //ffmpeg.exe -loglevel info -i %stream_input% -g 250 -r 15 -sc_threshold 0 -preset slow -keyint_min 15 -c:v libx264 -ar 44100 -b:v 200k -b:a 64k -profile:v baseline -level 3.0 -s 400x224 -aspect 16:9 -maxrate 200k -bufsize 1000k -map 0 -flags -global_header -f segment -segment_time 10 -segment_wrap 3 -segment_list_flags +live -segment_list_type m3u8 -segment_list playlist.m3u8 -segment_format mpegts segment%05d.ts 1>output.txt
     public int execute(String inVideoPath, String outVideoPath) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("切片");
         log.info("ffmepg位置：{}", ffmpegPath);
         // ffmpeg程序位置
+//        String cmd = new StringBuilder(ffmpegPath)
+//                .append(" -i ")
+//                // 输入视频位置
+//                .append(inVideoPath)
+//                .append(" -c:v libx264 -c:a aac -hls_time ")
+//                // 分片大小，每个分片大小20秒
+//                .append(4)
+//               // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
+//                .append(" -hls_list_size 0 -strict -2  -f hls -threads ")
+//                // 线程数，10个线程，10个左右最优
+//                .append(Runtime.getRuntime().availableProcessors()*3)
+//                .append(" -preset ultrafast ")
+//                // 输出位置
+//                .append(outVideoPath)
+//                .toString();
         String cmd = new StringBuilder(ffmpegPath)
-                .append(" -i ")
+                .append("  -y -i ")
                 // 输入视频位置
                 .append(inVideoPath)
-                .append(" -c:v libx264 -c:a aac -hls_time ")
+                .append(" -vcodec copy -acodec copy -vbsf h264_mp4toannexb  ")
+                .append(inVideoPath.replace(".mp4",".ts "))
+//                .append(ffmpegPath)
+//                .append(" -i ")
+//                .append(inVideoPath.replace(".mp4",".ts "))
+//                .append(" -c copy -map 0 -f segment -segment_list ")
+//                .append(outVideoPath)
+//                .append("-segment_time ")
+//                .append(4)
+//                .append(" AAADD")
+//                .append("15s_%3d.ts")
                 // 分片大小，每个分片大小20秒
-                .append(4)
-               // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
-                .append(" -hls_list_size 0 -strict -2  -f hls -threads ")
-                // 线程数，10个线程，10个左右最优
-                .append(Runtime.getRuntime().availableProcessors()*3)
-                .append(" -preset ultrafast ")
-                // 输出位置
-                .append(outVideoPath)
-                .toString();
 
+                // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
+//                .append(" -hls_list_size 0 -strict -2  -f hls -threads ")
+//                // 线程数，10个线程，10个左右最优
+//                .append(Runtime.getRuntime().availableProcessors()*3)
+//                .append(" -preset ultrafast ")
+                // 输出位置
+
+                .toString();
         Runtime runtime = Runtime.getRuntime();
         Process ffmpeg = null;
         InputStream errorIs = null;
