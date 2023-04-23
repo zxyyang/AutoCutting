@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @author: zixuan.yang
  * @since: 2023/4/21 17:51
  */
-@Component
+
 public class PathVo {
     public static final String DIR  = "D:\\Desktop\\files\\";
 }

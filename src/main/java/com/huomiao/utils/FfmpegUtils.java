@@ -45,55 +45,54 @@ public class FfmpegUtils {
     /**
      * 执行命令
      *
-     * @param inVideoPath  输入视频的地址
-     * @param outVideoPath 输出视频的地址
      */
     //ffmpeg.exe -loglevel info -i %stream_input% -g 250 -r 15 -sc_threshold 0 -preset slow -keyint_min 15 -c:v libx264 -ar 44100 -b:v 200k -b:a 64k -profile:v baseline -level 3.0 -s 400x224 -aspect 16:9 -maxrate 200k -bufsize 1000k -map 0 -flags -global_header -f segment -segment_time 10 -segment_wrap 3 -segment_list_flags +live -segment_list_type m3u8 -segment_list playlist.m3u8 -segment_format mpegts segment%05d.ts 1>output.txt
-    public int execute(String inVideoPath, String outVideoPath) {
+    public int execute(String name) {
+        String inVideoPath = DIR + name+".mp4";
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("切片");
         log.info("ffmepg位置：{}", ffmpegPath);
         // ffmpeg程序位置
+        String cmd = new StringBuilder(ffmpegPath)
+                .append(" -i ")
+                // 输入视频位置
+                .append(inVideoPath)
+                .append(" -flags +cgop -g 30 -hls_time ")
+                // 分片大小，每个分片大小20秒
+                .append(4)
+               // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
+                .append(" -hls_list_size 0 -strict -2  -f hls -threads ")
+                // 线程数，10个线程，10个左右最优
+                .append(Runtime.getRuntime().availableProcessors()*3)
+                .append(" -preset ultrafast ")
+                // 输出位置
+                .append(" -hls_segment_filename ")
+                .append(" "+DIR)
+                .append("HUOMIAO")
+                .append(name)
+                .append("%09d.ts ")
+                .append(inVideoPath.replace(".mp4",".m3u8 "))
+                .toString();
 //        String cmd = new StringBuilder(ffmpegPath)
 //                .append(" -i ")
 //                // 输入视频位置
 //                .append(inVideoPath)
-//                .append(" -c:v libx264 -c:a aac -hls_time ")
-//                // 分片大小，每个分片大小20秒
-//                .append(4)
-//               // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
-//                .append(" -hls_list_size 0 -strict -2  -f hls -threads ")
-//                // 线程数，10个线程，10个左右最优
-//                .append(Runtime.getRuntime().availableProcessors()*3)
-//                .append(" -preset ultrafast ")
-//                // 输出位置
-//                .append(outVideoPath)
-//                .toString();
-        String cmd = new StringBuilder(ffmpegPath)
-                .append("  -y -i ")
-                // 输入视频位置
-                .append(inVideoPath)
-                .append(" -vcodec copy -acodec copy -vbsf h264_mp4toannexb  ")
-                .append(inVideoPath.replace(".mp4",".ts "))
-//                .append(ffmpegPath)
-//                .append(" -i ")
-//                .append(inVideoPath.replace(".mp4",".ts "))
-//                .append(" -c copy -map 0 -f segment -segment_list ")
-//                .append(outVideoPath)
+//                .append(" -codec copy -vbsf h264_mp4toannexb -map 0 -f segment -segment_list ")
+//                .append(inVideoPath.replace(".mp4",".m3u8 "))
 //                .append("-segment_time ")
-//                .append(4)
-//                .append(" AAADD")
-//                .append("15s_%3d.ts")
-                // 分片大小，每个分片大小20秒
-
-                // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
-//                .append(" -hls_list_size 0 -strict -2  -f hls -threads ")
-//                // 线程数，10个线程，10个左右最优
+//                //时间
+//                .append(2)
+//                .append(" -threads ")
 //                .append(Runtime.getRuntime().availableProcessors()*3)
 //                .append(" -preset ultrafast ")
-                // 输出位置
+//                .append(" "+DIR)
+//                .append("HUOMIAO")
+//                .append(name)
+//                .append("%09d.ts")
+//                .toString();
 
-                .toString();
+        //ts切片
+        System.err.println(cmd);
         Runtime runtime = Runtime.getRuntime();
         Process ffmpeg = null;
         InputStream errorIs = null;
@@ -128,10 +127,23 @@ public class FfmpegUtils {
         outputStream.close();
         return file;
     }
-    public static byte[] file2byte(String path)
+    @SneakyThrows
+    public File mergeFileUpload(String m3u8Name){
+        byte[] imgByte = file2byte("img\\img.png");
+        byte[] m3u8Byte = file2byte(DIR+m3u8Name);
+        File file = new File(DIR+m3u8Name.replace(".ts",".png"));
+        FileOutputStream outputStream  =new FileOutputStream(file);
+        outputStream.write(imgByte);
+        outputStream.write(m3u8Byte);
+        outputStream.close();
+        return file;
+    }
+    private   byte[] file2byte(String path)
     {
         try {
-            FileInputStream in =new FileInputStream(new File(path));
+            path = java.net.URLDecoder.decode(path, "utf-8");
+            File file = new File(path);
+            FileInputStream in =new FileInputStream(file);
             //当文件没有结束时，每次读取一个字节显示
             byte[] data=new byte[in.available()];
             in.read(data);

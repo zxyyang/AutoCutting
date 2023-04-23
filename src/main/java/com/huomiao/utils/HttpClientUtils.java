@@ -541,7 +541,7 @@ public class HttpClientUtils {
             }
         } catch (Exception e) {
             System.out.println("发送POST请求出现异常！");
-            e.printStackTrace();
+            log.error("上传文件出错：{}",ExceptionUtil.stacktraceToString(e));
         } finally {
             try {
                 if (out != null) {
@@ -551,7 +551,7 @@ public class HttpClientUtils {
                     reader.close();
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                log.error("关闭post通道出错：{}",ExceptionUtil.stacktraceToString(ex));
             }
         }
         return result;

@@ -52,18 +52,26 @@ public class JsonAnalysis {
             MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*2);
             fileName = multiThreadFileDownloader.download(url, DIR, fromUrl);
         }catch (Exception e){
+            //下载失败删除下载的片
+            delFileByName(DIR,fileName);
             log.error("文件下载失败：{}", ExceptionUtil.stacktraceToString(e));
+            return null;
         }
         //名字中带有格式
         return fileName;
     }
 
-    public int cutM3u8(String name){
-        int execute = ffmpegUtils.execute(DIR + name+".mp4", DIR + name+".m3u8");
-            return execute;
+    public boolean cutM3u8(String name){
+        int execute = ffmpegUtils.execute(name);
+        if (execute == 0){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public String pushOss(String api, String cookie, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
+
         if (Objects.isNull(api)){
             log.error("api为空！");
             return null;
@@ -118,4 +126,52 @@ public class JsonAnalysis {
         return urlStr;
     }
 
+
+    public boolean deleteFile(String fileName){
+        File file =new File(DIR+fileName);
+        boolean delete = file.delete();
+        if (delete){
+            log.info("删除文库{}",fileName);
+        }else {
+            log.error("删除失败：{}",fileName);
+        }
+        return delete;
+    }
+
+    public static void delFileByName(String url, String s) {
+        // 创建文件
+        File grandpaFile = new File(url);
+        // 检查该对象是否是文件夹
+        if(grandpaFile.isDirectory()) {
+            // 返回该目录中的文件和目录
+            File[] fatherFiles = grandpaFile.listFiles();
+
+            if (fatherFiles.length > 0) {
+                // 循环返回的文件
+                for (File sonFile : fatherFiles) {
+                    // 继续调用自身进行判断
+                    delFileByName(sonFile.getPath(),s);
+                }
+            } else {
+                // 判断自己是否包含特殊字符
+                if(grandpaFile.getName().contains(s)) {
+                    // 删除包含特殊字符的文件
+                    grandpaFile.delete();
+                }
+            }
+        } else {
+            if(grandpaFile.getName().contains(s)) {
+                grandpaFile.delete();
+            }
+        }
+    }
+    public boolean deleteFile(File file){
+        boolean delete = file.delete();
+        if (delete){
+            log.info("删除文库{}",file.getName());
+        }else {
+            log.error("删除失败：{}",file.getName());
+        }
+        return delete;
+    }
 }

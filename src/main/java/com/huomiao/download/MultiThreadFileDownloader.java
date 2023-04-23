@@ -3,6 +3,7 @@ package com.huomiao.download;
 
 import com.huomiao.ext.FileResponseExtractor;
 import com.huomiao.support.DownloadProgressPrinter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RequestCallback;
@@ -18,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+@Slf4j
 public class MultiThreadFileDownloader extends AbstractDownloader {
     private int threadNum;
 
@@ -55,7 +56,23 @@ public class MultiThreadFileDownloader extends AbstractDownloader {
                     //设置HTTP请求头Range信息，开始下载到临时文件
                     request.getHeaders().add(HttpHeaders.RANGE, "bytes=" + start + "-" + end);
                 };
-                return restTemplate.execute(fileURL, HttpMethod.GET, callback, extractor);
+                File execute = null;
+                boolean ok = false;
+                try {
+                     execute = restTemplate.execute(fileURL, HttpMethod.GET, callback, extractor);
+                      ok = true;
+                }catch (Exception e){
+                    log.error("下载出错：{}重试中",fileURL);
+                    for (int i = 0; i < 6; i++) {
+                        if (!ok){
+                            execute =  restTemplate.execute(fileURL, HttpMethod.GET, callback, extractor);
+                            ok = true;
+                        }else {
+                            break;
+                        }
+                    }
+                }
+                return execute;
             }, executorService).exceptionally(e -> {
                 e.printStackTrace();
                 return null;
