@@ -1,0 +1,9 @@
+ffmpeg -i 666.mp4 -vcodec h264 -threads 5 -preset ultrafast 666_h264.mp4
+ffmpeg -i 666.mp4 -force_key_frames "expr:gte(t,n_forced*1)" -strict -2 -c:a aac -c:v libx264 -hls_time 1 -f hls out.m3u8
+ffmpeg -i 666.mp4 -c:v libx264 -c:a aac -strict -2 -f hls -hls_list_size 0 -hls_time 3 -force_key_frames "expr:gte(t,n_forced*1)" output.m3u8
+ffmpeg -i 666.mp4 -force_key_frames "expr:gte(t,n_forced*1)" -hls_time 1 -hls_list_size 0 output.m3u8
+ffmpeg -i 666.mp4 -hls_time 1 -f hls out.m3u8
+ffmpeg -i input.mp4 -vcodec copy -acodec copy -hls_time 60 -hls_list_size 0 output.m3u8   快切
+ffmpeg -i 666.mp4 -f segment -force_key_frames "expr:gte(t,n_forced*1)" -segment_time 1 -segment_format mpegts -segment_list name.m3u8 -c copy -bsf:v h264_mp4toannexb -map 0 course-%04d.ts
+ffmpeg -i 666.mp4 -flags +cgop -g 30 -hls_time 1 -hls_list_size 0 -hls_segment_filename index%3d.ts index.m3u8
+ffmpeg -i 19.mp4 -map 0 -c:a copy -c:s copy -c:v libx264 666.mp4
