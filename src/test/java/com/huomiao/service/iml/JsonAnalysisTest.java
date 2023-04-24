@@ -32,7 +32,7 @@ public class JsonAnalysisTest {
 
     @Test
   public   void getPlayerUrl() throws InterruptedException, FileNotFoundException {
-        String api = "https://sf.zxyang.cn/tx/qq.php?url=";
+        String api = "http://sf.huomiao.cc/tx/qq.php/?url=";
         String urlpla = "https://v.qq.com/x/page/d3355hlkkn2.html";
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -58,9 +58,8 @@ public class JsonAnalysisTest {
        String name = nameMp4.replace(".mp4","");
         boolean cutRe = jsonAnalysis.cutM3u8(name);
         if (cutRe){
-       //     jsonAnalysis.deleteFile(nameMp4);
+      //      jsonAnalysis.deleteFile(nameMp4);
         }
-        // File fileM3u8 = new File("123.m3u8");
         Scanner sc = new Scanner(new FileReader(DIR+name+".m3u8"));
         StringBuffer stringBuffer = new StringBuffer();
         String ossUrl = new String();
@@ -72,16 +71,20 @@ public class JsonAnalysisTest {
                 String fileName = file.getName();
                 StopWatch stopWatch1 = new StopWatch();
                 stopWatch1.start();
-                 ossUrl = jsonAnalysis.pushOss("https://www.xiachufang.com/page/upload_pic/", "bid=69AR68th; BAIDU_SSP_lcr=https://www.baidu.com/link?url=C0Ln0deXxQUeDvlsiXqETLXukjBwK7TgZinX9-xNt7GxkcvBSHLkMfjxiQ_zvB7Y&wd=&eqid=fb97586f0000f66600000004644387b8; sajssdk_2015_cross_new_user=1; __bid_n=187a7ca3cefce91eb94207; __utma=177678124.1702347834.1682147262.1682147262.1682147262.1; __utmc=177678124; __utmz=177678124.1682147262.1.1.utmcsr=baidu|utmccn=(organic)|utmcmd=organic; Hm_lvt_ecd4feb5c351cc02583045a5813b5142=1682147262; FPTOKEN=iFzOjur5og3zIAEWW1G6LGG5IZ2tiCEYAs8B28mSoXkHJOim7aXNawX76eYPm3yeCIsLgMLQ+vWJ83gkzUHfaxN673L4RvJ89xsNmSwQSCRRn6B5wsLq/5xTUBI7I7T9lsy7p+JZ8Gac6nwGukqoEuZMeJtg/MnhmHByvkpM9M+8HjfT7FMKzDU2DurEVW1FEtEIPB04nFmKtFYHGgcbIhhOeXWUgjdogRqHW5h8Ly5XkVDGTZ0iYgTwKDL6FiGMJ+rbGB/Dl2cHC2/ImstDLJ97C5BHfBLYlJGOEit0EVQ35fdJzheEn/tVmw+2hFDfmkvO5x3766dDcFZPUHNjeW7VeT2XWBrxTsBO8pyZ0ff8ZhiV2iY4t+CrUfwEt3AppkbBRv3NBkdLDakqqiq8oQ==|2ZqtFOnD+a084Dj9j8C9SXC90NYXHaweb82//Rvf++Y=|10|8718a441f5dfa2e108986db8f8445d97; __gads=ID=5c6ce45c3b8f8a5f-2239431e67df003a:T=1682147262:RT=1682147262:S=ALNI_MaQh7zR4yt2nS6aBKXz_wJuzkRBwg; __gpi=UID=00000bfc715d939c:T=1682147262:RT=1682147262:S=ALNI_MbgKl3oMYQp5X7OfvA0lt2x5s5m-g; S=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjE1ODIwNjc1NSwidWlkIjoxNjYyOTYzMDAsImlhdCI6MTY4MjE0NzMwOC4wLCJvIjowfQ.EMQWRH-YwqboxEin8ot0alTU7Op9EF-X3_ojZYHymn4; user_id=166296300; __utmb=177678124.3.10.1682147262; Hm_lpvt_ecd4feb5c351cc02583045a5813b5142=1682147309; \"identities\":\"eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTg3YTdjYWZjNDAxMDc5LTA0NzNlNmZmM2EzOTJiOC0yNjAzMWI1MS0yMDczNjAwLTE4N2E3Y2FmYzQxZDcyIiwiJGlkZW50aXR5X2xvZ2luX2lkIjoiMTY2Mjk2MzAwIn0=\",\"history_login_id\":{\"name\":\"$identity_login_id\",\"value\":\"166296300\"}}; id=166296300"
-                        , "pic", file, "content.pic_url", "异常", null, null);
+                String apikz = "https://mp.weixin.qq.com/cgi-bin/filetransfer?action=upload_material&f=json&scene=8&writetype=doublewrite&groupid=1&ticket_id=moreone_&ticket=e2865f3e33c0ef800cfcc1d85b6b5f6776743e6c&svr_time=1682315142&token=1045432626&lang=zh_CN&seq=1682315172435&t=0.8668399752521618";
+                String ck = "pgv_pvid=2920141984; RK=wKttaRgJcm; ptcz=8bf1fe3feea20ab414a7d567c4f2be5c379c1520f150418e8e4f498d3bfcecb3; tvfe_boss_uuid=468cdc758743a5e6; ptui_loginuin=740444603; ua_id=ZMGNOi7D4jbCXOhAAAAAANekvHlJfjEVDEPgFCgEvYY=; wxuin=82315030095352; uuid=0db8fbcce7d3578103fff2e938c02d11; rand_info=CAESIOzLZfsa0JtYBlrwC97Kr9XOC9N6gmkPFtaO4KoYy5rI; slave_bizuin=3559645416; data_bizuin=3559645416; bizuin=3559645416; data_ticket=A0qCPlbjI4nzn1oQGOUJVMlJtlF1t50ZGzREaTY022VlDs38BIL4wzt7MxP+Ys9f; slave_sid=TUMzWHFfVk1wdFdkU1Z5Zkl0VDZ3WTZWM3haRHRhSVBZNzRyUnpzdmxmYmlyYWxTVXhyN0RCQXdSRUdGeGwwOFhXVkdsM3JJcHd2dWJTaWI0cmtXZElkYWxwOURtZXo3X0w4YklDZG5Kam1RZ2hlSDc4SHZkUTBaS09rek9TanFNYXc2ZkRMNGdOODJVRFdR; slave_user=gh_e2353a2722ee; xid=d839fe97b37e50e412397c95c4e00267; mm_lang=zh_CN; pgv_info=ssid=s8559386692; vversion_name=8.2.95; video_omgid=e4a52340a1c1991b";
+               String fileFormName = "file";
+                String fanhui = "cdn_url";
+                String cuowu = "error";
+                 ossUrl = jsonAnalysis.pushOss(apikz, ck, fileFormName, file, fanhui, cuowu, null, null);
                 stopWatch1.stop();
                 log.info(fileName+"上传时间："+stopWatch1.getLastTaskTimeMillis()/1000+"秒");
                 jsonAnalysis.deleteFile(fileName);
-                String reg = "http.*?\\.png";
+                String reg = "(.*?)\\?";
                 Pattern pattern = Pattern.compile(reg);
                 Matcher matcher = pattern.matcher(ossUrl);
                 if( matcher.find() ){
-                    ossUrl = matcher.group();
+                    ossUrl = matcher.group(1);
                 }
                 stringBuffer.append(ossUrl).append("\n");
             }else {

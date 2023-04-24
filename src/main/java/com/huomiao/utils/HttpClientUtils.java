@@ -8,39 +8,25 @@ package com.huomiao.utils;
  */
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import com.alibaba.fastjson.JSONObject;
-
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Base64Utils;
-import org.springframework.util.CollectionUtils;
-
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.Files;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
 
 @Component
 @Slf4j

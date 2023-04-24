@@ -3,12 +3,10 @@ package com.huomiao.utils;
 import cn.hutool.core.date.StopWatch;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.springframework.stereotype.Component;
 import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
 import java.io.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,7 +109,7 @@ public class FfmpegUtils {
         // false，关闭流信息，确保ffmpeg执行完毕后关闭
         int res = close(ffmpeg, errorIs, false);
         stopWatch.stop();
-        System.err.println("切片时间："+stopWatch.getLastTaskTimeMillis());
+        log.info("切片时间：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
         return res;
     }
 
