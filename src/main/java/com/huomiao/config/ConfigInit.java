@@ -33,7 +33,7 @@ public class ConfigInit {
     @Bean
     public void init() {
 
-        dir = "C:\\Users\\74044\\Desktop\\files\\";
+        dir = "D:\\Desktop\\files\\";
         jsonMap = new HashMap<>();
     }
 }

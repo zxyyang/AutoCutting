@@ -2,6 +2,8 @@ package com.huomiao.vo;
 
 import lombok.Data;
 
+import java.util.Map;
+
 /**
  * Copyright: Copyright (C) 2022, Inc. All rights reserved.
  *
@@ -26,4 +28,6 @@ public class GalleryVo {
     private String nextUrlStr;
     //是否去掉返回url”?“后面的参数
     private boolean removeParam;
+
+    private Map<String,String> formText;
 }

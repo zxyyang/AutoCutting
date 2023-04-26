@@ -1,16 +1,18 @@
 package com.huomiao.utils;
 
 import cn.hutool.core.date.StopWatch;
+import com.huomiao.config.ConfigInit;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
+import javax.xml.ws.soap.Addressing;
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.huomiao.vo.PathVo.DIR;
 
 /**
  * Copyright: Copyright (C) 2022, Inc. All rights reserved.
@@ -21,6 +23,9 @@ import static com.huomiao.vo.PathVo.DIR;
 @Component
 @Slf4j
 public class FfmpegUtils {
+
+    @Autowired
+    private ConfigInit configInit;
 
     // 获取ffmpeg的绝对位置
     DefaultFFMPEGLocator defaultFFMPEGLocator = new DefaultFFMPEGLocator();
@@ -46,7 +51,7 @@ public class FfmpegUtils {
      */
     //ffmpeg.exe -loglevel info -i %stream_input% -g 250 -r 15 -sc_threshold 0 -preset slow -keyint_min 15 -c:v libx264 -ar 44100 -b:v 200k -b:a 64k -profile:v baseline -level 3.0 -s 400x224 -aspect 16:9 -maxrate 200k -bufsize 1000k -map 0 -flags -global_header -f segment -segment_time 10 -segment_wrap 3 -segment_list_flags +live -segment_list_type m3u8 -segment_list playlist.m3u8 -segment_format mpegts segment%05d.ts 1>output.txt
     public int execute(String name) {
-        String inVideoPath = DIR + name+".mp4";
+        String inVideoPath = configInit.getDir() + name+".mp4";
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("切片");
         log.info("ffmepg位置：{}", ffmpegPath);
@@ -65,7 +70,7 @@ public class FfmpegUtils {
                 .append(" -preset ultrafast ")
                 // 输出位置
                 .append(" -hls_segment_filename ")
-                .append(" "+DIR)
+                .append(" "+configInit.getDir())
                 .append("HUOMIAO")
                 .append(name)
                 .append("%09d.ts ")
@@ -117,8 +122,8 @@ public class FfmpegUtils {
     @SneakyThrows
     public File mergeFile(String m3u8Name){
         byte[] imgByte = file2byte("img\\img.png");
-        byte[] m3u8Byte = file2byte(DIR+m3u8Name);
-        File file = new File(DIR+m3u8Name.replace(".ts","png"));
+        byte[] m3u8Byte = file2byte(configInit.getDir()+m3u8Name);
+        File file = new File(configInit.getDir()+m3u8Name.replace(".ts","png"));
         FileOutputStream outputStream  =new FileOutputStream(file);
         outputStream.write(imgByte);
         outputStream.write(m3u8Byte);
@@ -128,8 +133,8 @@ public class FfmpegUtils {
     @SneakyThrows
     public File mergeFileUpload(String m3u8Name){
         byte[] imgByte = file2byte("img\\img.png");
-        byte[] m3u8Byte = file2byte(DIR+m3u8Name);
-        File file = new File(DIR+m3u8Name.replace(".ts",".png"));
+        byte[] m3u8Byte = file2byte(configInit.getDir()+m3u8Name);
+        File file = new File(configInit.getDir()+m3u8Name.replace(".ts",".png"));
         FileOutputStream outputStream  =new FileOutputStream(file);
         outputStream.write(imgByte);
         outputStream.write(m3u8Byte);

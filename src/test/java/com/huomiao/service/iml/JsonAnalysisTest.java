@@ -1,6 +1,7 @@
 package com.huomiao.service.iml;
 
 import com.alibaba.fastjson.JSONObject;
+import com.huomiao.config.ConfigInit;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -12,13 +13,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StopWatch;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.huomiao.vo.PathVo.DIR;
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Slf4j
@@ -30,6 +31,11 @@ public class JsonAnalysisTest {
     @Autowired
     FfmpegUtils ffmpegUtils;
 
+    @Autowired
+    ConfigInit configInit;
+
+    @Autowired
+    HttpClientUtils httpClientUtils;
     @Test
   public   void getPlayerUrl() throws InterruptedException, FileNotFoundException {
         String api = "http://sf.huomiao.cc/tx/qq.php/?url=";
@@ -58,9 +64,9 @@ public class JsonAnalysisTest {
        String name = nameMp4.replace(".mp4","");
         boolean cutRe = jsonAnalysis.cutM3u8(name);
         if (cutRe){
-      //      jsonAnalysis.deleteFile(nameMp4);
+            jsonAnalysis.deleteFile(nameMp4);
         }
-        Scanner sc = new Scanner(new FileReader(DIR+name+".m3u8"));
+        Scanner sc = new Scanner(new FileReader(configInit.getDir()+name+".m3u8"));
         StringBuffer stringBuffer = new StringBuffer();
         String ossUrl = new String();
         while (sc.hasNextLine()) {  //按行读取字符串
@@ -71,27 +77,37 @@ public class JsonAnalysisTest {
                 String fileName = file.getName();
                 StopWatch stopWatch1 = new StopWatch();
                 stopWatch1.start();
-                String apikz = "https://mp.weixin.qq.com/cgi-bin/filetransfer?action=upload_material&f=json&scene=8&writetype=doublewrite&groupid=1&ticket_id=moreone_&ticket=e2865f3e33c0ef800cfcc1d85b6b5f6776743e6c&svr_time=1682315142&token=1045432626&lang=zh_CN&seq=1682315172435&t=0.8668399752521618";
-                String ck = "pgv_pvid=2920141984; RK=wKttaRgJcm; ptcz=8bf1fe3feea20ab414a7d567c4f2be5c379c1520f150418e8e4f498d3bfcecb3; tvfe_boss_uuid=468cdc758743a5e6; ptui_loginuin=740444603; ua_id=ZMGNOi7D4jbCXOhAAAAAANekvHlJfjEVDEPgFCgEvYY=; wxuin=82315030095352; uuid=0db8fbcce7d3578103fff2e938c02d11; rand_info=CAESIOzLZfsa0JtYBlrwC97Kr9XOC9N6gmkPFtaO4KoYy5rI; slave_bizuin=3559645416; data_bizuin=3559645416; bizuin=3559645416; data_ticket=A0qCPlbjI4nzn1oQGOUJVMlJtlF1t50ZGzREaTY022VlDs38BIL4wzt7MxP+Ys9f; slave_sid=TUMzWHFfVk1wdFdkU1Z5Zkl0VDZ3WTZWM3haRHRhSVBZNzRyUnpzdmxmYmlyYWxTVXhyN0RCQXdSRUdGeGwwOFhXVkdsM3JJcHd2dWJTaWI0cmtXZElkYWxwOURtZXo3X0w4YklDZG5Kam1RZ2hlSDc4SHZkUTBaS09rek9TanFNYXc2ZkRMNGdOODJVRFdR; slave_user=gh_e2353a2722ee; xid=d839fe97b37e50e412397c95c4e00267; mm_lang=zh_CN; pgv_info=ssid=s8559386692; vversion_name=8.2.95; video_omgid=e4a52340a1c1991b";
-               String fileFormName = "file";
-                String fanhui = "cdn_url";
-                String cuowu = "error";
-                 ossUrl = jsonAnalysis.pushOss(apikz, ck, fileFormName, file, fanhui, cuowu, null, null);
+                String apikz = "https://www.wegame.com.cn/api/wpicupload/platform/snappic/upload.fcg?from=feeds&without_water_mark=0";
+                String ck = "pkey=00016446AC59007081418F4FAE07E8E411444BFE9900751B2EE2B6578A36F7A079A40404AA3BF56BBC2C5F9476483FF0DEF3E6A83D2B6C03FBE6D6C688E7F9CAE7183CA6BCB779DC491B2F70A96D0980E4F47C7CCB86AC637C890404974989876520A2BB690690BC7C1663AED7B2846E88AD425B40DEDB83; region=CN; tgp_ticket=161F4CED88019464ECCFC49906548BF311DDB45569079F3D7126137A6BEBD6BD1898FED5CFA6C7CF3132B4CC9B424023F2181C3E3CC290CD34BD402D5B1952FC5085367A0FE0CBA95AB92A6D9071AFE578352B76C949578FCEAB751A5B858CE9A8DAB324FD2B329FB3711A7B95D1075F2451A33B437C951AB740292262899F4C; puin=740444603; pt2gguin=o0740444603; tgp_id=94840903; geoid=45; lcid=2052; tgp_env=online; tgp_user_type=0; colorMode=1; pgv_info=ssid=s5275429729; pgv_pvid=6464128896; ts_uid=6501451966; colorMode=1; BGTheme=[object Object]; language=zh_CN; uin=740444603; tgp_biz_ticket=010000000000000000b1d8ffcb158f425ce2f7f053256ff69a6d6c3182098a73306e8fa59f5ceda93e7a03b2b0125a9fab24009eace07fd199bc3cc46ce37c3848253cfb9916a9b32e; ts_last=www.wegame.com.cn/platform/new-profile/icenter.html";
+               String fileFormName = "img";
+                String fanhui = "url";
+                String cuowu = "result\":-101";
+                Map<String,String> formDataMap = new HashMap<>();
+                formDataMap.put("app_id","0");
+                formDataMap.put("game_id","55555");
+                formDataMap.put("extra","feeds");
+                // ossUrl = jsonAnalysis.pushOss(apikz, formDataMap,ck, fileFormName, file, fanhui, cuowu, null, null);
+                 ossUrl = line;
                 stopWatch1.stop();
                 log.info(fileName+"上传时间："+stopWatch1.getLastTaskTimeMillis()/1000+"秒");
-                jsonAnalysis.deleteFile(fileName);
-                String reg = "(.*?)\\?";
-                Pattern pattern = Pattern.compile(reg);
-                Matcher matcher = pattern.matcher(ossUrl);
-                if( matcher.find() ){
-                    ossUrl = matcher.group(1);
+                //jsonAnalysis.deleteFile(fileName);
+
+//                String reg = "(.*?)\\?";
+//                Pattern pattern = Pattern.compile(reg);
+//                Matcher matcher = pattern.matcher(ossUrl);
+//                if( matcher.find() ){
+//                    ossUrl = matcher.group(1);
+//                }
+                if (Objects.isNull(ossUrl)){
+                    log.error("图床返回URL为空，请检查配置！");
                 }
                 stringBuffer.append(ossUrl).append("\n");
-            }else {
+            }else
+           {
                 stringBuffer.append(line).append("\n");
             }
         }
-        try (FileWriter fileWriter = new FileWriter(DIR+name+".m3u8")) {
+        try (FileWriter fileWriter = new FileWriter(configInit.getDir()+name+".m3u8")) {
             fileWriter.append(stringBuffer.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -99,5 +115,18 @@ public class JsonAnalysisTest {
         stopWatch.stop();
         System.err.println("火苗全自动切片结束！总耗时："+stopWatch.getLastTaskTimeMillis()/1000+"秒");
 //        System.err.println(s);
+    }
+
+    @Test
+    public void pushOssTest(){
+        String requestUrl = "https://www.wegame.com.cn/api/wpicupload/platform/snappic/upload.fcg?from=feeds&without_water_mark=0";
+        Map<String, String> requestHeader = new HashMap<>();
+        requestHeader.put("Cookie","pkey=00016446AC59007081418F4FAE07E8E411444BFE9900751B2EE2B6578A36F7A079A40404AA3BF56BBC2C5F9476483FF0DEF3E6A83D2B6C03FBE6D6C688E7F9CAE7183CA6BCB779DC491B2F70A96D0980E4F47C7CCB86AC637C890404974989876520A2BB690690BC7C1663AED7B2846E88AD425B40DEDB83; region=CN; tgp_ticket=161F4CED88019464ECCFC49906548BF311DDB45569079F3D7126137A6BEBD6BD1898FED5CFA6C7CF3132B4CC9B424023F2181C3E3CC290CD34BD402D5B1952FC5085367A0FE0CBA95AB92A6D9071AFE578352B76C949578FCEAB751A5B858CE9A8DAB324FD2B329FB3711A7B95D1075F2451A33B437C951AB740292262899F4C; puin=740444603; pt2gguin=o0740444603; tgp_id=94840903; geoid=45; lcid=2052; tgp_env=online; tgp_user_type=0; colorMode=1; pgv_info=ssid=s5275429729; pgv_pvid=6464128896; ts_uid=6501451966; colorMode=1; BGTheme=[object Object]; language=zh_CN; uin=740444603; tgp_biz_ticket=010000000000000000b1d8ffcb158f425ce2f7f053256ff69a6d6c3182098a73306e8fa59f5ceda93e7a03b2b0125a9fab24009eace07fd199bc3cc46ce37c3848253cfb9916a9b32e; ts_last=www.wegame.com.cn/platform/new-profile/icenter.html");
+        Map<String, String> formTexts =new HashMap<>();
+        formTexts.put("game_id","55555");
+        Map<String, File> files = new HashMap<>();
+        files.put("img",new File(configInit.getDir()+"logo-w.png"));
+        httpClientUtils.uploadFile(requestUrl, requestHeader, formTexts, files );
+
     }
 }

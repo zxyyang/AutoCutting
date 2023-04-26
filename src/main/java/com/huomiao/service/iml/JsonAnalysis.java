@@ -5,13 +5,13 @@ package com.huomiao.service.iml;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.huomiao.config.ConfigInit;
 import com.huomiao.download.Downloader;
 import com.huomiao.download.FileDownloader;
 import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.support.MultiThreadDownloadProgressPrinter;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
-import com.huomiao.vo.PathVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.mime.content.FileBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,6 @@ import org.springframework.util.CollectionUtils;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-
-import static com.huomiao.vo.PathVo.DIR;
 
 
 /**
@@ -41,6 +39,8 @@ public class JsonAnalysis {
     @Autowired
     private FfmpegUtils ffmpegUtils;
 
+    @Autowired
+    private ConfigInit configInit;
     public String getPlayerUrl(Object jsonUrl,Object videoUrl){
         String result = httpClientUtils.doGet(String.valueOf(jsonUrl) + videoUrl);
         return result;
@@ -49,11 +49,16 @@ public class JsonAnalysis {
     public String downLoadVideo(String url,String fromUrl)  {
         String fileName = new String();
         try {
+            File file=new File(configInit.getDir());
+            if (!file.exists()) {//判断文件目录的存在
+                file.mkdirs();
+                log.info("{}目录不存在已自动创建！",configInit.getDir());
+            }
             MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*2);
-            fileName = multiThreadFileDownloader.download(url, DIR, fromUrl);
+            fileName = multiThreadFileDownloader.download(url, configInit.getDir(), fromUrl);
         }catch (Exception e){
             //下载失败删除下载的片
-            delFileByName(DIR,fileName);
+            delFileByName(configInit.getDir(),fileName);
             log.error("文件下载失败：{}", ExceptionUtil.stacktraceToString(e));
             return null;
         }
@@ -70,7 +75,7 @@ public class JsonAnalysis {
         }
     }
 
-    public String pushOss(String api, String cookie, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
+    public String pushOss(String api,Map<String,String> formDataMap, String cookie, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
 
         if (Objects.isNull(api)){
             log.error("api为空！");
@@ -82,13 +87,14 @@ public class JsonAnalysis {
         try {
             Map<String, File> files = new HashMap<>();
             files.put(formName,file);
-            String respond = httpClientUtils.uploadFiles(api, headerMap, null, files, null, null);
+            String respond = httpClientUtils.uploadFile(api, headerMap, formDataMap, files);
             if (Objects.nonNull(errorStr) &&  respond.contains(errorStr)){
                 log.info("存在错误返回判定词");
+                log.error(respond);
                 return null;
             }
             jsonObject = JSONObject.parseObject(respond);
-          //  System.err.println(jsonObject);
+
         }catch (Exception e){
             log.error("图床出错：{}",ExceptionUtil.stacktraceToString(e));
             return null;
@@ -128,7 +134,7 @@ public class JsonAnalysis {
 
 
     public boolean deleteFile(String fileName){
-        File file =new File(DIR+fileName);
+        File file =new File(configInit.getDir()+fileName);
         boolean delete = file.delete();
         if (delete){
             log.info("删除文库{}",fileName);

@@ -18,7 +18,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.huomiao.vo.PathVo.DIR;
 
 /**
  * Copyright: Copyright (C) 2022, Inc. All rights reserved.
@@ -72,7 +71,7 @@ public class AutoCutServiceImpl {
     }
 
     public String mergeAndUpdateImage(String name) throws FileNotFoundException {
-        String reM3u8Path = DIR + name + ".m3u8";
+        String reM3u8Path = configInit.getDir() + name + ".m3u8";
         Scanner sc = new Scanner(new FileReader(reM3u8Path));
         StringBuffer stringBuffer = new StringBuffer();
         String ossUrl = new String();
@@ -86,7 +85,33 @@ public class AutoCutServiceImpl {
                 pushGallery.start();
                 List<GalleryVo> galleryVoList = configInit.getGalleryVoList();
                 //TODO 上传图床
-                ossUrl = jsonAnalysis.pushOss(apikz, ck, fileFormName, file, fanhui, cuowu, null, null);
+                if (CollectionUtils.isEmpty(galleryVoList)){
+                    log.error("没有图床口子配置");
+                    return null;
+                }
+                for (GalleryVo galleryVo : galleryVoList) {
+                    String api = galleryVo.getApi();
+                    String formName = galleryVo.getFormName();
+                    String cookie = galleryVo.getCookie();
+                    String reUrl = galleryVo.getReUrl();
+                    String errorStr = galleryVo.getErrorStr();
+                    String preUrlStr = galleryVo.getPreUrlStr();
+                    String nextUrlStr = galleryVo.getNextUrlStr();
+                    Map<String, String> formText = galleryVo.getFormText();
+                    try {
+                        ossUrl = jsonAnalysis.pushOss(api, formText,cookie, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                        if (Objects.isNull(ossUrl)){
+                            log.error("{}图床上传失败,切换图床",api);
+                            continue;
+                        }else {
+                            break;
+                        }
+                    }catch (Exception e){
+                        log.error("{}图床上传失败，切换图床{}",api,ExceptionUtil.stacktraceToString(e));
+                        continue;
+                    }
+                }
+             //   ossUrl = jsonAnalysis.pushOss(apikz, ck, fileFormName, file, fanhui, cuowu, null, null);
                 pushGallery.stop();
                 log.info(fileName+"图床上传时间："+pushGallery.getLastTaskTimeMillis()/1000+"秒");
                 jsonAnalysis.deleteFile(fileName);
@@ -106,7 +131,7 @@ public class AutoCutServiceImpl {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        String reM3u8Name = reM3u8Path.replace(DIR, "");
+        String reM3u8Name = reM3u8Path.replace(configInit.getDir(), "");
         return reM3u8Name;
     }
 
