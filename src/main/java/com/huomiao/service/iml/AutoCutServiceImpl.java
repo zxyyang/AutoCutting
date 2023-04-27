@@ -9,12 +9,14 @@ import com.huomiao.vo.GalleryVo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,25 +39,38 @@ public class AutoCutServiceImpl {
 
     @Autowired
     private ConfigInit configInit;
-
+    @Autowired
+    @Qualifier("ttlExecutorService")
+    private Executor executor;
     @SneakyThrows
     public void startCut(String videoUrl, String downloadUrl){
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         String nameMp4 = "";
+        String playerUrl = new String();
         if (Objects.isNull(downloadUrl)) {
             //Json解析
             StopWatch jsonSw = new StopWatch();
             jsonSw.start();
-            nameMp4 = jsonGetPlayerUrl(videoUrl);
+            playerUrl = jsonGetPlayerUrl(videoUrl);
             jsonSw.stop();
             log.info("Json解析时间：{}秒", jsonSw.getLastTaskTimeMillis() / 1000);
         }else {
-            nameMp4 =downloadUrl;
+            playerUrl =downloadUrl;
         }
-        if (Objects.isNull(nameMp4)){
+        if (Objects.isNull(playerUrl)){
             log.error("无可用下载地址！");
             return;
+        }
+        //下载
+        if (Objects.nonNull(playerUrl)){
+            try {
+                nameMp4 = jsonAnalysis.downLoadVideo(playerUrl,videoUrl);
+            }catch (Exception e){
+               log.error("下载错误：{}",ExceptionUtil.stacktraceToString(e));
+               return;
+            }
+            log.info("视频视频本地化名字：{}",nameMp4);
         }
         //mp4切片
         String name = nameMp4.replace(".mp4","");
@@ -73,7 +88,8 @@ public class AutoCutServiceImpl {
     public String mergeAndUpdateImage(String name) throws FileNotFoundException {
         String reM3u8Path = configInit.getDir() + name + ".m3u8";
         Scanner sc = new Scanner(new FileReader(reM3u8Path));
-        StringBuffer stringBuffer = new StringBuffer();
+
+        StringBuffer stringBuffer = new StringBuffer(new FileReader(reM3u8Path).toString());
         String ossUrl = new String();
         while (sc.hasNextLine()) {  //按行读取字符串
             String line = sc.nextLine();
@@ -84,43 +100,84 @@ public class AutoCutServiceImpl {
                 StopWatch pushGallery = new StopWatch();
                 pushGallery.start();
                 List<GalleryVo> galleryVoList = configInit.getGalleryVoList();
-                //TODO 上传图床
                 if (CollectionUtils.isEmpty(galleryVoList)){
                     log.error("没有图床口子配置");
                     return null;
                 }
-                for (GalleryVo galleryVo : galleryVoList) {
-                    String api = galleryVo.getApi();
-                    String formName = galleryVo.getFormName();
-                    String cookie = galleryVo.getCookie();
-                    String reUrl = galleryVo.getReUrl();
-                    String errorStr = galleryVo.getErrorStr();
-                    String preUrlStr = galleryVo.getPreUrlStr();
-                    String nextUrlStr = galleryVo.getNextUrlStr();
-                    Map<String, String> formText = galleryVo.getFormText();
-                    try {
-                        ossUrl = jsonAnalysis.pushOss(api, formText,cookie, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
-                        if (Objects.isNull(ossUrl)){
-                            log.error("{}图床上传失败,切换图床",api);
-                            continue;
-                        }else {
-                            break;
+                boolean isUpOssOK ;
+                GalleryVo galleryVo = galleryVoList.get(0);
+                String api = galleryVo.getApi();
+                String formName = galleryVo.getFormName();
+                String cookie = galleryVo.getCookie();
+                String reUrl = galleryVo.getReUrl();
+                String errorStr = galleryVo.getErrorStr();
+                String preUrlStr = galleryVo.getPreUrlStr();
+                String nextUrlStr = galleryVo.getNextUrlStr();
+                boolean removeParam = galleryVo.isRemoveParam();
+                Map<String, String> formText = galleryVo.getFormText();
+                try {
+                    ossUrl = jsonAnalysis.pushOss(api, formText, cookie, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                    if (Objects.isNull(ossUrl)) {
+                        isUpOssOK = false;
+                        log.error("{}图床上传失败,切换图床", api);
+                    } else {
+                        jsonAnalysis.deleteFile(fileName);
+                        //去除参数
+                        if (removeParam) {
+                            String reg = "(.*?)\\?";
+                            Pattern pattern = Pattern.compile(reg);
+                            Matcher matcher = pattern.matcher(ossUrl);
+                            if (matcher.find()) {
+                                ossUrl = matcher.group(1);
+                            }
                         }
-                    }catch (Exception e){
-                        log.error("{}图床上传失败，切换图床{}",api,ExceptionUtil.stacktraceToString(e));
-                        continue;
+                        isUpOssOK = true;
+                    }
+                } catch (Exception e) {
+                    isUpOssOK = false;
+                    log.error("{}图床上传失败，切换图床{}", api, ExceptionUtil.stacktraceToString(e));
+                }
+                if (!isUpOssOK){
+                    for (GalleryVo galleryVoFor : galleryVoList) {
+                        api = galleryVoFor.getApi();
+                        formName = galleryVoFor.getFormName();
+                        cookie = galleryVoFor.getCookie();
+                        reUrl = galleryVoFor.getReUrl();
+                        errorStr = galleryVoFor.getErrorStr();
+                        preUrlStr = galleryVoFor.getPreUrlStr();
+                        nextUrlStr = galleryVoFor.getNextUrlStr();
+                        removeParam = galleryVoFor.isRemoveParam();
+                        formText = galleryVoFor.getFormText();
+                        try {
+                            ossUrl = jsonAnalysis.pushOss(api, formText,cookie, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                            if (Objects.isNull(ossUrl)){
+                                log.error("{}图床上传失败,切换图床",api);
+                                continue;
+                            }else {
+                                jsonAnalysis.deleteFile(fileName);
+                                //去除参数
+                                if(removeParam){
+                                    String reg = "(.*?)\\?";
+                                    Pattern pattern = Pattern.compile(reg);
+                                    Matcher matcher = pattern.matcher(ossUrl);
+                                    if( matcher.find() ){
+                                        ossUrl = matcher.group(1);
+                                    }
+                                }
+                                break;
+                            }
+
+                        }catch (Exception e){
+                            log.error("{}图床上传失败，切换图床{}",api,ExceptionUtil.stacktraceToString(e));
+                            continue;
+                        }
+
                     }
                 }
+
              //   ossUrl = jsonAnalysis.pushOss(apikz, ck, fileFormName, file, fanhui, cuowu, null, null);
                 pushGallery.stop();
                 log.info(fileName+"图床上传时间："+pushGallery.getLastTaskTimeMillis()/1000+"秒");
-                jsonAnalysis.deleteFile(fileName);
-                String reg = "(.*?)\\?";
-                Pattern pattern = Pattern.compile(reg);
-                Matcher matcher = pattern.matcher(ossUrl);
-                if( matcher.find() ){
-                    ossUrl = matcher.group(1);
-                }
                 stringBuffer.append(ossUrl).append("\n");
             }else {
                 stringBuffer.append(line).append("\n");

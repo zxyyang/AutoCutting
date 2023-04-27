@@ -147,6 +147,11 @@
             <artifactId>httpmime</artifactId>
             <version>4.5.12</version>
         </dependency>
+        <dependency>
+            <groupId>m.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
 
     </dependencies>
 

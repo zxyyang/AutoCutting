@@ -15,6 +15,8 @@ import com.huomiao.utils.HttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.mime.content.FileBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -74,6 +76,7 @@ public class JsonAnalysis {
             return false;
         }
     }
+
 
     public String pushOss(String api,Map<String,String> formDataMap, String cookie, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
 

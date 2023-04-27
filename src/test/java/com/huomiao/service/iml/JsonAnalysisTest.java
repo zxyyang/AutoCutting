@@ -36,6 +36,9 @@ public class JsonAnalysisTest {
 
     @Autowired
     HttpClientUtils httpClientUtils;
+
+    @Autowired
+    AutoCutServiceImpl autoCutService;
     @Test
   public   void getPlayerUrl() throws InterruptedException, FileNotFoundException {
         String api = "http://sf.huomiao.cc/tx/qq.php/?url=";
@@ -128,5 +131,10 @@ public class JsonAnalysisTest {
         files.put("img",new File(configInit.getDir()+"logo-w.png"));
         httpClientUtils.uploadFile(requestUrl, requestHeader, formTexts, files );
 
+    }
+
+    @Test
+    public void startCut(){
+        autoCutService.startCut("https://v.qq.com/x/page/d3355hlkkn2.html",null);
     }
 }
