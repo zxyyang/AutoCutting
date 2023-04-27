@@ -135,6 +135,6 @@ public class JsonAnalysisTest {
 
     @Test
     public void startCut(){
-        autoCutService.startCut("https://v.qq.com/x/page/d3355hlkkn2.html",null);
+        autoCutService.startCut("https://www.iqiyi.com/v_1837rw5g03s.html?vfrm=rank_list.4&vfrmblk=detailrank.0&vfrmrst=6",null);
     }
 }

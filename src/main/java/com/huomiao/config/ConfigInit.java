@@ -37,6 +37,7 @@ public class ConfigInit {
         this.dir = "D:\\Desktop\\files\\";
         Map<String,String> jsonMap = new HashMap<>();
         jsonMap.put("qq.com","http://sf.huomiao.cc/tx/qq.php/?url=");
+        jsonMap.put("1","https://sf.huomiao.cc/json/?url=");
         this.jsonMap = jsonMap;
         List<GalleryVo> galleryVoList = new ArrayList<>();
         GalleryVo galleryVo = new GalleryVo();

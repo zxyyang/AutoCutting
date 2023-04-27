@@ -4,6 +4,7 @@ package com.huomiao.download;
 import cn.hutool.crypto.digest.MD5;
 import com.huomiao.support.DownloadProgressPrinter;
 import com.huomiao.utils.RestTemplateBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.UUID;
 
+@Slf4j
 public abstract class AbstractDownloader implements Downloader {
     protected RestTemplate restTemplate;
     protected DownloadProgressPrinter downloadProgressPrinter;
@@ -52,11 +54,12 @@ public abstract class AbstractDownloader implements Downloader {
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<String> entity = restTemplate.exchange(decodeFileURL, HttpMethod.HEAD, requestEntity, String.class);
         //String fileName = this.getFileName(decodeFileURL, entity.getHeaders());
-        String fileName = this.getFileName(formUrl);
+        //第一个参数是传入的需要解析的地址-第二个参数是解析返回的结果地址
+        String fileName = this.getFileName(formUrl,fileURL);
         doDownload(decodeFileURL, dir, fileName, entity.getHeaders());
 
-        System.err.println("文件名字："+fileName);
-        System.out.println("总共下载文件耗时:" + (System.currentTimeMillis() - start) / 1000 + "s");
+        log.info("地址原始名：{}\n文件名字：{}",fileName,fileName);
+        log.info("总共下载文件耗时:" + (System.currentTimeMillis() - start) / 1000 + "s");
         return fileName;
     }
     protected abstract void doDownload(String decodeFileURL, String dir, String fileName, HttpHeaders headers) throws IOException;
@@ -80,11 +83,12 @@ public abstract class AbstractDownloader implements Downloader {
         return fileName;
     }
 
-    private String getFileName(String fileURL) {
+    private String getFileName(String fileURL,String fileName) {
+        log.info("{}----{}",fileURL,fileName);
         String name = new String();
-        if (fileURL.contains(".mp4") || fileURL.contains(".MP4")){
+        if (fileName.contains(".mp4") || fileName.contains(".MP4")){
             name = MD5.create().digestHex16(fileURL)+".mp4";
-        } else if (fileURL.contains(".m3u8") || fileURL.contains(".M3U8")) {
+        } else if (fileName.contains(".m3u8") || fileName.contains(".M3U8")) {
             name = MD5.create().digestHex16(fileURL)+".m3u8";
         }else {
             name = MD5.create().digestHex16(fileURL)+".mp4";

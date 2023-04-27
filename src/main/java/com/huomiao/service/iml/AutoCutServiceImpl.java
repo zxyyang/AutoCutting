@@ -55,23 +55,25 @@ public class AutoCutServiceImpl {
             playerUrl = jsonGetPlayerUrl(videoUrl);
             jsonSw.stop();
             log.info("Json解析时间：{}秒", jsonSw.getLastTaskTimeMillis() / 1000);
+            if (Objects.isNull(playerUrl)){
+                log.error("无可用下载地址！");
+                return;
+            }
         }else {
             playerUrl =downloadUrl;
         }
-        if (Objects.isNull(playerUrl)){
-            log.error("无可用下载地址！");
+        //下载
+
+        try {
+            nameMp4 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
+            System.err.println(nameMp4);
+        } catch (Exception e) {
+            log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
             return;
         }
-        //下载
-        if (Objects.nonNull(playerUrl)){
-            try {
-                nameMp4 = jsonAnalysis.downLoadVideo(playerUrl,videoUrl);
-            }catch (Exception e){
-               log.error("下载错误：{}",ExceptionUtil.stacktraceToString(e));
-               return;
-            }
-            log.info("视频视频本地化名字：{}",nameMp4);
-        }
+         log.info("视频视频本地化名字：{}",nameMp4);
+
+        //TODO 如果是M3u8格式 处理
         //mp4切片
         String name = nameMp4.replace(".mp4","");
         boolean cutRe = jsonAnalysis.cutM3u8(name);
@@ -79,7 +81,11 @@ public class AutoCutServiceImpl {
             jsonAnalysis.deleteFile(nameMp4);
         }
         //切完读取行
+        StopWatch mergeUpdateSw = new StopWatch();
+        mergeUpdateSw.start();
         String reM3u8Name = mergeAndUpdateImage(name);
+        mergeUpdateSw.stop();
+        log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
         log.info("完成切片替换后名称：{}",reM3u8Name);
         stopWatch.stop();
         log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
@@ -221,6 +227,7 @@ public class AutoCutServiceImpl {
                   }
                   else {
                       log.error("解析返回失败！");
+                      return null;
                   }
                }
                 }

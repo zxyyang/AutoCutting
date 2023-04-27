@@ -140,7 +140,7 @@ public class JsonAnalysis {
         File file =new File(configInit.getDir()+fileName);
         boolean delete = file.delete();
         if (delete){
-            log.info("删除文库{}",fileName);
+            //log.info("删除文库{}",fileName);
         }else {
             log.error("删除失败：{}",fileName);
         }
