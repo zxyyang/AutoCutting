@@ -3,26 +3,18 @@ package com.huomiao.service.iml;
 
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
-import com.huomiao.download.Downloader;
-import com.huomiao.download.FileDownloader;
 import com.huomiao.download.MultiThreadFileDownloader;
-import com.huomiao.support.MultiThreadDownloadProgressPrinter;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.entity.mime.content.FileBody;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -57,7 +49,7 @@ public class JsonAnalysis {
                 log.info("{}目录不存在已自动创建！",configInit.getDir());
             }
             MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*2);
-            fileName = multiThreadFileDownloader.download(url, configInit.getDir(), fromUrl);
+            fileName = multiThreadFileDownloader.downloadMp4(url, configInit.getDir(), fromUrl);
         }catch (Exception e){
             //下载失败删除下载的片
             delFileByName(configInit.getDir(),fileName);
@@ -70,6 +62,15 @@ public class JsonAnalysis {
 
     public boolean cutM3u8(String name){
         int execute = ffmpegUtils.execute(name);
+        if (execute == 0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean makeMp4(String name){
+        int execute = ffmpegUtils.executeM3u8(name);
         if (execute == 0){
             return true;
         }else {

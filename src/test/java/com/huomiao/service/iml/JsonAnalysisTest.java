@@ -134,7 +134,12 @@ public class JsonAnalysisTest {
     }
 
     @Test
-    public void startCut(){
-        autoCutService.startCut("https://www.iqiyi.com/v_1837rw5g03s.html?vfrm=rank_list.4&vfrmblk=detailrank.0&vfrmrst=6",null);
+    public void startCut() throws InterruptedException {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        autoCutService.startCut("https://www.iqiyi.com/v_13xgen1rmng.html",null);
+        stopWatch.stop();
+        Thread.sleep(10000);
+        System.err.println("下载时间："+stopWatch.getLastTaskTimeMillis()/1000);
     }
 }

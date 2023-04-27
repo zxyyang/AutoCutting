@@ -4,6 +4,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
+import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.vo.GalleryVo;
 import lombok.SneakyThrows;
@@ -16,7 +17,7 @@ import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.Executor;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,11 +43,14 @@ public class AutoCutServiceImpl {
     @Autowired
     @Qualifier("ttlExecutorService")
     private Executor executor;
+
+    int core = Runtime.getRuntime().availableProcessors();
+
     @SneakyThrows
-    public void startCut(String videoUrl, String downloadUrl){
+    public void startCut(String videoUrl, String downloadUrl) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        String nameMp4 = "";
+        String nameMp4OrM3u8 = "";
         String playerUrl = new String();
         if (Objects.isNull(downloadUrl)) {
             //Json解析
@@ -55,35 +59,102 @@ public class AutoCutServiceImpl {
             playerUrl = jsonGetPlayerUrl(videoUrl);
             jsonSw.stop();
             log.info("Json解析时间：{}秒", jsonSw.getLastTaskTimeMillis() / 1000);
-            if (Objects.isNull(playerUrl)){
+            if (Objects.isNull(playerUrl)) {
                 log.error("无可用下载地址！");
                 return;
             }
-        }else {
-            playerUrl =downloadUrl;
+        } else {
+            playerUrl = downloadUrl;
         }
+        //切完本地名字
+        String localName =new String();
         //下载
+        if (playerUrl.contains(".m3u8")) {
 
-        try {
-            nameMp4 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
-            System.err.println(nameMp4);
-        } catch (Exception e) {
-            log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
+            try {
+                nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
+                System.err.println(nameMp4OrM3u8);
+            } catch (Exception e) {
+                log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
+                return;
+            }
+            log.info("视频视频本地化名字：{}", nameMp4OrM3u8);
+//            boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
+//            return;
+            //TODO 如果是M3u8格式 处理
+            //ts下载映射Map
+            Map<String, String> tsMap = new ConcurrentHashMap<>();
+            if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
+                Scanner m3u8Content = new Scanner(new FileReader(configInit.getDir() + nameMp4OrM3u8));
+                while (m3u8Content.hasNextLine()) {
+                    String line = m3u8Content.nextLine();
+                    if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
+                        MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors() * 2);
+                        String download = null;
+                        try {
+                            download = multiThreadFileDownloader.downloadM3u8(line, configInit.getDir(), videoUrl);
+                        } catch (IOException e) {
+                            log.error("下载失败换线继续");
+                            for (int i = 0; i < 6; i++) {
+                                try {
+                                    download = multiThreadFileDownloader.downloadM3u8(line, configInit.getDir(), videoUrl);
+                                    break;
+                                } catch (IOException ex) {
+                                    log.error("下载失败！");
+                                }
+                            }
+                        }
+                        tsMap.put(line, download);
+                    }
+
+                }
+            }
+//            for (String s : tsMap.keySet()) {
+//                System.err.println(s + "----" + tsMap.get(s));
+//            }
+            //M3U8回归替换
+            Scanner sc = new Scanner(new FileReader(configInit.getDir()+nameMp4OrM3u8));
+            StringBuilder hgSb = new StringBuilder();
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                if (!line.contains("#")) {
+                    //替换名字
+                    if (tsMap.containsKey(line)) {
+                        hgSb.append(tsMap.get(line)).append("\n");
+                    }
+                } else {
+                    hgSb.append(line).append("\n");
+                }
+            }
+            try (FileWriter fileWriter = new FileWriter(configInit.getDir()+nameMp4OrM3u8)) {
+                fileWriter.append(hgSb.toString());
+                localName = nameMp4OrM3u8.replace(".m3u8","");
+                log.info("切片本地化成功！");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //TODO 二次切割
+          //  boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
+          //  return;
+        } else if (playerUrl.contains(".mp4")) {
+
+            //mp4切片
+             localName = nameMp4OrM3u8.replace(".mp4","");
+            boolean cutRe = jsonAnalysis.cutM3u8(localName);
+            if (cutRe){
+                jsonAnalysis.deleteFile(nameMp4OrM3u8);
+            }
+
+
+
+        }else {
+            log.error("未知类型：{}",playerUrl);
             return;
-        }
-         log.info("视频视频本地化名字：{}",nameMp4);
-
-        //TODO 如果是M3u8格式 处理
-        //mp4切片
-        String name = nameMp4.replace(".mp4","");
-        boolean cutRe = jsonAnalysis.cutM3u8(name);
-        if (cutRe){
-            jsonAnalysis.deleteFile(nameMp4);
         }
         //切完读取行
         StopWatch mergeUpdateSw = new StopWatch();
         mergeUpdateSw.start();
-        String reM3u8Name = mergeAndUpdateImage(name);
+        String reM3u8Name = mergeAndUpdateImage(localName);
         mergeUpdateSw.stop();
         log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
         log.info("完成切片替换后名称：{}",reM3u8Name);
@@ -99,18 +170,18 @@ public class AutoCutServiceImpl {
         String ossUrl = new String();
         while (sc.hasNextLine()) {  //按行读取字符串
             String line = sc.nextLine();
-            if (Objects.nonNull(line) && !line.contains("#")){
+            if (Objects.nonNull(line) && !line.contains("#")) {
                 File file = ffmpegUtils.mergeFileUpload(line);
                 jsonAnalysis.deleteFile(line);
                 String fileName = file.getName();
                 StopWatch pushGallery = new StopWatch();
                 pushGallery.start();
                 List<GalleryVo> galleryVoList = configInit.getGalleryVoList();
-                if (CollectionUtils.isEmpty(galleryVoList)){
+                if (CollectionUtils.isEmpty(galleryVoList)) {
                     log.error("没有图床口子配置");
                     return null;
                 }
-                boolean isUpOssOK ;
+                boolean isUpOssOK;
                 GalleryVo galleryVo = galleryVoList.get(0);
                 String api = galleryVo.getApi();
                 String formName = galleryVo.getFormName();
@@ -143,7 +214,7 @@ public class AutoCutServiceImpl {
                     isUpOssOK = false;
                     log.error("{}图床上传失败，切换图床{}", api, ExceptionUtil.stacktraceToString(e));
                 }
-                if (!isUpOssOK){
+                if (!isUpOssOK) {
                     for (GalleryVo galleryVoFor : galleryVoList) {
                         api = galleryVoFor.getApi();
                         formName = galleryVoFor.getFormName();
@@ -155,37 +226,37 @@ public class AutoCutServiceImpl {
                         removeParam = galleryVoFor.isRemoveParam();
                         formText = galleryVoFor.getFormText();
                         try {
-                            ossUrl = jsonAnalysis.pushOss(api, formText,cookie, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
-                            if (Objects.isNull(ossUrl)){
-                                log.error("{}图床上传失败,切换图床",api);
+                            ossUrl = jsonAnalysis.pushOss(api, formText, cookie, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                            if (Objects.isNull(ossUrl)) {
+                                log.error("{}图床上传失败,切换图床", api);
                                 continue;
-                            }else {
+                            } else {
                                 jsonAnalysis.deleteFile(fileName);
                                 //去除参数
-                                if(removeParam){
+                                if (removeParam) {
                                     String reg = "(.*?)\\?";
                                     Pattern pattern = Pattern.compile(reg);
                                     Matcher matcher = pattern.matcher(ossUrl);
-                                    if( matcher.find() ){
+                                    if (matcher.find()) {
                                         ossUrl = matcher.group(1);
                                     }
                                 }
                                 break;
                             }
 
-                        }catch (Exception e){
-                            log.error("{}图床上传失败，切换图床{}",api,ExceptionUtil.stacktraceToString(e));
+                        } catch (Exception e) {
+                            log.error("{}图床上传失败，切换图床{}", api, ExceptionUtil.stacktraceToString(e));
                             continue;
                         }
 
                     }
                 }
 
-             //   ossUrl = jsonAnalysis.pushOss(apikz, ck, fileFormName, file, fanhui, cuowu, null, null);
+                //   ossUrl = jsonAnalysis.pushOss(apikz, ck, fileFormName, file, fanhui, cuowu, null, null);
                 pushGallery.stop();
-                log.info(fileName+"图床上传时间："+pushGallery.getLastTaskTimeMillis()/1000+"秒");
+                log.info(fileName + "图床上传时间：" + pushGallery.getLastTaskTimeMillis() / 1000 + "秒");
                 stringBuffer.append(ossUrl).append("\n");
-            }else {
+            } else {
                 stringBuffer.append(line).append("\n");
             }
         }
@@ -198,50 +269,49 @@ public class AutoCutServiceImpl {
         return reM3u8Name;
     }
 
-    public String jsonGetPlayerUrl(String url){
-        log.info("JSON解析开始：{}",url);
+    public String jsonGetPlayerUrl(String url) {
+        log.info("JSON解析开始：{}", url);
         String playerUrl = new String();
         Map<String, String> jsonMap = configInit.getJsonMap();
-        if (CollectionUtils.isEmpty(jsonMap)){
+        if (CollectionUtils.isEmpty(jsonMap)) {
             log.error("json解析接口配置为空！");
             return null;
         }
         JSONObject jsonObject = new JSONObject();
         Map<Integer, String> mainMap = new HashMap<>();
         for (String key : jsonMap.keySet()) {
-            if (url.contains(key)){
+            if (url.contains(key)) {
                 String jsonUrl = jsonMap.get(key);
-                if (Objects.nonNull(jsonUrl)){
+                if (Objects.nonNull(jsonUrl)) {
                     String playerJSONUrl = new String();
                     try {
                         playerJSONUrl = jsonAnalysis.getPlayerUrl(jsonUrl, url);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         log.error("专线解析失败：{}", ExceptionUtil.stacktraceToString(e));
                     }
-              if (Objects.nonNull(playerJSONUrl)){
-                  jsonObject = JSONObject.parseObject(playerJSONUrl);
-                  Integer code = jsonObject.getInteger("code");
-                  if (Objects.equals(code,200)){
-                      playerUrl = (String)jsonObject.get("url");
-                      return playerUrl;
-                  }
-                  else {
-                      log.error("解析返回失败！");
-                      return null;
-                  }
-               }
+                    if (Objects.nonNull(playerJSONUrl)) {
+                        jsonObject = JSONObject.parseObject(playerJSONUrl);
+                        Integer code = jsonObject.getInteger("code");
+                        if (Objects.equals(code, 200)) {
+                            playerUrl = (String) jsonObject.get("url");
+                            return playerUrl;
+                        } else {
+                            log.error("解析返回失败！");
+                            return null;
+                        }
+                    }
                 }
             } else if (NumberUtil.isNumber(key)) {
-                mainMap.put(Integer.valueOf(key),jsonMap.get(key));
+                mainMap.put(Integer.valueOf(key), jsonMap.get(key));
             }
         }
         TreeMap<Integer, String> paramTreeMap = new TreeMap<>(mainMap);
-        if (!CollectionUtils.isEmpty(paramTreeMap)){
+        if (CollectionUtils.isEmpty(paramTreeMap)) {
             log.error("无可用解析接口！");
             return null;
         }
         for (Integer integer : paramTreeMap.keySet()) {
-            String jsonUrl = jsonMap.get(integer);
+            String jsonUrl = jsonMap.get(String.valueOf(integer));
             String playerJSONUrl = new String();
             try {
                 playerJSONUrl = jsonAnalysis.getPlayerUrl(jsonUrl, url);
@@ -255,8 +325,8 @@ public class AutoCutServiceImpl {
                         log.error("解析返回失败！");
                     }
                 }
-            }catch (Exception e){
-                log.error("主线解析失败：{}",ExceptionUtil.stacktraceToString(e));
+            } catch (Exception e) {
+                log.error("主线解析失败：{}", ExceptionUtil.stacktraceToString(e));
             }
         }
         return playerUrl;

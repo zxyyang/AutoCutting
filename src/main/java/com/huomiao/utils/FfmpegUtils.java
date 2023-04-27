@@ -118,6 +118,53 @@ public class FfmpegUtils {
         return res;
     }
 
+    public int executeM3u8(String name) {
+        String inVideoPath = name;
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("切片");
+        log.info("ffmepg位置：{}", ffmpegPath);
+        // ffmpeg程序位置
+        String cmd = new StringBuilder(ffmpegPath)
+                .append(" -i ")
+                // 输入视频位置
+                .append(configInit.getDir()+inVideoPath)
+               .append(" ")
+                .append("  -threads ")
+                // 线程数，10个线程，10个左右最优
+                .append(Runtime.getRuntime().availableProcessors()*3)
+                .append(" -preset ultrafast ")
+                .append(configInit.getDir()+inVideoPath.replace(".m3u8",".mp4 "))
+                .toString();
+                // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
+
+                // 输出位置
+
+
+
+        //ts切片
+        System.err.println(cmd);
+        Runtime runtime = Runtime.getRuntime();
+        Process ffmpeg = null;
+        InputStream errorIs = null;
+        try {
+            ffmpeg = runtime.exec(cmd);
+            // 错误日志
+            errorIs = ffmpeg.getErrorStream();
+            // info日志
+            OutputStream os = ffmpeg.getOutputStream();
+            // 在执行过程中执行y，代表统一执行
+            os.write("y".getBytes("UTF-8"));
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // false，关闭流信息，确保ffmpeg执行完毕后关闭
+        int res = close(ffmpeg, errorIs, false);
+        stopWatch.stop();
+        log.info("切片时间：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
+        return res;
+    }
+
     //创建一个方法，判断改文件是不是目录或者文件，运用递归，直到是文件为止。
     @SneakyThrows
     public File mergeFile(String m3u8Name){
