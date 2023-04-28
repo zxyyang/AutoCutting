@@ -69,16 +69,16 @@ public class AutoCutServiceImpl {
         //切完本地名字
         String localName =new String();
         //下载
+        try {
+            nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
+            System.err.println(nameMp4OrM3u8);
+        } catch (Exception e) {
+            log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
+            return;
+        }
+        log.info("视频视频本地化名字：{}", nameMp4OrM3u8);
+        //区分类型
         if (playerUrl.contains(".m3u8")) {
-
-            try {
-                nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
-                System.err.println(nameMp4OrM3u8);
-            } catch (Exception e) {
-                log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
-                return;
-            }
-            log.info("视频视频本地化名字：{}", nameMp4OrM3u8);
 //            boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
 //            return;
             //TODO 如果是M3u8格式 处理
@@ -143,10 +143,10 @@ public class AutoCutServiceImpl {
             boolean cutRe = jsonAnalysis.cutM3u8(localName);
             if (cutRe){
                 jsonAnalysis.deleteFile(nameMp4OrM3u8);
+            }else {
+                log.error("切片失败！");
+                return;
             }
-
-
-
         }else {
             log.error("未知类型：{}",playerUrl);
             return;
@@ -166,12 +166,13 @@ public class AutoCutServiceImpl {
         String reM3u8Path = configInit.getDir() + name + ".m3u8";
         Scanner sc = new Scanner(new FileReader(reM3u8Path));
 
-        StringBuffer stringBuffer = new StringBuffer(new FileReader(reM3u8Path).toString());
+        StringBuilder stringBuffer = new StringBuilder();
         String ossUrl = new String();
         while (sc.hasNextLine()) {  //按行读取字符串
             String line = sc.nextLine();
             if (Objects.nonNull(line) && !line.contains("#")) {
-                File file = ffmpegUtils.mergeFileUpload(line);
+                //伪装
+                File file = ffmpegUtils.mergeFile(line);
                 jsonAnalysis.deleteFile(line);
                 String fileName = file.getName();
                 StopWatch pushGallery = new StopWatch();
@@ -185,7 +186,7 @@ public class AutoCutServiceImpl {
                 GalleryVo galleryVo = galleryVoList.get(0);
                 String api = galleryVo.getApi();
                 String formName = galleryVo.getFormName();
-                String cookie = galleryVo.getCookie();
+                Map<String, String> headForm = galleryVo.getHeadForm();
                 String reUrl = galleryVo.getReUrl();
                 String errorStr = galleryVo.getErrorStr();
                 String preUrlStr = galleryVo.getPreUrlStr();
@@ -193,12 +194,12 @@ public class AutoCutServiceImpl {
                 boolean removeParam = galleryVo.isRemoveParam();
                 Map<String, String> formText = galleryVo.getFormText();
                 try {
-                    ossUrl = jsonAnalysis.pushOss(api, formText, cookie, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                    ossUrl = jsonAnalysis.pushOss(api, formText, headForm, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
                     if (Objects.isNull(ossUrl)) {
                         isUpOssOK = false;
                         log.error("{}图床上传失败,切换图床", api);
                     } else {
-                        jsonAnalysis.deleteFile(fileName);
+                        jsonAnalysis.deleteFile(file);
                         //去除参数
                         if (removeParam) {
                             String reg = "(.*?)\\?";
@@ -218,7 +219,7 @@ public class AutoCutServiceImpl {
                     for (GalleryVo galleryVoFor : galleryVoList) {
                         api = galleryVoFor.getApi();
                         formName = galleryVoFor.getFormName();
-                        cookie = galleryVoFor.getCookie();
+                        headForm = galleryVo.getHeadForm();
                         reUrl = galleryVoFor.getReUrl();
                         errorStr = galleryVoFor.getErrorStr();
                         preUrlStr = galleryVoFor.getPreUrlStr();
@@ -226,7 +227,7 @@ public class AutoCutServiceImpl {
                         removeParam = galleryVoFor.isRemoveParam();
                         formText = galleryVoFor.getFormText();
                         try {
-                            ossUrl = jsonAnalysis.pushOss(api, formText, cookie, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                            ossUrl = jsonAnalysis.pushOss(api, formText, headForm, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
                             if (Objects.isNull(ossUrl)) {
                                 log.error("{}图床上传失败,切换图床", api);
                                 continue;

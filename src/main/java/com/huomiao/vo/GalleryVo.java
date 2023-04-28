@@ -14,8 +14,7 @@ import java.util.Map;
 public class GalleryVo {
     //接口API
     private String api;
-    //cookie
-    private String cookie;
+
     //表单名称
     private String formName;
     //返回的url路径
@@ -30,4 +29,6 @@ public class GalleryVo {
     private boolean removeParam;
 
     private Map<String,String> formText;
+
+    private Map<String,String> headForm;
 }

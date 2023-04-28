@@ -79,14 +79,14 @@ public class JsonAnalysis {
     }
 
 
-    public String pushOss(String api,Map<String,String> formDataMap, String cookie, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
+    public String pushOss(String api,Map<String,String> formDataMap, Map<String,String> headFormMap, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
 
         if (Objects.isNull(api)){
             log.error("api为空！");
             return null;
         }
         Map<String,String> headerMap = new HashMap<>();
-        headerMap.put("Cookie",cookie);
+        headerMap.putAll(headFormMap);
         JSONObject jsonObject =new JSONObject();
         try {
             Map<String, File> files = new HashMap<>();

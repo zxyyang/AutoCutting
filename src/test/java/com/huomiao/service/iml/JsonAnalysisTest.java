@@ -75,7 +75,7 @@ public class JsonAnalysisTest {
         while (sc.hasNextLine()) {  //按行读取字符串
             String line = sc.nextLine();
             if (Objects.nonNull(line) && !line.contains("#")){
-                File file = ffmpegUtils.mergeFileUpload(line);
+                File file = ffmpegUtils.mergeFile(line);
                 jsonAnalysis.deleteFile(line);
                 String fileName = file.getName();
                 StopWatch stopWatch1 = new StopWatch();
@@ -137,7 +137,7 @@ public class JsonAnalysisTest {
     public void startCut() throws InterruptedException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        autoCutService.startCut("https://www.iqiyi.com/v_13xgen1rmng.html",null);
+        autoCutService.startCut("https://v.qq.com/x/page/d3355hlkkn2.html",null);
         stopWatch.stop();
         Thread.sleep(10000);
         System.err.println("下载时间："+stopWatch.getLastTaskTimeMillis()/1000);

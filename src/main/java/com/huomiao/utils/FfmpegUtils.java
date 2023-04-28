@@ -23,7 +23,8 @@ import java.util.regex.Pattern;
 @Component
 @Slf4j
 public class FfmpegUtils {
-
+    static int count=0;
+    static int countb=0;
     @Autowired
     private ConfigInit configInit;
 
@@ -119,6 +120,7 @@ public class FfmpegUtils {
     }
 
     public int executeM3u8(String name) {
+        //ffmpeg -i http://t7.cdn2020.com:12359/video/m3u8/2021/04/11/d9fed0ed/index.m3u8 -acodec copy -vcodec copy -absf aac_adtstoasc D:\output2.mp4
         String inVideoPath = name;
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("切片");
@@ -128,9 +130,10 @@ public class FfmpegUtils {
                 .append(" -i ")
                 // 输入视频位置
                 .append(configInit.getDir()+inVideoPath)
-               .append(" ")
+               .append(" -acodec copy -vcodec copy -absf aac_adtstoasc ")
+                //.append(" -c copy  ")
                 .append("  -threads ")
-                // 线程数，10个线程，10个左右最优
+//                // 线程数，10个线程，10个左右最优
                 .append(Runtime.getRuntime().availableProcessors()*3)
                 .append(" -preset ultrafast ")
                 .append(configInit.getDir()+inVideoPath.replace(".m3u8",".mp4 "))
@@ -168,24 +171,95 @@ public class FfmpegUtils {
     //创建一个方法，判断改文件是不是目录或者文件，运用递归，直到是文件为止。
     @SneakyThrows
     public File mergeFile(String m3u8Name){
-        byte[] imgByte = file2byte("img\\img.png");
-        byte[] m3u8Byte = file2byte(configInit.getDir()+m3u8Name);
-        File file = new File(configInit.getDir()+m3u8Name.replace(".ts","png"));
-        FileOutputStream outputStream  =new FileOutputStream(file);
-        outputStream.write(imgByte);
-        outputStream.write(m3u8Byte);
-        outputStream.close();
-        return file;
+
+        FileInputStream filea = new FileInputStream("img\\img.png");
+        FileInputStream fileb = new FileInputStream(configInit.getDir()+m3u8Name);
+        File outfile=new File(configInit.getDir()+m3u8Name.replace(".ts",".png"));
+        int filesizea=filea.available();//计算文件的大小
+        int filesizeb=fileb.available();
+        FileOutputStream fos=new FileOutputStream(outfile);
+        int hasReada = 0;
+        int hasReadb=0;
+        byte[] bufa=new byte[1024];
+        byte[] bufc=new byte[1024];
+        byte[] buf_yua=new byte[filesizea%1024];
+        byte[] buf_yub=new byte[filesizeb%1024];
+        while( (hasReada=filea.read(bufa) )>0 )
+        {
+            if(count<filesizea-filesizea%1024)
+            {
+                for(int i=0;i<bufa.length && count<filesizea-filesizea%1024;i++)
+                {
+                    bufc[i]=(byte)(bufa[i] & 0xFF);
+                    count++;
+                }
+                fos.write(bufc);
+            }
+            else if(count>=filesizea-filesizea%1024 && count<filesizea)
+            {
+                for(int j=0; count>=filesizea-filesizea%1024 && count<filesizea ;j++)
+                {
+                    buf_yua[j]=(byte)(bufa[j] & 0xFF);
+                    count++;
+                }
+                fos.write(buf_yua);
+            }
+        }
+        while( (hasReadb=fileb.read(bufa) )>0 )
+        {
+            if(countb<filesizeb-filesizeb%1024)
+            {
+                for(int i=0;i<bufa.length && countb<filesizeb-filesizeb%1024;i++)
+                {
+                    bufc[i]=(byte)(bufa[i] & 0xFF);
+                    countb++;
+                }
+                fos.write(bufc);
+            }
+            else if(countb>=filesizeb-filesizeb%1024 && countb<filesizeb)
+            {
+                for(int j=0; countb>=filesizeb-filesizeb%1024 && countb<filesizeb ;j++)
+                {
+                    buf_yub[j]=(byte)(bufa[j] & 0xFF);
+                    countb++;
+                }
+                fos.write(buf_yub);
+            }
+        }
+        return outfile;
     }
-    @SneakyThrows
-    public File mergeFileUpload(String m3u8Name){
-        byte[] imgByte = file2byte("img\\img.png");
-        byte[] m3u8Byte = file2byte(configInit.getDir()+m3u8Name);
+
+    public File mergeFileCMD(String m3u8Name){
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("切片");
+        String cmd = new StringBuilder()
+                .append("cmd copy /b ")
+                .append(configInit.getDir()+m3u8Name)
+                .append(" + ")
+                .append("img\\img.png ")
+                .append(configInit.getDir()+m3u8Name.replace(".ts",".png"))
+                .toString();
+        Runtime runtime = Runtime.getRuntime();
+        Process ffmpeg = null;
+        InputStream errorIs = null;
+        try {
+            System.err.println(cmd);
+            ffmpeg = runtime.exec(cmd);
+            // 错误日志
+            errorIs = ffmpeg.getErrorStream();
+            // info日志
+            OutputStream os = ffmpeg.getOutputStream();
+            // 在执行过程中执行y，代表统一执行
+            os.write("y".getBytes("UTF-8"));
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // false，关闭流信息，确保ffmpeg执行完毕后关闭
+        int res = close(ffmpeg, errorIs, false);
+        stopWatch.stop();
+        log.info("伪装时间：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
         File file = new File(configInit.getDir()+m3u8Name.replace(".ts",".png"));
-        FileOutputStream outputStream  =new FileOutputStream(file);
-        outputStream.write(imgByte);
-        outputStream.write(m3u8Byte);
-        outputStream.close();
         return file;
     }
     private   byte[] file2byte(String path)
