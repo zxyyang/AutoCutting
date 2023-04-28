@@ -1,9 +1,11 @@
 package com.huomiao.service.iml;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
+import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,7 +77,13 @@ public class JsonAnalysisTest {
         while (sc.hasNextLine()) {  //按行读取字符串
             String line = sc.nextLine();
             if (Objects.nonNull(line) && !line.contains("#")){
-                File file = ffmpegUtils.mergeFile(line);
+                File file = null;
+                try {
+                    file = ffmpegUtils.mergeFile(line);
+                } catch (IOException e) {
+                    log.error("图片伪装失败:{}", ExceptionUtil.stacktraceToString(e));
+                    break;
+                }
                 jsonAnalysis.deleteFile(line);
                 String fileName = file.getName();
                 StopWatch stopWatch1 = new StopWatch();

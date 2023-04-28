@@ -172,8 +172,14 @@ public class AutoCutServiceImpl {
             String line = sc.nextLine();
             if (Objects.nonNull(line) && !line.contains("#")) {
                 //伪装
-                File file = ffmpegUtils.mergeFile(line);
-                jsonAnalysis.deleteFile(line);
+                File file = null;
+                try {
+                    file = ffmpegUtils.mergeFile(line);
+                } catch (IOException e) {
+                    log.error("伪装失败：{}",ExceptionUtil.stacktraceToString(e));
+                    return null;
+                }
+                 jsonAnalysis.deleteFile(line);
                 String fileName = file.getName();
                 StopWatch pushGallery = new StopWatch();
                 pushGallery.start();

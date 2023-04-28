@@ -1,6 +1,7 @@
 package com.huomiao.utils;
 
 import cn.hutool.core.date.StopWatch;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import com.huomiao.config.ConfigInit;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,7 @@ import java.util.regex.Pattern;
 @Component
 @Slf4j
 public class FfmpegUtils {
-    static int count=0;
-    static int countb=0;
+
     @Autowired
     private ConfigInit configInit;
 
@@ -169,15 +169,21 @@ public class FfmpegUtils {
     }
 
     //创建一个方法，判断改文件是不是目录或者文件，运用递归，直到是文件为止。
-    @SneakyThrows
-    public File mergeFile(String m3u8Name){
+    public File mergeFile(String m3u8Name) throws IOException {
+        FileInputStream filea = null;
+        FileInputStream fileb = null;
+        File outfile = null;
+        FileOutputStream fos = null;
+        try {
+         int count=0;
+         int countb=0;
+         filea = new FileInputStream("img\\img.png");
+         fileb = new FileInputStream(configInit.getDir()+m3u8Name);
+         outfile = new File(configInit.getDir()+m3u8Name.replace(".ts",".png"));
 
-        FileInputStream filea = new FileInputStream("img\\img.png");
-        FileInputStream fileb = new FileInputStream(configInit.getDir()+m3u8Name);
-        File outfile=new File(configInit.getDir()+m3u8Name.replace(".ts",".png"));
         int filesizea=filea.available();//计算文件的大小
         int filesizeb=fileb.available();
-        FileOutputStream fos=new FileOutputStream(outfile);
+         fos=new FileOutputStream(outfile);
         int hasReada = 0;
         int hasReadb=0;
         byte[] bufa=new byte[1024];
@@ -226,6 +232,15 @@ public class FfmpegUtils {
                 fos.write(buf_yub);
             }
         }
+        }catch (Exception e){
+            log.error("伪装失败：{}", ExceptionUtil.stacktraceToString(e));
+            return null;
+        }finally {
+            filea.close();
+            fileb.close();
+            fos.close();
+        }
+
         return outfile;
     }
 
