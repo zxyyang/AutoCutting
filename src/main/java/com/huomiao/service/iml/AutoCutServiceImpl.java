@@ -363,7 +363,8 @@ public class AutoCutServiceImpl {
             File file = null;
             try {
                 file = ffmpegUtils.mergeFile(line);
-            } catch (IOException e) {
+                //file = new File(configInit.getDir()+line);
+            } catch (Exception e) {
                 log.error("伪装失败：{}",ExceptionUtil.stacktraceToString(e));
                 return null;
             }
