@@ -108,7 +108,7 @@ public class JsonAnalysis {
                 files.put(formName,file);
                 String respond = httpClientUtils.uploadFile(api, headerMap, formDataMap, files);
                 if (Objects.isNull(respond)){
-                    log.error("图床请求失败！");
+                   // log.error("图床请求失败！");
                     return null;
                 }
                 if (Objects.nonNull(errorStr)  && respond.contains(errorStr)){
@@ -160,7 +160,7 @@ public class JsonAnalysis {
     public String pushOssRetry( File file){
         String url = new String();
         List<GalleryVo> galleryVoList = configInit.getGalleryVoList();
-        for (int i = 1; i <= galleryVoList.size(); i++) {
+        for (int i = 0; i < galleryVoList.size(); i++) {
             GalleryVo galleryVo = galleryVoList.get(i);
             String api = galleryVo.getApi();
             String formName = galleryVo.getFormName();
@@ -171,7 +171,7 @@ public class JsonAnalysis {
             String nextUrlStr = galleryVo.getNextUrlStr();
             boolean removeParam = galleryVo.isRemoveParam();
             Map<String, String> formText = galleryVo.getFormText();
-            for (int j = 1; j <= configInit.getGalleryRetry(); j++) {
+            for (int j = 0; j < configInit.getGalleryRetry(); j++) {
                 try {
                     url = pushOss(api, formText, headFormMap, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
                     if (Objects.nonNull(url)){
@@ -192,7 +192,7 @@ public class JsonAnalysis {
                     continue;
                 }
             }
-            if (Objects.isNull(url) && i==galleryVoList.size()){
+            if (Objects.isNull(url) && i==galleryVoList.size()-1){
                 return null;
             }
 

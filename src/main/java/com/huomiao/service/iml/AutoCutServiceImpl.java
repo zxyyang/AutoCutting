@@ -386,7 +386,7 @@ public class AutoCutServiceImpl {
                 log.error("图床上传失败{}", ExceptionUtil.stacktraceToString(e));
             }
             pushGallery.stop();
-            //log.info(fileName + "图床上传时间：" + pushGallery.getLastTaskTimeMillis() / 1000 + "秒");
+            log.info(fileName + "图床上传时间：" + pushGallery.getLastTaskTimeMillis() / 1000 + "秒");
         upMap.put(line,ossUrl);
         return upMap;
     }

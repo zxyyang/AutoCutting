@@ -492,9 +492,9 @@ public class HttpClientUtils {
 
         } catch (Exception e) {
            log.error("发送POST请求出现异常！" + ExceptionUtil.stacktraceToString(e));
-            e.printStackTrace();
+            return null;
+
         }
-        return null;
     }
 
 
