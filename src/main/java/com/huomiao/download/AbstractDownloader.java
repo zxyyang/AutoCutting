@@ -55,8 +55,8 @@ public abstract class AbstractDownloader implements Downloader {
       // name = MD5.create().digestHex16(fileURL)+".m3u8";
         String fileNameHasType = fileName;
         doDownload(decodeFileURL, dir, fileNameHasType, entity.getHeaders());
-        log.info("TS文件名字："+fileNameHasType);
-        log.info("总共下载文件耗时:" + (System.currentTimeMillis() - start) / 1000 + "s");
+       // log.info("TS文件名字："+fileNameHasType);
+        log.info("{}总共下载文件耗时:{}秒",fileNameHasType,(System.currentTimeMillis() - start) / 1000 );
         return fileName;
     }
     @Override
@@ -102,8 +102,8 @@ public abstract class AbstractDownloader implements Downloader {
         String prefix = MD5.create().digestHex16(formUrl);
         String fileNameHasType = PREFIX+prefix+fileName;
         doDownload(decodeFileURL, dir, fileNameHasType, entity.getHeaders());
-        log.info("TS文件名字："+fileNameHasType);
-        log.info("总共下载文件耗时:" + (System.currentTimeMillis() - start) / 1000 + "s");
+       // log.info("TS文件名字："+fileNameHasType);
+        log.info("{}总共下载文件耗时:{}秒" ,fileNameHasType, (System.currentTimeMillis() - start) / 1000 );
         return fileNameHasType;
     }
     protected abstract void doDownload(String decodeFileURL, String dir, String fileName, HttpHeaders headers) throws IOException;

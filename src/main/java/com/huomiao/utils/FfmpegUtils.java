@@ -63,11 +63,13 @@ public class FfmpegUtils {
                 .append(inVideoPath)
                 .append(" -flags +cgop -g 30 -hls_time ")
                 // 分片大小，每个分片大小20秒
-                .append(4)
+                .append(configInit.getCutTime())
                // .append(" -hls_list_size 0 -strict -2 -s 1920x1080 -f hls -threads ")
-                .append(" -hls_list_size 0 -strict -2  -f hls -threads ")
+                .append(" -hls_list_size 0 -strict ")
+                .append(configInit.getOffsetTime())
+                .append("  -f hls -threads ")
                 // 线程数，10个线程，10个左右最优
-                .append(Runtime.getRuntime().availableProcessors()*3)
+                .append(Runtime.getRuntime().availableProcessors()*8)
                 .append(" -preset ultrafast ")
                 // 输出位置
                 .append(" -hls_segment_filename ")

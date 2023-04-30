@@ -2,6 +2,7 @@ package com.huomiao.service.iml;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.download.MultiThreadFileDownloader;
@@ -9,17 +10,19 @@ import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.vo.GalleryVo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
-
+import com.alibaba.ttl.TtlCallable;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 /**
@@ -71,7 +74,6 @@ public class AutoCutServiceImpl {
         //下载
         try {
             nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
-            System.err.println(nameMp4OrM3u8);
         } catch (Exception e) {
             log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
             return;
@@ -86,32 +88,37 @@ public class AutoCutServiceImpl {
             Map<String, String> tsMap = new ConcurrentHashMap<>();
             if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
                 Scanner m3u8Content = new Scanner(new FileReader(configInit.getDir() + nameMp4OrM3u8));
+                List<String> tsUrlList = new ArrayList<>();
                 while (m3u8Content.hasNextLine()) {
                     String line = m3u8Content.nextLine();
                     if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
-                        MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors() * 2);
-                        String download = null;
-                        try {
-                            download = multiThreadFileDownloader.downloadM3u8(line, configInit.getDir(), videoUrl);
-                        } catch (IOException e) {
-                            log.error("下载失败换线继续");
-                            for (int i = 0; i < 6; i++) {
-                                try {
-                                    download = multiThreadFileDownloader.downloadM3u8(line, configInit.getDir(), videoUrl);
-                                    break;
-                                } catch (IOException ex) {
-                                    log.error("下载失败！");
-                                }
-                            }
-                        }
-                        tsMap.put(line, download);
+                        tsUrlList.add(line);
                     }
-
+                }
+                List<Map<String, String>> resultList = tsUrlList.stream().map(line -> {
+                    return CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return TtlCallable.get(() -> {
+                                Map<String, String> stringStringMap = downloadM3u8(videoUrl, line);
+                                if (!CollectionUtils.isEmpty(stringStringMap)) {
+                                    return stringStringMap;
+                                }
+                                return null;
+                            }).call();
+                        } catch (Exception e) {
+                            log.error("上传出现异常 {} ", ExceptionUtil.stacktraceToString(e));
+                            return null;
+                        }
+                    },executor);
+                }).filter(ObjectUtil::isNotNull).map(CompletableFuture::join).filter(ObjectUtil::isNotNull).collect(Collectors.toList());
+                if (CollectionUtils.isEmpty(resultList)){
+                    log.error("ts转存上传出错");
+                    return;
+                }
+                for (Map<String, String> stringStringMap : resultList) {
+                    tsMap.putAll(stringStringMap);
                 }
             }
-//            for (String s : tsMap.keySet()) {
-//                System.err.println(s + "----" + tsMap.get(s));
-//            }
             //M3U8回归替换
             Scanner sc = new Scanner(new FileReader(configInit.getDir()+nameMp4OrM3u8));
             StringBuilder hgSb = new StringBuilder();
@@ -134,8 +141,20 @@ public class AutoCutServiceImpl {
                 throw new RuntimeException(e);
             }
             //TODO 二次切割
-          //  boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
-          //  return;
+            if (configInit.isReCut()) {
+                boolean makeMp4 = jsonAnalysis.makeMp4(nameMp4OrM3u8);
+                String replace = nameMp4OrM3u8.replace(".m3u8", "");
+                if (makeMp4) {
+                    jsonAnalysis.delFileByName(configInit.getDir(), replace, ".ts");
+                }
+                boolean cutRe = jsonAnalysis.cutM3u8(replace);
+                if (cutRe) {
+                    jsonAnalysis.deleteFile(nameMp4OrM3u8);
+                } else {
+                    log.error("切片失败！");
+                    return;
+                }
+            }
         } else if (playerUrl.contains(".mp4")) {
 
             //mp4切片
@@ -162,13 +181,76 @@ public class AutoCutServiceImpl {
         log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
     }
 
+    private Map<String, String> downloadM3u8(String videoUrl, String line) {
+        Map<String, String> tsMap = new HashMap<>();
+        if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
+            MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors() * 2);
+            String download = null;
+            try {
+                download = multiThreadFileDownloader.downloadM3u8(line, configInit.getDir(), videoUrl);
+            } catch (IOException e) {
+                log.error("下载失败换线继续");
+                for (int i = 0; i < configInit.getDownloadRetry(); i++) {
+                    try {
+                        download = multiThreadFileDownloader.downloadM3u8(line, configInit.getDir(), videoUrl);
+                        break;
+                    } catch (IOException ex) {
+                        log.error("下载失败！");
+                    }
+                }
+            }
+            tsMap.put(line, download);
+        }
+        return tsMap;
+    }
+
     public String mergeAndUpdateImage(String name) throws FileNotFoundException {
         String reM3u8Path = configInit.getDir() + name + ".m3u8";
         Scanner sc = new Scanner(new FileReader(reM3u8Path));
 
         StringBuilder stringBuffer = new StringBuilder();
-        String ossUrl = new String();
-        while (sc.hasNextLine()) {  //按行读取字符串
+        //String ossUrl = new String();
+        List<String> tsList = new ArrayList<>();
+        while (sc.hasNextLine()){
+            String line = sc.nextLine();
+            stringBuffer.append(line).append("\n");
+            if (Objects.nonNull(line) && !line.contains("#")) {
+                tsList.add(line);
+            }
+        }
+
+        List<Map<String,String>> resultList = tsList.stream().map(line -> {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    return TtlCallable.get(() -> {
+                        Map<String, String> stringStringMap = mergerUpOss(line);
+                        if (!CollectionUtils.isEmpty(stringStringMap)){
+                            return stringStringMap;
+                        }
+                        return null;
+                    }).call();
+                } catch (Exception e) {
+                    log.error("上传出现异常 {} ", ExceptionUtil.stacktraceToString(e));
+                    return null;
+                }
+            },executor);
+        }).filter(ObjectUtil::isNotNull).map(CompletableFuture::join).filter(ObjectUtil::isNotNull).collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(resultList)){
+            log.error("图床上传列表为空！");
+            return null;
+        }
+        Map<String,String> resultMap = new HashMap<>();
+        for (Map<String, String> stringStringMap : resultList) {
+            resultMap.putAll(stringStringMap);
+        }
+        String replace = stringBuffer.toString();
+        for (String s : resultMap.keySet()) {
+             replace = replace.replace(s, resultMap.get(s));
+        }
+
+
+       /* while (sc.hasNextLine()) {  //按行读取字符串
             String line = sc.nextLine();
             if (Objects.nonNull(line) && !line.contains("#")) {
                 //伪装
@@ -200,7 +282,7 @@ public class AutoCutServiceImpl {
                 boolean removeParam = galleryVo.isRemoveParam();
                 Map<String, String> formText = galleryVo.getFormText();
                 try {
-                    ossUrl = jsonAnalysis.pushOss(api, formText, headForm, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                    ossUrl = jsonAnalysis.pushOssRetry(api, formText, headForm, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
                     if (Objects.isNull(ossUrl)) {
                         isUpOssOK = false;
                         log.error("{}图床上传失败,切换图床", api);
@@ -233,7 +315,7 @@ public class AutoCutServiceImpl {
                         removeParam = galleryVoFor.isRemoveParam();
                         formText = galleryVoFor.getFormText();
                         try {
-                            ossUrl = jsonAnalysis.pushOss(api, formText, headForm, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                            ossUrl = jsonAnalysis.pushOssRetry(api, formText, headForm, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
                             if (Objects.isNull(ossUrl)) {
                                 log.error("{}图床上传失败,切换图床", api);
                                 continue;
@@ -258,22 +340,55 @@ public class AutoCutServiceImpl {
 
                     }
                 }
-
-                //   ossUrl = jsonAnalysis.pushOss(apikz, ck, fileFormName, file, fanhui, cuowu, null, null);
                 pushGallery.stop();
                 log.info(fileName + "图床上传时间：" + pushGallery.getLastTaskTimeMillis() / 1000 + "秒");
                 stringBuffer.append(ossUrl).append("\n");
             } else {
                 stringBuffer.append(line).append("\n");
             }
-        }
+        }*/
         try (FileWriter fileWriter = new FileWriter(reM3u8Path)) {
-            fileWriter.append(stringBuffer.toString());
+            fileWriter.append(replace);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         String reM3u8Name = reM3u8Path.replace(configInit.getDir(), "");
         return reM3u8Name;
+    }
+
+    public Map<String,String> mergerUpOss(String line){
+        Map<String,String> upMap = new HashMap<>();
+            String ossUrl = new String();
+            //伪装
+            File file = null;
+            try {
+                file = ffmpegUtils.mergeFile(line);
+            } catch (IOException e) {
+                log.error("伪装失败：{}",ExceptionUtil.stacktraceToString(e));
+                return null;
+            }
+            jsonAnalysis.deleteFile(line);
+            String fileName = file.getName();
+            StopWatch pushGallery = new StopWatch();
+            pushGallery.start();
+            List<GalleryVo> galleryVoList = configInit.getGalleryVoList();
+            if (CollectionUtils.isEmpty(galleryVoList)) {
+                log.error("没有图床口子配置");
+                return null;
+            }
+            try {
+                ossUrl = jsonAnalysis.pushOssRetry( file);
+                if (Objects.isNull(ossUrl)) {
+                    log.error("所有图床失败！");
+                    return null;
+                }
+            } catch (Exception e) {
+                log.error("图床上传失败{}", ExceptionUtil.stacktraceToString(e));
+            }
+            pushGallery.stop();
+            //log.info(fileName + "图床上传时间：" + pushGallery.getLastTaskTimeMillis() / 1000 + "秒");
+        upMap.put(line,ossUrl);
+        return upMap;
     }
 
     public String jsonGetPlayerUrl(String url) {

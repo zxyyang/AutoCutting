@@ -39,7 +39,8 @@ public abstract class AbstractDownloadProgressMonitorResponseExtractor<T> implem
             while (contentLength - tmp > 0) {
                 speed = getAlreadyDownloadLength() - tmp;
                 tmp = getAlreadyDownloadLength();
-                downloadProgressPrinter.print(task, totalSize, tmp, speed);
+                //打印下载日志
+              //  downloadProgressPrinter.print(task, totalSize, tmp, speed);
                 sleep();
             }
         }).exceptionally(e->{

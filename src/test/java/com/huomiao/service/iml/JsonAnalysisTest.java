@@ -145,9 +145,7 @@ public class JsonAnalysisTest {
     public void startCut() throws InterruptedException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        autoCutService.startCut("https://v.qq.com/x/page/d3355hlkkn2.html",null);
+        autoCutService.startCut("https://www.iqiyi.com/v_p4ghq7584s.html?bkt=list_main,greeting_rank3_a,mr00,greeting_recall3_e,greeting_recall2_i,greeting_rank1_a,filter_d,greeting_rank4_e,content_c,category_lib_b_0,greeting_rank2_d,list_staging&e=e48d98e1ae25cad2ba4413767af8896e&stype=2&vfrm=category_lib.15&vfrmblk=S%3Alib_1_video&vfrmrst=S%3Alib_1_video_float_video_area1",null);
         stopWatch.stop();
-        Thread.sleep(10000);
-        System.err.println("下载时间："+stopWatch.getLastTaskTimeMillis()/1000);
     }
 }
