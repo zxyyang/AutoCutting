@@ -69,7 +69,7 @@ public class FfmpegUtils {
                 .append(configInit.getOffsetTime())
                 .append("  -f hls -threads ")
                 // 线程数，10个线程，10个左右最优
-                .append(Runtime.getRuntime().availableProcessors()*8)
+                .append(Runtime.getRuntime().availableProcessors()*2)
                 .append(" -preset ultrafast ")
                 // 输出位置
                 .append(" -hls_segment_filename ")

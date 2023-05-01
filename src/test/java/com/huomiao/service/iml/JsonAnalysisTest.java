@@ -149,7 +149,7 @@ public class JsonAnalysisTest {
         stopWatch.start();
       //  String s = jsonAnalysis.pushOssRetry(new File("D:\\Desktop\\files\\HUOMIAO76b51d00832310b0297.png"));
        // System.err.println(s);
-        autoCutService.startCut("https://www.iqiyi.com/v_p4ghq7584s.html?vfrm=pcw_ertong&vfrmblk=711219_ertong_xpydak&vfrmrst=711219_ertong_xpydak_image6",null);
+        autoCutService.startCut("https://v.qq.com/x/cover/mzc00200s5ujcp1/n0046dc9u4b.html",null);
         stopWatch.stop();
     }
 }

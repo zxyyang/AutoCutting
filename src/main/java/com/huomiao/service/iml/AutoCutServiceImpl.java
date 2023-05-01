@@ -73,6 +73,7 @@ public class AutoCutServiceImpl {
         String localName =new String();
         //下载
         try {
+            //nameMp4OrM3u8 = jsonAnalysis.downloadTs(playerUrl, configInit.getDir(), videoUrl);
             nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
         } catch (Exception e) {
             log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
@@ -182,20 +183,20 @@ public class AutoCutServiceImpl {
 //        log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
     }
 
+
     private Map<String, String> downloadM3u8(String videoUrl, String line) {
         Map<String, String> tsMap = new HashMap<>();
         if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
-            MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors() * 2);
             String download = null;
             try {
-                download = multiThreadFileDownloader.downloadM3u8(line, configInit.getDir(), videoUrl);
-            } catch (IOException e) {
+                download = jsonAnalysis.downloadTs(line, configInit.getDir(), videoUrl);
+            } catch (Exception e) {
                 log.error("下载失败换线继续");
                 for (int i = 0; i < configInit.getDownloadRetry(); i++) {
                     try {
-                        download = multiThreadFileDownloader.downloadM3u8(line, configInit.getDir(), videoUrl);
+                        download = jsonAnalysis.downloadTs(line, configInit.getDir(), videoUrl);
                         break;
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         log.error("下载失败！");
                     }
                 }

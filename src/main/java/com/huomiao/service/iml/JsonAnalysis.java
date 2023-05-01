@@ -3,6 +3,8 @@ package com.huomiao.service.iml;
 
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.digest.MD5;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.download.MultiThreadFileDownloader;
@@ -14,9 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StopWatch;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +37,7 @@ import java.util.regex.Pattern;
 @Component
 @Slf4j
 public class JsonAnalysis {
+    private static final String PREFIX = "HUOMIAO";
     @Autowired
     private HttpClientUtils httpClientUtils;
 
@@ -309,4 +315,53 @@ public class JsonAnalysis {
         }
         return delete;
     }
+
+    public String  downloadTs(String downLoadUrl,String dir,String formUrl)  {
+        String fileNameHasType ="";
+        // 下载网络文件
+        int bytesum = 0;
+        int byteread = 0;
+        String suffix = "";
+        try {
+            if (downLoadUrl.contains(".ts")){
+                suffix = ".ts";
+            }else if(downLoadUrl.contains(".png")){
+                suffix = ".png";
+            }else if(downLoadUrl.contains(".jpg")){
+                suffix = ".jpg";
+            }
+            else if(downLoadUrl.contains(".jpeg")){
+                suffix = ".jpeg";
+            } else if (downLoadUrl.contains(".mp4") || downLoadUrl.contains(".MP4")) {
+                suffix = ".mp4";
+            } else {
+                suffix = ".ts";
+            }
+            URL url = new URL(downLoadUrl);
+            URLConnection conn = url.openConnection();
+            InputStream inStream = conn.getInputStream();
+            String prefix = MD5.create().digestHex16(formUrl);
+            if (suffix.contains(".mp4")){
+                fileNameHasType = prefix+suffix;
+            }else {
+                fileNameHasType = PREFIX + prefix + RandomUtil.randomInt(999999) + suffix;
+            }
+            FileOutputStream fs = new FileOutputStream(dir+fileNameHasType);
+            byte[] buffer = new byte[1204];
+            int length;
+            while ((byteread = inStream.read(buffer)) != -1) {
+                bytesum += byteread;
+                fs.write(buffer, 0, byteread);
+            }
+        } catch (Exception e) {
+           log.error("下载ts出错！{}",ExceptionUtil.stacktraceToString(e));
+        }
+
+        return fileNameHasType;
+    }
+
+    public static void main(String[] args) throws MalformedURLException {
+
+    }
+
 }
