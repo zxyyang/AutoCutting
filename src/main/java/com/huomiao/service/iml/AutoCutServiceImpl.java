@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.utils.FfmpegUtils;
+import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.vo.GalleryVo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -195,6 +196,8 @@ public class AutoCutServiceImpl {
             log.error("切片错误：{}",e.getMessage());
         }finally {
             //TODO 同步
+            String api = configInit.getAPI();
+            HttpClientUtils.doPostJson(api,null);
         }
         return "已经提交";
 

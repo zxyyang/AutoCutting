@@ -23,6 +23,8 @@ import java.util.Map;
 @Configuration
 @Data
 public class ConfigInit {
+
+    private String API;
     //文件路径
     private String dir ;
 
@@ -46,6 +48,7 @@ public class ConfigInit {
 
     @Bean
     public void init() {
+        this.API = "sf.huomiao.cc/files/api.php";
         this.reCut = false;
         this.downloadRetry = 5;
         this.galleryRetry = 5;
