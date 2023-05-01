@@ -49,8 +49,8 @@ public class AutoCutServiceImpl {
 
     int core = Runtime.getRuntime().availableProcessors();
 
-    @SneakyThrows
-    public String startCut(String videoUrl, String downloadUrl) {
+
+    public String startCut(String videoUrl, String downloadUrl) throws FileNotFoundException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         String nameMp4OrM3u8 = "";
@@ -180,9 +180,25 @@ public class AutoCutServiceImpl {
         log.info("完成切片替换后名称：{}",reM3u8Name);
         stopWatch.stop();
         log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
+        jsonAnalysis.delFileByName(configInit.getDir(),reM3u8Name.replace(".m3u8",""),".png");
+        jsonAnalysis.delFileByName(configInit.getDir(),reM3u8Name.replace(".m3u8",""),".ts");
         return reM3u8Name;
     }
 
+    public String autoAll(String videoUrl, String downloadUrl){
+        String m3u8Name = "";
+        boolean isOk = false;
+        try {
+            m3u8Name = startCut(videoUrl, downloadUrl);
+            isOk = true;
+        }catch (Exception e){
+            log.error("切片错误：{}",e.getMessage());
+        }finally {
+            //TODO 同步
+        }
+        return "已经提交";
+
+    }
 
     private Map<String, String> downloadM3u8(String videoUrl, String line) {
         Map<String, String> tsMap = new HashMap<>();

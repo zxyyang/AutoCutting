@@ -144,12 +144,12 @@ public class JsonAnalysisTest {
     }
 
     @Test
-    public void startCut() throws InterruptedException {
+    public void startCut() throws InterruptedException, FileNotFoundException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
       //  String s = jsonAnalysis.pushOssRetry(new File("D:\\Desktop\\files\\HUOMIAO76b51d00832310b0297.png"));
        // System.err.println(s);
-        autoCutService.startCut("https://www.iqiyi.com/v_14aoajaoai0.html?vfrm=pcw_home&vfrmblk=B&vfrmrst=fcs_0_p11",null);
+        autoCutService.startCut("https://www.iqiyi.com/v_19rrl6d4as.html",null);
         stopWatch.stop();
     }
 }
