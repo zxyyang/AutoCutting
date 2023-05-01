@@ -171,14 +171,15 @@ public class AutoCutServiceImpl {
             return;
         }
         //切完读取行
-        StopWatch mergeUpdateSw = new StopWatch();
-        mergeUpdateSw.start();
-        String reM3u8Name = mergeAndUpdateImage(localName);
-        mergeUpdateSw.stop();
-        log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
-        log.info("完成切片替换后名称：{}",reM3u8Name);
-        stopWatch.stop();
-        log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
+        return;
+//        StopWatch mergeUpdateSw = new StopWatch();
+//        mergeUpdateSw.start();
+//        String reM3u8Name = mergeAndUpdateImage(localName);
+//        mergeUpdateSw.stop();
+//        log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
+//        log.info("完成切片替换后名称：{}",reM3u8Name);
+//        stopWatch.stop();
+//        log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
     }
 
     private Map<String, String> downloadM3u8(String videoUrl, String line) {

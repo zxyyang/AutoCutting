@@ -31,4 +31,9 @@ public class GalleryVo {
     private Map<String,String> formText;
 
     private Map<String,String> headForm;
+
+    //是否需要认证接口
+    private boolean authentic;
+
+    private AuthVo authVo;
 }

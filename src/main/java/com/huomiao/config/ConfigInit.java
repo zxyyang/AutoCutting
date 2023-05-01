@@ -1,6 +1,7 @@
 package com.huomiao.config;
 
 
+import com.huomiao.vo.AuthVo;
 import com.huomiao.vo.GalleryVo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -90,9 +91,26 @@ public class ConfigInit {
         galleryVo.setReUrl("url");
         galleryVo.setRemoveParam(false);
 
+        //网易
+        GalleryVo galleryWY = new GalleryVo();
+        galleryWY.setApi("https://fp.ps.netease.com/market/file/new/");
+        galleryWY.setErrorStr("http://shp.qpic.cn");
+        galleryWY.setReUrl("url");
+        galleryWY.setRemoveParam(false);
+        galleryWY.setAuthentic(true);
+        AuthVo authVo = new AuthVo();
+        authVo.setAuthUrl("https://buff.163.com/api/feedback/gen_token");
+        Map<String,String> authHeaderMap = new HashMap<>();
+        authHeaderMap.put("Cookie","_ntes_nnid=ce2dbe771f6f3a70be921c82dd54ffd8,1682497428698; _ntes_nuid=ce2dbe771f6f3a70be921c82dd54ffd8; __bid_n=187c6b27a2945307b34207; FPTOKEN=hbjQWrNkkY3jOiv/3avfGTOJmeJAAe57/OVqK15iI1R4lKArRw97WTE1ylaVjXhEfc5VSvf60uiKSvlCzwl/xeO5s0L8MIIPXlkex1CUknYuACXHw7DLfSXVGi57n1y6UdbQZKdg8gW8h/8Ve3LnF+g+Kzt3AjGYnQX4ze5TnlWAITDMM0poL928jjbDhpahAvco9Pfz0kgMdh2tft5RVk5c1cXDHfuKUEQCWSlKfkBOOMjuoeYxvhbL0xlxDdAQq8zd8por0+TjXV2vkm1ELrUV70kOXw9Myv3Rrm2uedzSru7sgjI+WpUxtGEDhKhoszma623xIqF9ns3Agb5f584sDIpAsxeiEguWyIlY6IK6+mtIod7jdE/W9wOR43BZ1PfXbDik/yZy1p9HEh+wZQ==|215LVrf5CpAluUmxNoeLIJ7wAxqoA6LkLKcshBMbFIg=|10|d93bad00b6b2676cc5080135a571269a; hb_MA-8BB6-AB1502534F5D_source=id.163.com; __oc_uuid=dd944b70-e593-11ed-8636-8770dcc37f62; header_iphone_servtips_undefined=1; NTES_P_UTID=xSWx4sTt3Br2o6vJdTkVxbhyhgh7DiSX|1682666205; timing_user_id=time_69rbmhUweM; _ga=GA1.1.1153460457.1682666595; Qs_lvt_382223=1682666595; _clck=1li3frg|1|fb5|0; Qs_pv_382223=1268032530981721600,2421253415746926000; _ga_C6TGHFPQ1H=GS1.1.1682669831.2.0.1682669831.0.0.0; Device-Id=bZAKryUZQngINahbS3M9; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=tnXoe1M6PeNy4Bju_Bj6THbSSlAZ4ZMZIaR3Qgd1ZZE8uWdmu57zsxbMmNmYnJXl22_EId_YmdpesyDRVhJH_XMdKBGSZPIk.Z1GHOuGORLoU45JmA2xwVFQr0gm9aQfyt7m9BpoZs9H9W4e5u0coyD54xhPXZGETkg4w6oT._42Ss4H8m1VdJNyM_7hm0_yPbpxwcu5R7Gbc_ldeIwP7uSVHl1PC9Gh1q0iFDU5IFbTb; S_INFO=1682868236|0|0&60##|18616823296; P_INFO=18616823296|1682868236|1|netease_buff|00&99|null&null&null#shh&null#10#0|&0|null|18616823296; remember_me=U1104089954|ONCUkYJnGRg11PVYWU1H3CEju8mNzWNc; session=1-G6R_aeJSD2vuYot_HisqRfkpmortHZwaK5dFHTRHfYQE2030144570; csrf_token=IjUxYjczNjFiMGZlNjg4MTcwY2RiOTNkZDA0ZmQyZTUwMmEzNDE1YTQi.FzAZpg.m14jnHY7-MSfmqKH-dHD2t6HN1Q");
+        authVo.setAuthHeaderMap(authHeaderMap);
+        Map<String,String> authMap = new HashMap<>();
+        authMap.put("data.token","authorization");
+        authVo.setAuthParam(authMap);
+        galleryWY.setAuthVo(authVo);
         //微信开放社区
-        galleryVoList.add(galleryYx);
-        galleryVoList.add(galleryVo);
+        galleryVoList.add(galleryWY);
+        //galleryVoList.add(galleryYx);
+        //galleryVoList.add(galleryVo);
 
 
         this.galleryVoList = galleryVoList;

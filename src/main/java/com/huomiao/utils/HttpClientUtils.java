@@ -41,7 +41,7 @@ public class HttpClientUtils {
      * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return 所代表远程资源的响应结果
      */
-    public  String doGet(String url, String param) {
+    public  String doGet(String url, String param,Map<String,String> headerMap) {
         StringBuilder result = new StringBuilder();
         BufferedReader in = null;
         String urlNameString = url;
@@ -54,6 +54,12 @@ public class HttpClientUtils {
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            if (!CollectionUtils.isEmpty(headerMap)){
+                for (String key : headerMap.keySet()) {
+                    connection.setRequestProperty(key, headerMap.get(key));
+                }
+
+            }
             connection.connect();
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -497,15 +503,88 @@ public class HttpClientUtils {
         }
     }
 
-
-
-    public static void main(String[] args) {
-     //   uploadFile("1.jpg");
-//        Map<String, String> requestHeader = new HashMap<>();
-//        requestHeader.put("Cookie","bid=69AR68th; BAIDU_SSP_lcr=https://www.baidu.com/link?url=C0Ln0deXxQUeDvlsiXqETLXukjBwK7TgZinX9-xNt7GxkcvBSHLkMfjxiQ_zvB7Y&wd=&eqid=fb97586f0000f66600000004644387b8; sajssdk_2015_cross_new_user=1; __bid_n=187a7ca3cefce91eb94207; __utma=177678124.1702347834.1682147262.1682147262.1682147262.1; __utmc=177678124; __utmz=177678124.1682147262.1.1.utmcsr=baidu|utmccn=(organic)|utmcmd=organic; Hm_lvt_ecd4feb5c351cc02583045a5813b5142=1682147262; FPTOKEN=iFzOjur5og3zIAEWW1G6LGG5IZ2tiCEYAs8B28mSoXkHJOim7aXNawX76eYPm3yeCIsLgMLQ+vWJ83gkzUHfaxN673L4RvJ89xsNmSwQSCRRn6B5wsLq/5xTUBI7I7T9lsy7p+JZ8Gac6nwGukqoEuZMeJtg/MnhmHByvkpM9M+8HjfT7FMKzDU2DurEVW1FEtEIPB04nFmKtFYHGgcbIhhOeXWUgjdogRqHW5h8Ly5XkVDGTZ0iYgTwKDL6FiGMJ+rbGB/Dl2cHC2/ImstDLJ97C5BHfBLYlJGOEit0EVQ35fdJzheEn/tVmw+2hFDfmkvO5x3766dDcFZPUHNjeW7VeT2XWBrxTsBO8pyZ0ff8ZhiV2iY4t+CrUfwEt3AppkbBRv3NBkdLDakqqiq8oQ==|2ZqtFOnD+a084Dj9j8C9SXC90NYXHaweb82//Rvf++Y=|10|8718a441f5dfa2e108986db8f8445d97; __gads=ID=5c6ce45c3b8f8a5f-2239431e67df003a:T=1682147262:RT=1682147262:S=ALNI_MaQh7zR4yt2nS6aBKXz_wJuzkRBwg; __gpi=UID=00000bfc715d939c:T=1682147262:RT=1682147262:S=ALNI_MbgKl3oMYQp5X7OfvA0lt2x5s5m-g; S=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjE1ODIwNjc1NSwidWlkIjoxNjYyOTYzMDAsImlhdCI6MTY4MjE0NzMwOC4wLCJvIjowfQ.EMQWRH-YwqboxEin8ot0alTU7Op9EF-X3_ojZYHymn4; user_id=166296300; __utmb=177678124.3.10.1682147262; Hm_lpvt_ecd4feb5c351cc02583045a5813b5142=1682147309; \"identities\":\"eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTg3YTdjYWZjNDAxMDc5LTA0NzNlNmZmM2EzOTJiOC0yNjAzMWI1MS0yMDczNjAwLTE4N2E3Y2FmYzQxZDcyIiwiJGlkZW50aXR5X2xvZ2luX2lkIjoiMTY2Mjk2MzAwIn0=\",\"history_login_id\":{\"name\":\"$identity_login_id\",\"value\":\"166296300\"}}; id=166296300");
-//        Map<String, String> files = new HashMap<>();
-//        files.put("pic","img/img.png");
-//        String s = sendPost("https://www.xiachufang.com/page/upload_pic/", requestHeader, null, files, null, null);
-//        System.err.println(s);
+    public  byte[] readOnce(File file) throws IOException {
+        //check the file is Exists
+        checkFileExists(file);
+        if (file.length() > Integer.MAX_VALUE) {
+            System.err.println("file is too big ,not to read !");
+            throw new IOException(file.getName() + " is too big ,not to read ");
+        }
+        int _bufferSize = (int) file.length();
+        //定义buffer缓冲区大小
+        byte[] buffer = new byte[_bufferSize];
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            int len = 0;
+            if ((len = in.available()) <= buffer.length) {
+                in.read(buffer, 0, len);
+            }
+        } finally {
+            closeInputStream(in);
+        }
+        return buffer;
     }
+    private  void checkFileExists(File file) throws FileNotFoundException {
+        if (file == null || !file.exists()) {
+            System.err.println("file is not null or exist !");
+            throw new FileNotFoundException(file.getName());
+        }
+    }
+
+    private  void closeInputStream(InputStream in) {
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public String uploadFileByByte(String requestUrl,File file,Map<String, String> requestHeader) {
+        String result = "";
+        try {
+            String url = requestUrl;
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            conn.setRequestProperty("Content-Type", "application/octet-stream");
+            if (requestHeader != null && requestHeader.size() > 0) {
+                for (Map.Entry<String, String> entry : requestHeader.entrySet()) {
+                    conn.setRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+            // 发送请求参数
+            DataOutputStream dos=new DataOutputStream(conn.getOutputStream());
+            byte[] bytes = readOnce(file);
+            dos.write(bytes);
+
+            // flush输出流的缓冲
+            dos.flush();
+            // 定义BufferedReader输入流来读取URL的响应
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+          return result;
+        } catch (Exception e) {
+            System.out.println("异常," + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+//    public static void main(String[] args) {
+//        HttpClientUtils hh = new HttpClientUtils();
+//        File file = new File("D:\\Desktop\\2.png");
+//        String s = hh.uploadFileByByte("https://fp.ps.netease.com/market/file/new/", file);
+//        System.err.println(s);
+//    }
 }

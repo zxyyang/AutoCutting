@@ -41,6 +41,8 @@ public class JsonAnalysisTest {
 
     @Autowired
     AutoCutServiceImpl autoCutService;
+
+
     @Test
   public   void getPlayerUrl() throws InterruptedException, FileNotFoundException {
         String api = "http://sf.huomiao.cc/tx/qq.php/?url=";
@@ -145,7 +147,9 @@ public class JsonAnalysisTest {
     public void startCut() throws InterruptedException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        autoCutService.startCut("https://www.iqiyi.com/v_12q9o9xwrjo.html?vfrm=pcw_ertong&vfrmblk=711219_ertong_xpydak&vfrmrst=711219_ertong_xpydak_image2",null);
+      //  String s = jsonAnalysis.pushOssRetry(new File("D:\\Desktop\\files\\HUOMIAO76b51d00832310b0297.png"));
+       // System.err.println(s);
+        autoCutService.startCut("https://www.iqiyi.com/v_p4ghq7584s.html?vfrm=pcw_ertong&vfrmblk=711219_ertong_xpydak&vfrmrst=711219_ertong_xpydak_image6",null);
         stopWatch.stop();
     }
 }

@@ -8,6 +8,7 @@ import com.huomiao.config.ConfigInit;
 import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
+import com.huomiao.vo.AuthVo;
 import com.huomiao.vo.GalleryVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,18 +96,55 @@ public class JsonAnalysis {
     }
 
 
-    public String pushOss(String api,Map<String,String> formDataMap, Map<String,String> headFormMap, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr){
+    public String pushOss(String api,Map<String,String> formDataMap, Map<String,String> headFormMap, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr,boolean authentic,AuthVo authVo){
             if (Objects.isNull(api)){
                 log.error("api为空！");
                 return null;
             }
             Map<String,String> headerMap = new HashMap<>();
-            headerMap.putAll(headFormMap);
+            if (!CollectionUtils.isEmpty(headFormMap)) {
+                headerMap.putAll(headFormMap);
+            }
             JSONObject jsonObject =new JSONObject();
             try {
-                Map<String, File> files = new HashMap<>();
-                files.put(formName,file);
-                String respond = httpClientUtils.uploadFile(api, headerMap, formDataMap, files);
+                String respond = new String();
+                //如果需要认证
+                if (authentic){
+                    String authUrl = authVo.getAuthUrl();
+                    Map<String, String> authHeaderMap = authVo.getAuthHeaderMap();
+                    Map<String, String> authParam = authVo.getAuthParam();
+                    String respondAuth = httpClientUtils.doGet(authUrl, null, authHeaderMap);
+                    Map<String,String> authMap = new HashMap<>();
+                    for (String key : authParam.keySet()) {
+                        String[] split = key.split("\\.");
+                        ArrayList<String> splitList = new ArrayList<>(Arrays.asList(split));
+                        JSONObject url = JSONObject.parseObject(respondAuth);
+                        String authPara = new String();
+                        if (CollectionUtils.isEmpty(splitList)){
+                            authPara = url.toJSONString();
+                        }
+                        if (splitList.size() == 1){
+                            authPara =  url.getString(splitList.get(0));
+                        }else {
+                            for (int i = 0; i < splitList.size(); i++) {
+                                String code = splitList.get(i);
+                                if (i == splitList.size()-1){
+                                    authPara = url.getString(code);
+                                }
+                                else {
+                                    url = url.getJSONObject(code);
+                                }
+                            }
+                        }
+                        authMap.put(authParam.get(key),authPara);
+                    }
+                    respond = httpClientUtils.uploadFileByByte(api, file, authMap);
+
+                }else {
+                    Map<String, File> files = new HashMap<>();
+                    files.put(formName, file);
+                     respond = httpClientUtils.uploadFile(api, headerMap, formDataMap, files);
+                }
                 if (Objects.isNull(respond)){
                    // log.error("图床请求失败！");
                     return null;
@@ -170,10 +208,12 @@ public class JsonAnalysis {
             String preUrlStr = galleryVo.getPreUrlStr();
             String nextUrlStr = galleryVo.getNextUrlStr();
             boolean removeParam = galleryVo.isRemoveParam();
+            boolean authentic = galleryVo.isAuthentic();
+            AuthVo authVo = galleryVo.getAuthVo();
             Map<String, String> formText = galleryVo.getFormText();
             for (int j = 0; j < configInit.getGalleryRetry(); j++) {
                 try {
-                    url = pushOss(api, formText, headFormMap, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr);
+                    url = pushOss(api, formText, headFormMap, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr,authentic,authVo);
                     if (Objects.nonNull(url)){
                         deleteFile(file);
                         //去除参数
@@ -188,7 +228,7 @@ public class JsonAnalysis {
                         return url;
                     }
                 }catch (Exception e){
-                    log.info("{}上传重试：{}",api,j);
+                    log.info("{}上传重试：{}\n{}",api,j,ExceptionUtil.stacktraceToString(e));
                     continue;
                 }
             }
