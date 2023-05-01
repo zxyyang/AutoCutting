@@ -50,7 +50,7 @@ public class AutoCutServiceImpl {
     int core = Runtime.getRuntime().availableProcessors();
 
     @SneakyThrows
-    public void startCut(String videoUrl, String downloadUrl) {
+    public String startCut(String videoUrl, String downloadUrl) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         String nameMp4OrM3u8 = "";
@@ -64,7 +64,7 @@ public class AutoCutServiceImpl {
             log.info("Json解析时间：{}秒", jsonSw.getLastTaskTimeMillis() / 1000);
             if (Objects.isNull(playerUrl)) {
                 log.error("无可用下载地址！");
-                return;
+                throw new RuntimeException("无可用下载地址");
             }
         } else {
             playerUrl = downloadUrl;
@@ -77,7 +77,7 @@ public class AutoCutServiceImpl {
             nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
         } catch (Exception e) {
             log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
-            return;
+            throw new RuntimeException("下载出错");
         }
         log.info("视频视频本地化名字：{}", nameMp4OrM3u8);
         //区分类型
@@ -114,7 +114,7 @@ public class AutoCutServiceImpl {
                 }).filter(ObjectUtil::isNotNull).map(CompletableFuture::join).filter(ObjectUtil::isNotNull).collect(Collectors.toList());
                 if (CollectionUtils.isEmpty(resultList)){
                     log.error("ts转存上传出错");
-                    return;
+                    throw new RuntimeException("ts转存上传出错");
                 }
                 for (Map<String, String> stringStringMap : resultList) {
                     tsMap.putAll(stringStringMap);
@@ -153,7 +153,7 @@ public class AutoCutServiceImpl {
                     jsonAnalysis.deleteFile(nameMp4OrM3u8);
                 } else {
                     log.error("切片失败！");
-                    return;
+                    throw new RuntimeException("切片失败");
                 }
             }
         } else if (playerUrl.contains(".mp4")) {
@@ -165,22 +165,22 @@ public class AutoCutServiceImpl {
                 jsonAnalysis.deleteFile(nameMp4OrM3u8);
             }else {
                 log.error("切片失败！");
-                return;
+                throw new RuntimeException("切片失败");
             }
         }else {
             log.error("未知类型：{}",playerUrl);
-            return;
+            throw new RuntimeException("下载文件类型未知");
         }
         //切完读取行
-        return;
-//        StopWatch mergeUpdateSw = new StopWatch();
-//        mergeUpdateSw.start();
-//        String reM3u8Name = mergeAndUpdateImage(localName);
-//        mergeUpdateSw.stop();
-//        log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
-//        log.info("完成切片替换后名称：{}",reM3u8Name);
-//        stopWatch.stop();
-//        log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
+        StopWatch mergeUpdateSw = new StopWatch();
+        mergeUpdateSw.start();
+        String reM3u8Name = mergeAndUpdateImage(localName);
+        mergeUpdateSw.stop();
+        log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
+        log.info("完成切片替换后名称：{}",reM3u8Name);
+        stopWatch.stop();
+        log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
+        return reM3u8Name;
     }
 
 

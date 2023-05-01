@@ -254,7 +254,7 @@ public class JsonAnalysis {
         if (delete){
             //log.info("删除文库{}",fileName);
         }else {
-            //log.error("删除失败：{}",fileName);
+            log.error("删除失败：{}",fileName);
         }
         return delete;
     }
@@ -311,13 +311,15 @@ public class JsonAnalysis {
         if (delete){
           //  log.info("删除文库{}",file.getName());
         }else {
-           // log.error("删除失败：{}",file.getName());
+            log.error("删除失败：{}",file.getName());
         }
         return delete;
     }
 
     public String  downloadTs(String downLoadUrl,String dir,String formUrl)  {
         String fileNameHasType ="";
+        StopWatch tsDown = new StopWatch();
+        tsDown.start();
         // 下载网络文件
         int bytesum = 0;
         int byteread = 0;
@@ -356,7 +358,8 @@ public class JsonAnalysis {
         } catch (Exception e) {
            log.error("下载ts出错！{}",ExceptionUtil.stacktraceToString(e));
         }
-
+        tsDown.stop();
+        log.info("{}下载时间：{}秒",fileNameHasType,tsDown.getLastTaskTimeMillis()/1000);
         return fileNameHasType;
     }
 
