@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.download.MultiThreadFileDownloader;
+import com.huomiao.service.AutoCutService;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.vo.GalleryVo;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class AutoCutServiceImpl {
+public class AutoCutServiceImpl implements AutoCutService {
 
     @Autowired
     private JsonAnalysis jsonAnalysis;

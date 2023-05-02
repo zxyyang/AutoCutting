@@ -1,6 +1,7 @@
 package com.huomiao.config;
 
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.vo.AuthVo;
 import com.huomiao.vo.GalleryVo;
@@ -126,30 +127,36 @@ public class ConfigInit {
 //        galleryVoList.add(galleryVo);
 //        this.galleryVoList = galleryVoList;
 //    }
-    @Bean
-    public void init() throws IOException {
-        String javaPath = System.getProperty("java.class.path");
+
+    public boolean init(String result)  {
+     //   String javaPath = System.getProperty("java.class.path");
        log.info("                    _____             _       _ __ \n" +
                "  _________  ____  / __(_)___ _      (_)___  (_) /_\n" +
                " / ___/ __ \\/ __ \\/ /_/ / __ `/_____/ / __ \\/ / __/\n" +
                "/ /__/ /_/ / / / / __/ / /_/ /_____/ / / / / / /_  \n" +
                "\\___/\\____/_/ /_/_/ /_/\\__, /     /_/_/ /_/_/\\__/  \n" +
                "                      /____/                       ");
-        Path path = Paths.get("D:\\javaProject\\config.txt");
-        byte[] data = Files.readAllBytes(path);
-        String result = new String(data, "utf-8");
-        ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
-        //赋值
-        this.sync = configInit.sync;
-        this.API = configInit.API;
-        this.token = configInit.token;
-        this.dir = configInit.dir;
-        this.cutTime = configInit.cutTime;
-        this.offsetTime=configInit.offsetTime;
-        this.jsonMap = configInit.jsonMap;
-        this.galleryVoList = configInit.galleryVoList;
-        this.downloadRetry = configInit.downloadRetry;
-        this.galleryRetry = configInit.galleryRetry;
-        this.reCut = configInit.reCut;
+//        Path path = Paths.get("D:\\javaProject\\config.txt");
+//        byte[] data = Files.readAllBytes(path);
+//        String result = new String(data, "utf-8");
+        try {
+            ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
+            //赋值
+            this.sync = configInit.sync;
+            this.API = configInit.API;
+            this.token = configInit.token;
+            this.dir = configInit.dir;
+            this.cutTime = configInit.cutTime;
+            this.offsetTime=configInit.offsetTime;
+            this.jsonMap = configInit.jsonMap;
+            this.galleryVoList = configInit.galleryVoList;
+            this.downloadRetry = configInit.downloadRetry;
+            this.galleryRetry = configInit.galleryRetry;
+            this.reCut = configInit.reCut;
+            return true;
+        }catch (Exception e){
+            log.error("配置初始化出错！{}", ExceptionUtil.stacktraceToString(e));
+            return false;
+        }
     }
 }
