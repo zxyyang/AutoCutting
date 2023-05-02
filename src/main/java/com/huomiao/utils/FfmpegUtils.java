@@ -236,13 +236,18 @@ public class FfmpegUtils {
         }
         }catch (Exception e){
             log.error("伪装失败：{}", ExceptionUtil.stacktraceToString(e));
+            filea.close();
+            fileb.close();
+            fos.close();
             return null;
         }finally {
             filea.close();
             fileb.close();
             fos.close();
         }
-
+        filea.close();
+        fileb.close();
+        fos.close();
         return outfile;
     }
 

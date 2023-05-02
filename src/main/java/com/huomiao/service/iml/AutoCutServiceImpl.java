@@ -48,6 +48,9 @@ public class AutoCutServiceImpl {
     @Qualifier("ttlExecutorService")
     private Executor executor;
 
+    @Autowired
+    private HttpClientUtils httpClientUtils;
+
     int core = Runtime.getRuntime().availableProcessors();
 
 
@@ -195,9 +198,13 @@ public class AutoCutServiceImpl {
         }catch (Exception e){
             log.error("切片错误：{}",e.getMessage());
         }finally {
-            //TODO 同步
-            String api = configInit.getAPI();
-            HttpClientUtils.doPostJson(api,null);
+            if (configInit.isSync()) {
+                //TODO 同步
+                boolean upOk = pushM3u8(m3u8Name, videoUrl);
+                if (upOk) {
+                    jsonAnalysis.forceDelete(m3u8Name);
+                }
+            }
         }
         return "已经提交";
 
@@ -368,10 +375,19 @@ public class AutoCutServiceImpl {
                 stringBuffer.append(line).append("\n");
             }
         }*/
-        try (FileWriter fileWriter = new FileWriter(reM3u8Path)) {
+        FileWriter fileWriter = null;
+        try  {
+             fileWriter = new FileWriter(reM3u8Path);
             fileWriter.append(replace);
+            fileWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }finally {
+            try {
+                fileWriter.close();
+            } catch (IOException e) {
+                return null;
+            }
         }
         String reM3u8Name = reM3u8Path.replace(configInit.getDir(), "");
         return reM3u8Name;
@@ -389,7 +405,7 @@ public class AutoCutServiceImpl {
                 log.error("伪装失败：{}",ExceptionUtil.stacktraceToString(e));
                 return null;
             }
-            jsonAnalysis.deleteFile(line);
+            jsonAnalysis.forceDelete(line);
             String fileName = file.getName();
             StopWatch pushGallery = new StopWatch();
             pushGallery.start();
@@ -474,5 +490,24 @@ public class AutoCutServiceImpl {
             }
         }
         return playerUrl;
+    }
+
+    public boolean pushM3u8(String name,String videoUrl){
+        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl;
+        Map<String,File> fileMap = new HashMap<>();
+        fileMap.put("file",new File(configInit.getDir()+name));
+        try {
+            String respond = httpClientUtils.uploadFile(url, null, null, fileMap);
+            System.err.println(respond);
+            JSONObject jsonObject = JSONObject.parseObject(respond);
+            Integer code = jsonObject.getInteger("code");
+            if (code==200){
+                return true;
+            }
+        }catch (Exception e){
+            log.error("{}M3u8同步出错：{}",name,ExceptionUtil.stacktraceToString(e));
+            return false;
+        }
+        return false;
     }
 }

@@ -259,6 +259,17 @@ public class JsonAnalysis {
         return delete;
     }
 
+    public boolean deleteFilePath(String fileName){
+        File file =new File(fileName);
+        boolean delete = file.delete();
+        if (delete){
+            //log.info("删除文库{}",fileName);
+        }else {
+            log.error("删除失败：{}",fileName);
+        }
+        return delete;
+    }
+
     public  void delFileByName(String url, String s,String s2) {
         // 创建文件
         File grandpaFile = new File(url);
@@ -314,6 +325,26 @@ public class JsonAnalysis {
             log.error("删除失败：{}",file.getName());
         }
         return delete;
+    }
+
+    public boolean forceDelete(String fileName) {
+        File file =new File(configInit.getDir()+fileName);
+        boolean result = file.delete();
+
+        int tryCount = 0;
+
+        while (!result && tryCount++ < 10) {
+
+            System.gc();    //回收资源
+
+            result = file.delete();
+
+        }
+        if (!result){
+            log.error("删除失败");
+        }
+        return result;
+
     }
 
     public String  downloadTs(String downLoadUrl,String dir,String formUrl)  {

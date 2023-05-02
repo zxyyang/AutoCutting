@@ -86,7 +86,7 @@ public class JsonAnalysisTest {
                     log.error("图片伪装失败:{}", ExceptionUtil.stacktraceToString(e));
                     break;
                 }
-                jsonAnalysis.deleteFile(line);
+                jsonAnalysis.forceDelete(line);
                 String fileName = file.getName();
                 StopWatch stopWatch1 = new StopWatch();
                 stopWatch1.start();
@@ -149,7 +149,12 @@ public class JsonAnalysisTest {
         stopWatch.start();
       //  String s = jsonAnalysis.pushOssRetry(new File("D:\\Desktop\\files\\HUOMIAO76b51d00832310b0297.png"));
        // System.err.println(s);
-        autoCutService.startCut("https://www.iqiyi.com/v_19rrl6d4as.html",null);
+        autoCutService.autoAll("https://www.iqiyi.com/v_19rrl6d4as.html",null);
         stopWatch.stop();
+    }
+
+    @Test
+    public void config(){
+        System.err.println(JSONObject.toJSONString(configInit));
     }
 }

@@ -1,0 +1,12 @@
+
+server:
+    max-http-header-size: 204800MB
+    maxHttpHeaderSize: 102400
+    maxPostSize: -1
+    port: 8888
+    servlet:
+        context-path: /api
+    tomcat:
+        basedir: /tomcatCache
+        max-http-form-post-size: 2048MB
+        max-swallow-size: 204800MB
