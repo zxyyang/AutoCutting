@@ -9,6 +9,7 @@ import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.service.AutoCutService;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
+import com.huomiao.vo.CutReVo;
 import com.huomiao.vo.GalleryVo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,8 @@ public class AutoCutServiceImpl implements AutoCutService {
     int core = Runtime.getRuntime().availableProcessors();
 
 
-    public String startCut(String videoUrl, String downloadUrl) throws FileNotFoundException {
+    public CutReVo startCut(String videoUrl, String downloadUrl) throws FileNotFoundException {
+        CutReVo cutReVo = new CutReVo();
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         String nameMp4OrM3u8 = "";
@@ -187,14 +189,17 @@ public class AutoCutServiceImpl implements AutoCutService {
         log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
         jsonAnalysis.delFileByName(configInit.getDir(),reM3u8Name.replace(".m3u8",""),".png");
         jsonAnalysis.delFileByName(configInit.getDir(),reM3u8Name.replace(".m3u8",""),".ts");
-        return reM3u8Name;
+        cutReVo.setTime(stopWatch.getLastTaskTimeMillis()/1000);
+        cutReVo.setName(reM3u8Name);
+        return cutReVo;
     }
 
     public String autoAll(String videoUrl, String downloadUrl){
         String m3u8Name = "";
         boolean isOk = false;
         try {
-            m3u8Name = startCut(videoUrl, downloadUrl);
+            CutReVo cutReVo = startCut(videoUrl, downloadUrl);
+            m3u8Name = cutReVo.getName();
             isOk = true;
         }catch (Exception e){
             log.error("切片错误：{}",e.getMessage());
@@ -204,6 +209,8 @@ public class AutoCutServiceImpl implements AutoCutService {
                 boolean upOk = pushM3u8(m3u8Name, videoUrl);
                 if (upOk) {
                     jsonAnalysis.forceDelete(m3u8Name);
+                }else {
+                    log.error("上传失败！");
                 }
             }
         }
@@ -494,12 +501,11 @@ public class AutoCutServiceImpl implements AutoCutService {
     }
 
     public boolean pushM3u8(String name,String videoUrl){
-        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl;
+        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken();
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
             String respond = httpClientUtils.uploadFile(url, null, null, fileMap);
-            System.err.println(respond);
             JSONObject jsonObject = JSONObject.parseObject(respond);
             Integer code = jsonObject.getInteger("code");
             if (code==200){

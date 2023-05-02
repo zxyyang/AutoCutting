@@ -128,17 +128,26 @@ public class ConfigInit {
 //        this.galleryVoList = galleryVoList;
 //    }
 
-    public boolean init(String result)  {
-     //   String javaPath = System.getProperty("java.class.path");
+    @Bean
+    public void init( ) throws IOException {
+
+        String pathStr = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        pathStr = java.net.URLDecoder.decode(pathStr, "UTF-8");
+        log.error("jar包位置:{}",pathStr);
+    }
+    public boolean init(String pathStr) throws IOException {
+
+//        String pathStr = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+//        pathStr = java.net.URLDecoder.decode(pathStr, "UTF-8");
        log.info("                    _____             _       _ __ \n" +
                "  _________  ____  / __(_)___ _      (_)___  (_) /_\n" +
                " / ___/ __ \\/ __ \\/ /_/ / __ `/_____/ / __ \\/ / __/\n" +
                "/ /__/ /_/ / / / / __/ / /_/ /_____/ / / / / / /_  \n" +
                "\\___/\\____/_/ /_/_/ /_/\\__, /     /_/_/ /_/_/\\__/  \n" +
                "                      /____/                       ");
-//        Path path = Paths.get("D:\\javaProject\\config.txt");
-//        byte[] data = Files.readAllBytes(path);
-//        String result = new String(data, "utf-8");
+        Path path = Paths.get(pathStr);
+        byte[] data = Files.readAllBytes(path);
+        String result = new String(data, "utf-8");
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
