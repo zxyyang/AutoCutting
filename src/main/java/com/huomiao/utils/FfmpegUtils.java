@@ -123,7 +123,7 @@ public class FfmpegUtils {
             e.printStackTrace();
         }
         // false，关闭流信息，确保ffmpeg执行完毕后关闭
-        int res = close(ffmpeg, errorIs, false);
+        int res = close(ffmpeg, errorIs, true);
         stopWatch.stop();
         log.info("切片时间：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
         return res;
