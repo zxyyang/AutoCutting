@@ -147,7 +147,7 @@ public class ConfigInit {
         String substring = ResourceUtils.getURL("img/img.png").getPath();
         String imgDirStr = ResourceUtils.getURL("img").getPath();
         String configPath = ResourceUtils.getURL("config.txt").getPath();
-        String dirPath = ResourceUtils.getURL("files").getPath();
+        String dirPath = ResourceUtils.getURL("files").getPath()+"/";
         if (!this.osLinux){
             imgDirStr = ResourceUtils.getURL("img").getPath().substring(1);
              configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
