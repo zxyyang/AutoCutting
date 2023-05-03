@@ -59,12 +59,12 @@ public class JsonAnalysis {
                 file.mkdirs();
                 log.info("{}目录不存在已自动创建！",configInit.getDir());
             }
-            MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*2);
+            MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
             fileName = multiThreadFileDownloader.downloadMp4(url, configInit.getDir(), fromUrl);
         }catch (Exception e){
             for (int i = 0; i < configInit.getDownloadRetry(); i++) {
                 try {
-                    MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*2);
+                    MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
                     fileName = multiThreadFileDownloader.downloadMp4(url, configInit.getDir(), fromUrl);
                     if (Objects.nonNull(fileName)){
                         delFileByName(configInit.getDir(),fileName,".download");

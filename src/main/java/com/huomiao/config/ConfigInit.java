@@ -33,6 +33,7 @@ import java.util.Map;
 @Data
 public class ConfigInit {
 
+    private int threadNum;
     private boolean osLinux;
 
     private File img;
@@ -193,6 +194,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.threadNum = configInit.threadNum;
             this.sync = configInit.sync;
             this.API = configInit.API;
             this.token = configInit.token;
@@ -224,6 +226,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.threadNum = configInit.threadNum;
             this.sync = configInit.sync;
             this.API = configInit.API;
             this.token = configInit.token;

@@ -53,7 +53,7 @@ public class AutoCutServiceImpl implements AutoCutService {
     @Autowired
     private HttpClientUtils httpClientUtils;
 
-    int core = Runtime.getRuntime().availableProcessors();
+
 
 
     public CutReVo startCut(String videoUrl, String downloadUrl) throws FileNotFoundException {

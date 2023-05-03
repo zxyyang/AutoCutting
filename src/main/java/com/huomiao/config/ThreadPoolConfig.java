@@ -1,6 +1,7 @@
 package com.huomiao.config;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -17,6 +18,8 @@ import java.util.concurrent.*;
 @EnableAsync
 public class ThreadPoolConfig {
 
+    @Autowired
+    ConfigInit configInit;
     /**
      * ttl 线程池
      * 局部变量在线程池应用的问题
@@ -27,7 +30,7 @@ public class ThreadPoolConfig {
     public Executor ttlExecutorService() {
         int core = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService =
-                new ThreadPoolExecutor(core*10, core*20, 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
+                new ThreadPoolExecutor(core*configInit.getThreadNum(), core*2*configInit.getThreadNum(), 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
                         new ThreadFactoryBuilder().setNamePrefix("HUOMIAO-TTL-%d").build(), new ThreadPoolExecutor.CallerRunsPolicy());
         return (executorService);
 
