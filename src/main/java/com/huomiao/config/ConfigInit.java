@@ -2,7 +2,9 @@ package com.huomiao.config;
 
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.vo.GalleryVo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,6 +32,10 @@ import java.util.Map;
 @Configuration
 @Data
 public class ConfigInit {
+
+    private boolean osLinux;
+
+    private File img;
 
     private boolean sync;
     private String API;
@@ -130,8 +137,31 @@ public class ConfigInit {
 
     @Bean
     public void init() throws IOException {
-        String configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
-        String dirPath = ResourceUtils.getURL("files").getPath().substring(1)+"/";
+        String property = System.getProperty("os.name");
+        if (property.toLowerCase().startsWith("win")){
+            this.osLinux= false;
+        }else {
+            this.osLinux =true;
+        }
+        String substring = ResourceUtils.getURL("img/img.png").getPath();
+        String configPath = ResourceUtils.getURL("config.txt").getPath();
+        String dirPath = ResourceUtils.getURL("files").getPath();
+        if (!this.osLinux){
+            substring = ResourceUtils.getURL("img/img.png").getPath().substring(1);
+             configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
+             dirPath = ResourceUtils.getURL("files").getPath().substring(1);
+        }
+        this.dir = dirPath;
+        File imgDir = new File(substring);
+        if (!imgDir.exists()){
+            boolean mkdir = imgDir.mkdir();
+            if (!mkdir){
+                log.info("{}图片目录不存在已自动创建失败！",substring);
+            }
+            log.info("{}图片目录不存在已自动创建！",substring);
+        }
+        HttpClientUtils.doGetImg("https://cut.huomiao.cc/img.png",substring);
+
         File file = new File(configPath);
         if (!file.exists()){
             boolean newFile = file.createNewFile();
@@ -165,7 +195,6 @@ public class ConfigInit {
             this.sync = configInit.sync;
             this.API = configInit.API;
             this.token = configInit.token;
-            this.dir = ResourceUtils.getURL("files").getPath().substring(1)+"/";
             this.cutTime = configInit.cutTime;
             this.offsetTime=configInit.offsetTime;
             this.jsonMap = configInit.jsonMap;

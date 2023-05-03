@@ -137,6 +137,40 @@ public class HttpClientUtils {
         }
         return result;
     }
+    public  static void doGetImg(String urlStr,String dir) {
+        try{
+            //url为网页上图片的地址
+            URL url = new URL(urlStr);//指定url，百度logo
+            //URL url = new URL("https://aecpm.alicdn.com/simba/img/TB1W4nPJFXXXXbSXpXXSutbFXXX.jpg");//指定url，天猫商品图片
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();//创建httpURLConnection链接对象
+            con.setRequestMethod("GET");//指定通信方式为get
+            con.setConnectTimeout(5000);//定义响应时间
+            con.setDoInput(true);//允许读取文件
+            con.setDoOutput(true);//允许写文件
+            con.connect();//建立连接
+            int code = con.getResponseCode();//定义服务器返回的响应码
+            System.out.println(code);//输出200，连接成功
+
+            //判断连接成功后，开始下载图片
+            InputStream is = con.getInputStream();//创建InputStream对象
+            FileOutputStream fos = new FileOutputStream(dir);//创建FileOutputStream对象，指定地址为下载路径
+            byte[] bytes = new byte[1024*1024];//定义byte数组的大小，1mb，用于存储读取的图片内容
+            //String data = new String(bytes);
+            int datacount = 0;//定义int型变量用于判断读取图片数据的长度
+            //String flag = null;
+            while ((datacount = is.read(bytes)) != -1){//判断是否读取完毕
+                fos.write(bytes,0,datacount);//若没有读取完，则写入数据内容
+            }
+            //程序运行到这里说明图片成功读取完毕
+            is.close();//关闭流
+            fos.flush();//刷新流
+            fos.close();//关闭流
+            log.info("伪装获取成功:{}",dir);
+        }
+        catch (IOException e){
+            log.error("伪装图片获取失败：{}",ExceptionUtil.stacktraceToString(e));
+        }
+    }
     public static String doPostJson(String url,String json) throws IOException {
         // 创建连接池
         CloseableHttpClient httpClient = HttpClients.createDefault();
