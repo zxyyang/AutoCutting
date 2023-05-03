@@ -30,7 +30,7 @@ public class ThreadPoolConfig {
     public Executor ttlExecutorService() {
         int core = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService =
-                new ThreadPoolExecutor(core*configInit.getThreadNum(), core*2*configInit.getThreadNum(), 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
+                new ThreadPoolExecutor(core*8, core*20, 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
                         new ThreadFactoryBuilder().setNamePrefix("HUOMIAO-TTL-%d").build(), new ThreadPoolExecutor.CallerRunsPolicy());
         return (executorService);
 
