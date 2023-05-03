@@ -2,15 +2,21 @@ package com.huomiao.utils;
 
 import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import com.huomiao.Main;
 import com.huomiao.config.ConfigInit;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
 import javax.xml.ws.soap.Addressing;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -179,9 +185,11 @@ public class FfmpegUtils {
         try {
          int count=0;
          int countb=0;
-         filea = new FileInputStream("img\\img.png");
-         fileb = new FileInputStream(configInit.getDir()+m3u8Name);
-         outfile = new File(configInit.getDir()+m3u8Name.replace(".ts",".png"));
+           // File file = ResourceUtils.getFile("classpath:img/img.png");
+            //log.info("上级目录：{}",file.getPath());
+            filea = new FileInputStream("D:/JavaProject/AutoCutting/target/AutoCutting-1.0-SNAPSHOT.jar/BOOT-INF/classes/img/img.png");
+             fileb = new FileInputStream(configInit.getDir()+m3u8Name);
+             outfile = new File(configInit.getDir()+m3u8Name.replace(".ts",".png"));
 
         int filesizea=filea.available();//计算文件的大小
         int filesizeb=fileb.available();
@@ -236,14 +244,13 @@ public class FfmpegUtils {
         }
         }catch (Exception e){
             log.error("伪装失败：{}", ExceptionUtil.stacktraceToString(e));
+            assert filea != null;
             filea.close();
+            assert fileb != null;
             fileb.close();
+            assert fos != null;
             fos.close();
             return null;
-        }finally {
-            filea.close();
-            fileb.close();
-            fos.close();
         }
         filea.close();
         fileb.close();
@@ -251,6 +258,7 @@ public class FfmpegUtils {
         return outfile;
     }
 
+    @SneakyThrows
     public File mergeFileCMD(String m3u8Name){
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("切片");
@@ -258,7 +266,7 @@ public class FfmpegUtils {
                 .append("cmd copy /b ")
                 .append(configInit.getDir()+m3u8Name)
                 .append(" + ")
-                .append("img\\img.png ")
+                .append(this.getClass().getClassLoader().getResource("img/img.png").getPath().replace("file:/","").replace("file:\\",""))
                 .append(configInit.getDir()+m3u8Name.replace(".ts",".png"))
                 .toString();
         Runtime runtime = Runtime.getRuntime();

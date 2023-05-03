@@ -1,0 +1,89 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AutoCutting:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AutoCutting_jar</output-path>
+    <root id="archive" name="AutoCutting.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="AutoCutting" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.12.4/jackson-datatype-jdk8-2.12.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-starter-logging/2.5.4/spring-boot-starter-logging-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apache/logging/log4j/log4j-to-slf4j/2.14.1/log4j-to-slf4j-2.14.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/assertj/assertj-core/3.19.0/assertj-core-3.19.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/commons-codec/commons-codec/1.11/commons-codec-1.11.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apache/httpcomponents/httpmime/4.5.12/httpmime-4.5.12.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/net/bytebuddy/byte-buddy-agent/1.10.20/byte-buddy-agent-1.10.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot/2.5.4/spring-boot-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-starter-web/2.5.4/spring-boot-starter-web-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-expression/5.3.9/spring-expression-5.3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/junit/platform/junit-platform-commons/1.9.3/junit-platform-commons-1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-nativebin-win64/3.3.1/jave-nativebin-win64-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/fasterxml/jackson/core/jackson-core/2.12.4/jackson-core-2.12.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/net/bytebuddy/byte-buddy/1.10.20/byte-buddy-1.10.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/fasterxml/jackson/core/jackson-databind/2.12.4/jackson-databind-2.12.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/mockito/mockito-core/3.9.0/mockito-core-3.9.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/cn/hutool/hutool-all/5.7.20/hutool-all-5.7.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/skyscreamer/jsonassert/1.5.0/jsonassert-1.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-nativebin-linux32/3.3.1/jave-nativebin-linux32-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-nativebin-osxm1/3.3.1/jave-nativebin-osxm1-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/alibaba/transmittable-thread-local/2.14.2/transmittable-thread-local-2.14.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/projectlombok/lombok/1.18.22/lombok-1.18.22.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-jcl/5.3.9/spring-jcl-5.3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/net/minidev/accessors-smart/1.2/accessors-smart-1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-test-autoconfigure/2.5.4/spring-boot-test-autoconfigure-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/objenesis/objenesis/3.2/objenesis-3.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apache/logging/log4j/log4j-api/2.14.1/log4j-api-2.14.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/fasterxml/jackson/module/jackson-module-parameter-names/2.12.4/jackson-module-parameter-names-2.12.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-test/2.5.4/spring-boot-test-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-autoconfigure/2.5.4/spring-boot-autoconfigure-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-nativebin-osx64/3.3.1/jave-nativebin-osx64-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-nativebin-linux-arm64/3.3.1/jave-nativebin-linux-arm64-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/ow2/asm/asm/5.0.4/asm-5.0.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apache/tomcat/embed/tomcat-embed-core/9.0.52/tomcat-embed-core-9.0.52.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/slf4j/jul-to-slf4j/1.7.32/jul-to-slf4j-1.7.32.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-nativebin-linux64/3.3.1/jave-nativebin-linux64-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/jayway/jsonpath/json-path/2.5.0/json-path-2.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-nativebin-win32/3.3.1/jave-nativebin-win32-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/xmlunit/xmlunit-core/2.8.2/xmlunit-core-2.8.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/junit/jupiter/junit-jupiter-api/5.9.3/junit-jupiter-api-5.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ch/qos/logback/logback-classic/1.2.5/logback-classic-1.2.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-core/5.3.9/spring-core-5.3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/yaml/snakeyaml/1.28/snakeyaml-1.28.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-aop/5.3.9/spring-aop-5.3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/jakarta/xml/bind/jakarta.xml.bind-api/2.3.3/jakarta.xml.bind-api-2.3.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/alibaba/fastjson/1.2.83/fastjson-1.2.83.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/jakarta/activation/jakarta.activation-api/1.2.2/jakarta.activation-api-1.2.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-all-deps/3.3.1/jave-all-deps-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-webmvc/5.3.9/spring-webmvc-5.3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/fasterxml/jackson/core/jackson-annotations/2.12.4/jackson-annotations-2.12.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/mockito/mockito-junit-jupiter/3.9.0/mockito-junit-jupiter-3.9.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.12.4/jackson-datatype-jsr310-2.12.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/freemarker/freemarker/2.3.31/freemarker-2.3.31.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-test/5.3.9/spring-test-5.3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-starter-tomcat/2.5.4/spring-boot-starter-tomcat-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ch/qos/logback/logback-core/1.2.5/logback-core-1.2.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-starter-freemarker/3.0.0/spring-boot-starter-freemarker-3.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-web/5.3.9/spring-web-5.3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-core/3.3.1/jave-core-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apache/tomcat/embed/tomcat-embed-el/9.0.52/tomcat-embed-el-9.0.52.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-starter-json/2.5.4/spring-boot-starter-json-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-beans/5.3.9/spring-beans-5.3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.52/tomcat-embed-websocket-9.0.52.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-context-support/6.0.2/spring-context-support-6.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-starter-test/2.5.4/spring-boot-starter-test-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/net/minidev/json-smart/2.3/json-smart-2.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/ws/schild/jave-nativebin-linux-arm32/3.3.1/jave-nativebin-linux-arm32-3.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/boot/spring-boot-starter/2.5.4/spring-boot-starter-2.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../maven/Maven/apache-maven-3.8.4/loacl/org/springframework/spring-context/5.3.9/spring-context-5.3.9.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

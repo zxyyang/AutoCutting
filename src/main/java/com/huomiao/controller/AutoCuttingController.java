@@ -32,4 +32,9 @@ public class AutoCuttingController {
             return RequestBean.Error();
         }
     }
+    @GetMapping("/init")
+    public RequestBean<?> init() throws IOException {
+       configInit.init();
+        return RequestBean.Success();
+    }
 }

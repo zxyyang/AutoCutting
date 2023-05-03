@@ -3,21 +3,21 @@ package com.huomiao.config;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.huomiao.vo.AuthVo;
 import com.huomiao.vo.GalleryVo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Copyright: Copyright (C) 2022, Inc. All rights reserved.
@@ -35,7 +35,7 @@ public class ConfigInit {
 
     private String token;
     //文件路径
-    private String dir ;
+    private   String dir  ;
 
     //切片时间
     private int cutTime;
@@ -129,11 +129,54 @@ public class ConfigInit {
 //    }
 
     @Bean
-    public void init( ) throws IOException {
-
-        String pathStr = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        pathStr = java.net.URLDecoder.decode(pathStr, "UTF-8");
-        log.error("jar包位置:{}",pathStr);
+    public void init() throws IOException {
+        String configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
+        String dirPath = ResourceUtils.getURL("files").getPath().substring(1)+"/";
+        File file = new File(configPath);
+        if (!file.exists()){
+            boolean newFile = file.createNewFile();
+            if (newFile) {
+                log.info("配置文件不存在，自动创建！");
+            }else {
+                log.info("配置文件不存在，自动创建失败！");
+            }
+        }
+        File dir=new File(dirPath);
+        if (!dir.exists()) {//判断文件目录的存在
+            boolean mkdir = dir.mkdir();
+            if (!mkdir){
+                log.info("{}目录不存在已自动创建失败！",dirPath);
+            }
+            log.info("{}目录不存在已自动创建！",dirPath);
+        }
+        log.error("Config位置:{}",configPath);
+        log.info("                    _____             _       _ __ \n" +
+                "  _________  ____  / __(_)___ _      (_)___  (_) /_\n" +
+                " / ___/ __ \\/ __ \\/ /_/ / __ `/_____/ / __ \\/ / __/\n" +
+                "/ /__/ /_/ / / / / __/ / /_/ /_____/ / / / / / /_  \n" +
+                "\\___/\\____/_/ /_/_/ /_/\\__, /     /_/_/ /_/_/\\__/  \n" +
+                "                      /____/                       ");
+        Path path = Paths.get(configPath);
+        byte[] data = Files.readAllBytes(path);
+        String result = new String(data, "utf-8");
+        try {
+            ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
+            //赋值
+            this.sync = configInit.sync;
+            this.API = configInit.API;
+            this.token = configInit.token;
+            this.dir = ResourceUtils.getURL("files").getPath().substring(1)+"/";
+            this.cutTime = configInit.cutTime;
+            this.offsetTime=configInit.offsetTime;
+            this.jsonMap = configInit.jsonMap;
+            this.galleryVoList = configInit.galleryVoList;
+            this.downloadRetry = configInit.downloadRetry;
+            this.galleryRetry = configInit.galleryRetry;
+            this.reCut = configInit.reCut;
+            log.info("加载配置成功！");
+        }catch (Exception e){
+            log.error("配置初始化出错！{}", ExceptionUtil.stacktraceToString(e));
+        }
     }
     public boolean init(String pathStr) throws IOException {
 
@@ -154,7 +197,7 @@ public class ConfigInit {
             this.sync = configInit.sync;
             this.API = configInit.API;
             this.token = configInit.token;
-            this.dir = configInit.dir;
+           // this.dir = configInit.dir;
             this.cutTime = configInit.cutTime;
             this.offsetTime=configInit.offsetTime;
             this.jsonMap = configInit.jsonMap;
@@ -167,5 +210,9 @@ public class ConfigInit {
             log.error("配置初始化出错！{}", ExceptionUtil.stacktraceToString(e));
             return false;
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        System.err.println(ConfigInit.class.getClass().getResource("/img/img.png").getPath());
     }
 }

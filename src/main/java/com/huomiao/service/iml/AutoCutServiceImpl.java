@@ -86,7 +86,7 @@ public class AutoCutServiceImpl implements AutoCutService {
             log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
             throw new RuntimeException("下载出错");
         }
-        log.info("视频视频本地化名字：{}", nameMp4OrM3u8);
+        log.info("视频本地化名字：{}", nameMp4OrM3u8);
         //区分类型
         if (playerUrl.contains(".m3u8")) {
 //            boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
@@ -95,7 +95,8 @@ public class AutoCutServiceImpl implements AutoCutService {
             //ts下载映射Map
             Map<String, String> tsMap = new ConcurrentHashMap<>();
             if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
-                Scanner m3u8Content = new Scanner(new FileReader(configInit.getDir() + nameMp4OrM3u8));
+                log.error("读取文件{}",configInit.getDir() + nameMp4OrM3u8);
+                Scanner m3u8Content = new Scanner(new FileReader(configInit.getDir()+ nameMp4OrM3u8));
                 List<String> tsUrlList = new ArrayList<>();
                 while (m3u8Content.hasNextLine()) {
                     String line = m3u8Content.nextLine();
@@ -195,25 +196,31 @@ public class AutoCutServiceImpl implements AutoCutService {
     }
 
     public String autoAll(String videoUrl, String downloadUrl){
-        String m3u8Name = "";
-        boolean isOk = false;
-        try {
-            CutReVo cutReVo = startCut(videoUrl, downloadUrl);
-            m3u8Name = cutReVo.getName();
-            isOk = true;
-        }catch (Exception e){
-            log.error("切片错误：{}",e.getMessage());
-        }finally {
-            if (configInit.isSync()) {
-                //TODO 同步
-                boolean upOk = pushM3u8(m3u8Name, videoUrl);
-                if (upOk) {
-                    jsonAnalysis.forceDelete(m3u8Name);
-                }else {
-                    log.error("上传失败！");
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                String m3u8Name = "";
+                boolean isOk = false;
+                try {
+                    CutReVo cutReVo = startCut(videoUrl, downloadUrl);
+                    m3u8Name = cutReVo.getName();
+                    isOk = true;
+                }catch (Exception e){
+                    log.error("切片错误：{}",e.getMessage());
+                }finally {
+                    if (configInit.isSync()) {
+                        //TODO 同步
+                        boolean upOk = pushM3u8(m3u8Name, videoUrl);
+                        if (upOk) {
+                            jsonAnalysis.forceDelete(m3u8Name);
+                        }else {
+                            log.error("上传失败！");
+                        }
+                    }
                 }
             }
-        }
+        });
+
         return "已经提交";
 
     }
