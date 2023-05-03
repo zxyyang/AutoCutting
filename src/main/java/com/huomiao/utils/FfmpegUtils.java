@@ -63,7 +63,7 @@ public class FfmpegUtils {
         String inVideoPath = configInit.getDir() + name+".mp4";
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("切片");
-        log.info("ffmepg位置：{}", ffmpegPath);
+      //  log.info("ffmepg位置：{}", ffmpegPath);
         // ffmpeg程序位置
         String cmd = new StringBuilder(ffmpegPath)
                 .append(" -i ")
@@ -106,7 +106,6 @@ public class FfmpegUtils {
 //                .toString();
 
         //ts切片
-        System.err.println(cmd);
         Runtime runtime = Runtime.getRuntime();
         Process ffmpeg = null;
         InputStream errorIs = null;

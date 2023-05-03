@@ -168,6 +168,7 @@ public class AutoCutServiceImpl implements AutoCutService {
 
             //mp4切片
              localName = nameMp4OrM3u8.replace(".mp4","");
+             log.info("MP4切割开始！");
             boolean cutRe = jsonAnalysis.cutM3u8(localName);
             if (cutRe){
                 jsonAnalysis.deleteFile(nameMp4OrM3u8);
@@ -200,9 +201,10 @@ public class AutoCutServiceImpl implements AutoCutService {
             @Override
             public void run() {
                 String m3u8Name = "";
+                CutReVo cutReVo = null;
                 boolean isOk = false;
                 try {
-                    CutReVo cutReVo = startCut(videoUrl, downloadUrl);
+                     cutReVo = startCut(videoUrl, downloadUrl);
                     m3u8Name = cutReVo.getName();
                     isOk = true;
                 }catch (Exception e){
@@ -210,7 +212,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 }finally {
                     if (configInit.isSync()) {
                         //TODO 同步
-                        boolean upOk = pushM3u8(m3u8Name, videoUrl);
+                        boolean upOk = pushM3u8(m3u8Name, videoUrl,cutReVo.getTime());
                         if (upOk) {
                             jsonAnalysis.forceDelete(m3u8Name);
                         }else {
@@ -507,8 +509,8 @@ public class AutoCutServiceImpl implements AutoCutService {
         return playerUrl;
     }
 
-    public boolean pushM3u8(String name,String videoUrl){
-        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken();
+    public boolean pushM3u8(String name,String videoUrl,long time){
+        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&time="+time;
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {

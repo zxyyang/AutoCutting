@@ -144,21 +144,22 @@ public class ConfigInit {
             this.osLinux =true;
         }
         String substring = ResourceUtils.getURL("img/img.png").getPath();
+        String imgDirStr = ResourceUtils.getURL("img").getPath();
         String configPath = ResourceUtils.getURL("config.txt").getPath();
         String dirPath = ResourceUtils.getURL("files").getPath();
         if (!this.osLinux){
-            substring = ResourceUtils.getURL("img/img.png").getPath().substring(1);
+            imgDirStr = ResourceUtils.getURL("img").getPath().substring(1);
              configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
              dirPath = ResourceUtils.getURL("files").getPath().substring(1);
         }
         this.dir = dirPath;
-        File imgDir = new File(substring);
+        File imgDir = new File(imgDirStr);
         if (!imgDir.exists()){
             boolean mkdir = imgDir.mkdir();
             if (!mkdir){
-                log.info("{}图片目录不存在已自动创建失败！",substring);
+                log.info("{}图片目录不存在已自动创建失败！",imgDirStr);
             }
-            log.info("{}图片目录不存在已自动创建！",substring);
+            log.info("{}图片目录不存在已自动创建！",imgDirStr);
         }
         HttpClientUtils.doGetImg("https://cut.huomiao.cc/img.png",substring);
 
