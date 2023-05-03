@@ -1,5 +1,8 @@
 package com.huomiao.support;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SimpleDownloadProgressPrinter implements DownloadProgressPrinter {
     private long contentLength;
     private long alreadyDownloadLength;
@@ -8,7 +11,7 @@ public class SimpleDownloadProgressPrinter implements DownloadProgressPrinter {
     public void print(String task, long contentLength, long alreadyDownloadLength, long speed) {
         this.contentLength = contentLength;
         this.alreadyDownloadLength = alreadyDownloadLength;
-        System.out.println(task + " 文件总大小: " + contentLength + "KB, 已下载："
+        log.info(task + " 文件总大小: " + contentLength + "KB, 已下载："
                 + (alreadyDownloadLength / 1024) + "KB, 下载速度：" + (speed / 1000) + "KB");
     }
 

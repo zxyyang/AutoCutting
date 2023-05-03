@@ -212,6 +212,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 }finally {
                     if (configInit.isSync()) {
                         //TODO 同步
+                        assert cutReVo != null;
                         boolean upOk = pushM3u8(m3u8Name, videoUrl,cutReVo.getTime());
                         if (upOk) {
                             jsonAnalysis.forceDelete(m3u8Name);
