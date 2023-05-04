@@ -347,6 +347,25 @@ public class JsonAnalysis {
 
     }
 
+    public String downloadTsRetry(String downLoadUrl,String dir,String formUrl){
+       String tsName = new String();
+        try {
+            tsName = downloadTs(downLoadUrl, dir, formUrl);
+        }catch (Exception e){
+            for (int i = 0; i < configInit.getDownloadRetry(); i++) {
+                tsName = downloadTs(downLoadUrl, dir, formUrl);
+                if (Objects.nonNull(tsName)){
+                    break;
+                }else {
+                    if (i == configInit.getDownloadRetry() - 1) {
+                        log.error("ts下载失败！");
+                    }
+                }
+            }
+        }
+        return tsName;
+      
+    }
     public String  downloadTs(String downLoadUrl,String dir,String formUrl)  {
         String fileNameHasType ="";
         StopWatch tsDown = new StopWatch();
@@ -387,7 +406,7 @@ public class JsonAnalysis {
                 fs.write(buffer, 0, byteread);
             }
         } catch (Exception e) {
-           log.error("下载ts出错！{}",ExceptionUtil.stacktraceToString(e));
+          throw new RuntimeException("ts下载失败");
         }
         tsDown.stop();
         log.info("{}下载时间：{}秒",fileNameHasType,tsDown.getLastTaskTimeMillis()/1000);

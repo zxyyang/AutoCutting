@@ -232,19 +232,7 @@ public class AutoCutServiceImpl implements AutoCutService {
         Map<String, String> tsMap = new HashMap<>();
         if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
             String download = null;
-            try {
-                download = jsonAnalysis.downloadTs(line, configInit.getDir(), videoUrl);
-            } catch (Exception e) {
-                log.error("下载失败换线继续");
-                for (int i = 0; i < configInit.getDownloadRetry(); i++) {
-                    try {
-                        download = jsonAnalysis.downloadTs(line, configInit.getDir(), videoUrl);
-                        break;
-                    } catch (Exception ex) {
-                        log.error("下载失败！");
-                    }
-                }
-            }
+            download = jsonAnalysis.downloadTsRetry(line, configInit.getDir(), videoUrl);
             tsMap.put(line, download);
         }
         return tsMap;
