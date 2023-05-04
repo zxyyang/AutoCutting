@@ -59,7 +59,7 @@ public class AutoCuttingController {
         return RequestBean.Success(tz);
     }
     @License
-    @PostMapping("/start")
+    @PostMapping("/startNull")
     public RequestBean<String> start(@RequestBody String vUrls){
         List<String> vUrlList = new ArrayList<>();
         if (Objects.isNull(vUrls) || Objects.equals(vUrls,"")){
