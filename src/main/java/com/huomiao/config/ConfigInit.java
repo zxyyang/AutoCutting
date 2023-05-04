@@ -212,17 +212,12 @@ public class ConfigInit {
             log.error("配置初始化出错！{}", ExceptionUtil.stacktraceToString(e));
         }
     }
-    public boolean init(String pathStr) throws IOException {
-
-//        String pathStr = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-//        pathStr = java.net.URLDecoder.decode(pathStr, "UTF-8");
-       log.info("                    _____             _       _ __ \n" +
-               "  _________  ____  / __(_)___ _      (_)___  (_) /_\n" +
-               " / ___/ __ \\/ __ \\/ /_/ / __ `/_____/ / __ \\/ / __/\n" +
-               "/ /__/ /_/ / / / / __/ / /_/ /_____/ / / / / / /_  \n" +
-               "\\___/\\____/_/ /_/_/ /_/\\__, /     /_/_/ /_/_/\\__/  \n" +
-               "                      /____/                       ");
-        Path path = Paths.get(pathStr);
+    public boolean initUpdate() throws IOException {
+        String configPath = ResourceUtils.getURL("config.txt").getPath();
+        if (!this.osLinux){
+            configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
+        }
+        Path path = Paths.get(configPath);
         byte[] data = Files.readAllBytes(path);
         String result = new String(data, "utf-8");
         try {
@@ -233,7 +228,6 @@ public class ConfigInit {
             this.sync = configInit.sync;
             this.API = configInit.API;
             this.token = configInit.token;
-           // this.dir = configInit.dir;
             this.cutTime = configInit.cutTime;
             this.offsetTime=configInit.offsetTime;
             this.jsonMap = configInit.jsonMap;
@@ -241,6 +235,14 @@ public class ConfigInit {
             this.downloadRetry = configInit.downloadRetry;
             this.galleryRetry = configInit.galleryRetry;
             this.reCut = configInit.reCut;
+            log.info("  _____ _   _ _____ _______      ____  _  __\n" +
+                    " |_   _| \\ | |_   _|__   __|    / __ \\| |/ /\n" +
+                    "   | | |  \\| | | |    | |______| |  | | ' / \n" +
+                    "   | | | . ` | | |    | |______| |  | |  <  \n" +
+                    "  _| |_| |\\  |_| |_   | |      | |__| | . \\ \n" +
+                    " |_____|_| \\_|_____|  |_|       \\____/|_|\\_\\\n" +
+                    "                                            \n" +
+                    "                                            ");
             return true;
         }catch (Exception e){
             log.error("配置初始化出错！{}", ExceptionUtil.stacktraceToString(e));
