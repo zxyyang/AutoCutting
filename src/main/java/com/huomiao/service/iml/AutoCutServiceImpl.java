@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 import com.alibaba.ttl.TtlCallable;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
@@ -531,8 +532,9 @@ public class AutoCutServiceImpl implements AutoCutService {
         return playerUrl;
     }
 
-    public boolean pushM3u8(String name,String videoUrl,String title){
-        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&title="+title;
+    @SneakyThrows
+    public boolean pushM3u8(String name, String videoUrl, String title)  {
+        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
@@ -549,8 +551,9 @@ public class AutoCutServiceImpl implements AutoCutService {
         return false;
     }
 
-    public boolean pushNotice(String name,String videoUrl,long time,String msg,String title){
-        String url = configInit.getAPI()+"/?type=notice&name="+name+"&token="+configInit.getToken()+"&vUrl="+videoUrl+"&time="+time+"&msg="+msg+"&title="+title;
+    @SneakyThrows
+    public boolean pushNotice(String name, String videoUrl, long time, String msg, String title) {
+        String url = configInit.getAPI()+"/?type=notice&name="+name+"&token="+configInit.getToken()+"&vUrl="+videoUrl+"&time="+time+"&msg="+msg+"&title="+URLEncoder.encode(title,"UTF-8");
         try {
             String respond = httpClientUtils.doGetSendNotice(url);
             JSONObject jsonObject = JSONObject.parseObject(respond);

@@ -49,7 +49,7 @@ public class HttpClientUtils {
             if (Objects.nonNull(param)) {
                 urlNameString = urlNameString + "?" + param;
             }
-            URL realUrl = new URL(URLEncoder.encode(urlNameString, "UTF-8"));
+            URL realUrl = new URL(urlNameString);
             URLConnection connection = realUrl.openConnection();
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
@@ -100,7 +100,7 @@ public class HttpClientUtils {
             // 通过址默认配置创建一个httpClient实例
             httpClient = HttpClients.createDefault();
             // 创建httpGet远程连接实例
-            HttpGet httpGet = new HttpGet(URLEncoder.encode(url, "UTF-8"));
+            HttpGet httpGet = new HttpGet(url);
             // 设置配置请求参数
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 连接主机服务超时时间
                     .setConnectionRequestTimeout(35000)// 请求超时时间
@@ -138,7 +138,7 @@ public class HttpClientUtils {
     public  static void doGetImg(String urlStr,String dir) {
         try{
             //url为网页上图片的地址
-            URL url = new URL(URLEncoder.encode(urlStr, "UTF-8"));//指定url，百度logo
+            URL url = new URL(urlStr);//指定url，百度logo
             //URL url = new URL("https://aecpm.alicdn.com/simba/img/TB1W4nPJFXXXXbSXpXXSutbFXXX.jpg");//指定url，天猫商品图片
             HttpURLConnection con = (HttpURLConnection)url.openConnection();//创建httpURLConnection链接对象
             con.setRequestMethod("GET");//指定通信方式为get
@@ -177,7 +177,7 @@ public class HttpClientUtils {
         // 声明呀一个字符串用来存储response
         String result;
         // 创建httppost对象
-        HttpPost httpPost = new HttpPost(URLEncoder.encode(url, "UTF-8"));
+        HttpPost httpPost = new HttpPost(url);
         // 给httppost对象设置json格式的参数
         StringEntity httpEntity = new StringEntity(json,"utf-8");
         // 设置请求格式
@@ -235,7 +235,7 @@ public class HttpClientUtils {
             if (requestUrl == null || requestUrl.isEmpty()) {
                 return result;
             }
-            URL realUrl = new URL(URLEncoder.encode(requestUrl, "UTF-8"));
+            URL realUrl = new URL(requestUrl);
             HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
             connection.setRequestProperty("accept", "text/html, application/xhtml+xml, image/jxr, */*");
             connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0");
@@ -444,8 +444,7 @@ public class HttpClientUtils {
             // 定义数据分隔线
             String BOUNDARY = String.valueOf(new Date().getTime());
             // 服务器的域名
-
-            URL url = new URL(URLEncoder.encode(requestUrl, "UTF-8"));
+            URL url = new URL(requestUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             // 设置为POST情
             conn.setRequestMethod("POST");
@@ -576,7 +575,7 @@ public class HttpClientUtils {
         String result = "";
         try {
             String url = requestUrl;
-            URL realUrl = new URL(URLEncoder.encode(url, "UTF-8"));
+            URL realUrl = new URL(url);
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
             // 设置通用的请求属性
@@ -621,7 +620,7 @@ public class HttpClientUtils {
             // 通过址默认配置创建一个httpClient实例
             httpClient = HttpClients.createDefault();
             // 创建httpGet远程连接实例
-            HttpGet httpGet = new HttpGet(URLEncoder.encode(url, "UTF-8"));
+            HttpGet httpGet = new HttpGet(url);
             // 设置配置请求参数
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 连接主机服务超时时间
                     .setConnectionRequestTimeout(35000)// 请求超时时间
