@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/cut")
@@ -18,11 +19,17 @@ public class AutoCuttingController {
     @Autowired
     private ConfigInit configInit;
     @GetMapping("/start")
-    public RequestBean<String> start( String videoUrl,  String downloadUrl){
-        String tz = autoCutService.autoAll(videoUrl, downloadUrl);
+    public RequestBean<String> start( String vUrl,  String dUrl){
+        String tz = autoCutService.autoAll(vUrl, dUrl);
         return RequestBean.Success(tz);
     }
 
+
+    @PostMapping("/start")
+    public RequestBean<String> start( List<String> vUrls){
+        String tz = autoCutService.autoAllListTask(vUrls);
+        return RequestBean.Success(tz);
+    }
     @GetMapping(  "/config")
     public RequestBean<String> config() throws IOException {
         boolean init = configInit.initUpdate();

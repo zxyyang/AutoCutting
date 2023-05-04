@@ -249,6 +249,18 @@ public class AutoCutServiceImpl implements AutoCutService {
 
     }
 
+    @Override
+    public String autoAllListTask(List<String> vUrls) {
+        if (CollectionUtils.isEmpty(vUrls)){
+            return "缺少URL";
+        }
+        for (String videoUrl : vUrls) {
+            autoAll(videoUrl,null);
+        }
+
+        return "批量切已经提交";
+    }
+
     private Map<String, String> downloadM3u8(String videoUrl, String line) {
         Map<String, String> tsMap = new HashMap<>();
         if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
