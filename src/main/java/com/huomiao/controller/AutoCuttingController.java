@@ -24,17 +24,13 @@ public class AutoCuttingController {
     }
 
     @GetMapping(  "/config")
-    public RequestBean<String> config( String config) throws IOException {
-        boolean init = configInit.init(config);
+    public RequestBean<String> config() throws IOException {
+        boolean init = configInit.initUpdate();
         if (init){
             return RequestBean.Success();
         }else {
             return RequestBean.Error();
         }
     }
-    @GetMapping("/init")
-    public RequestBean<?> init() throws IOException {
-       configInit.init();
-        return RequestBean.Success();
-    }
+
 }
