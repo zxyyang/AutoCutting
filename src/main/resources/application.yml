@@ -1,20 +1,16 @@
 
 server:
-    max-http-header-size: 204800MB
-    maxHttpHeaderSize: 102400
-    maxPostSize: -1
     port: 8080
 #    servlet:
 #        context-path: /api
     tomcat:
         basedir: /tomcatCache
-        max-http-form-post-size: 2048MB
-        max-swallow-size: 204800MB
-#一般我们会做3个配置,其余默认即可
 
-spring:
-  freemarker:
-      expose-request-attributes: true
-      settings:
-          classic_compatible: true
-      suffix: .ftlh
+#一般我们会做3个配置,其余默认即可
+license:
+    subject: pushi-kn-graph
+    publicAlias: SYSHLANG
+    storePass: 12345678A
+    licensePath: /Users/sixj/Desktop/license/license.lic
+    publicKeysStorePath: /Users/sixj/Desktop/license/publicCerts.keystore
+
