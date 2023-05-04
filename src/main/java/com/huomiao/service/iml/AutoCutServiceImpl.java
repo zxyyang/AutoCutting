@@ -200,14 +200,28 @@ public class AutoCutServiceImpl implements AutoCutService {
     }
 
     public String autoAll(String videoUrl, String downloadUrl){
+        if (Objects.isNull(videoUrl)){
+            return "缺少URL";
+        }
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 String m3u8Name = "";
-                CutReVo cutReVo = null;
+                CutReVo cutReVo = new CutReVo();
+                String title = new String();
+                String url = "";
+                if (videoUrl.contains("$")){
+                    String[] split = videoUrl.split("\\$");
+                    title = split[0];
+                    url = split[1];
+                }else {
+                    url = videoUrl;
+                }
+
+
                 boolean isOk = false;
                 try {
-                     cutReVo = startCut(videoUrl, downloadUrl);
+                    cutReVo = startCut(url, downloadUrl);
                     m3u8Name = cutReVo.getName();
                     isOk = true;
                 }catch (Exception e){
@@ -216,12 +230,16 @@ public class AutoCutServiceImpl implements AutoCutService {
                     if (configInit.isSync()) {
                         //TODO 同步
                         assert cutReVo != null;
-                        boolean upOk = pushM3u8(m3u8Name, videoUrl);
+                        boolean upOk = pushM3u8(m3u8Name, url,title);
                         if (upOk) {
                             jsonAnalysis.forceDelete(m3u8Name);
                         }else {
                             log.error("上传失败！");
                         }
+                    }
+                    if (configInit.isNotice()){
+                        assert cutReVo != null;
+                        pushNotice(m3u8Name,url,cutReVo.getTime(),cutReVo.getMsg(),title);
                     }
                 }
             }
@@ -501,8 +519,8 @@ public class AutoCutServiceImpl implements AutoCutService {
         return playerUrl;
     }
 
-    public boolean pushM3u8(String name,String videoUrl){
-        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken();
+    public boolean pushM3u8(String name,String videoUrl,String title){
+        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&title="+title;
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
@@ -517,5 +535,30 @@ public class AutoCutServiceImpl implements AutoCutService {
             return false;
         }
         return false;
+    }
+
+    public boolean pushNotice(String name,String videoUrl,long time,String msg,String title){
+        String url = configInit.getAPI()+"/?type=notice&name="+name+"&token="+configInit.getToken()+"&vUrl="+videoUrl+"&time="+time+"&msg="+msg+"&title="+title;
+        try {
+            String respond = httpClientUtils.doGetSendNotice(url);
+            JSONObject jsonObject = JSONObject.parseObject(respond);
+            Integer code = jsonObject.getInteger("code");
+            if (code==200){
+                return true;
+            }
+        }catch (Exception e){
+            log.error("{}M3u8同步出错：{}",name,ExceptionUtil.stacktraceToString(e));
+            return false;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        String s = "王者_01$www.asdasdada.com";
+        if (s.contains("$")){
+            String[] split = s.split("\\$");
+            System.err.println(split[0]);
+            System.err.println(split[1]);
+        }
     }
 }

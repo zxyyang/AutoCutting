@@ -32,6 +32,7 @@ import java.util.Map;
 @Configuration
 @Data
 public class ConfigInit {
+    private boolean notice;
 
     private int threadNum;
     private boolean osLinux;
@@ -194,6 +195,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.notice = configInit.notice;
             this.threadNum = configInit.threadNum;
             this.sync = configInit.sync;
             this.API = configInit.API;
@@ -226,6 +228,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.notice = configInit.notice;
             this.threadNum = configInit.threadNum;
             this.sync = configInit.sync;
             this.API = configInit.API;
