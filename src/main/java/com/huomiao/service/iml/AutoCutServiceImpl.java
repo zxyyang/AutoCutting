@@ -51,6 +51,9 @@ public class AutoCutServiceImpl implements AutoCutService {
     private Executor executor;
 
     @Autowired
+    @Qualifier("cutTaskExecutor")
+    private Executor taskExecutor;
+    @Autowired
     private HttpClientUtils httpClientUtils;
 
 
@@ -197,7 +200,7 @@ public class AutoCutServiceImpl implements AutoCutService {
     }
 
     public String autoAll(String videoUrl, String downloadUrl){
-        executor.execute(new Runnable() {
+        taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 String m3u8Name = "";

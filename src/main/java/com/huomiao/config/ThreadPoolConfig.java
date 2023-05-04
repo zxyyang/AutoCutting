@@ -18,8 +18,6 @@ import java.util.concurrent.*;
 @EnableAsync
 public class ThreadPoolConfig {
 
-    @Autowired
-    ConfigInit configInit;
     /**
      * ttl 线程池
      * 局部变量在线程池应用的问题
@@ -31,7 +29,17 @@ public class ThreadPoolConfig {
         int core = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService =
                 new ThreadPoolExecutor(core*8, core*20, 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
-                        new ThreadFactoryBuilder().setNamePrefix("HUOMIAO-TTL-%d").build(), new ThreadPoolExecutor.CallerRunsPolicy());
+                        new ThreadFactoryBuilder().setNamePrefix("HUOMIAO-TTL-").build(), new ThreadPoolExecutor.CallerRunsPolicy());
+        return (executorService);
+
+    }
+
+    @Bean(name = "cutTaskExecutor")
+    public Executor cutTaskExecutor() {
+        int core = Runtime.getRuntime().availableProcessors();
+        ExecutorService executorService =
+                new ThreadPoolExecutor(10, 15, 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
+                        new ThreadFactoryBuilder().setNamePrefix("HM-TASK-").build(), new ThreadPoolExecutor.CallerRunsPolicy());
         return (executorService);
 
     }
