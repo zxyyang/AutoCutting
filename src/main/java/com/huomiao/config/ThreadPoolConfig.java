@@ -38,7 +38,7 @@ public class ThreadPoolConfig {
     public Executor cutTaskExecutor() {
         int core = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService =
-                new ThreadPoolExecutor(10, 15, 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
+                new ThreadPoolExecutor(5, 10, 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
                         new ThreadFactoryBuilder().setNamePrefix("HM-TASK-").build(), new ThreadPoolExecutor.CallerRunsPolicy());
         return (executorService);
 
