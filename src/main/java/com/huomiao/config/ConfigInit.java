@@ -36,6 +36,8 @@ public class ConfigInit {
 
     private String virApi = "https://vir.huomiao.cc/";
 
+    private String nameApi;
+
     private Date nextDate  ;
     private boolean notice;
 
@@ -200,6 +202,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.nameApi = configInit.nameApi;
             this.nextDate = new Date();
             this.notice = configInit.notice;
             this.threadNum = configInit.threadNum;
@@ -229,6 +232,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.nameApi = configInit.nameApi;
             this.notice = configInit.notice;
             this.threadNum = configInit.threadNum;
             this.sync = configInit.sync;

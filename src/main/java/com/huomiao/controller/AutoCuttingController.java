@@ -50,11 +50,38 @@ public class AutoCuttingController {
         if (CollectionUtils.isEmpty(Arrays.asList(vUrls))){
             return RequestBean.Error("地址为空");
         }
-        log.info("POST多个代替换参数：{}",vUrls.toString());
+        for (String vUrl : vUrls) {
+            log.info("POST多个代替换参数：{}",vUrl);
+        }
+
         List<String> urlList = new ArrayList<>(Arrays.asList(vUrls));
         String tz = autoCutService.autoAllListTask(urlList);
         return RequestBean.Success(tz);
     }
+    @License
+    @PostMapping("/start")
+    public RequestBean<String> start(@RequestBody String vUrls){
+        List<String> vUrlList = new ArrayList<>();
+        if (Objects.isNull(vUrls) || Objects.equals(vUrls,"")){
+            return RequestBean.Error("地址为空");
+        }
+        String http = vUrls.replace("http", "##http");
+        String[] split = http.split("##");
+        for (String url : split) {
+            if (Objects.nonNull(url) && !Objects.equals(url,"") && url.contains("http")){
+                vUrlList.add(url);
+            }
+        }
+        if (CollectionUtils.isEmpty(vUrlList)){
+            return RequestBean.Error("地址为空");
+        }
+        for (String vUrl : vUrlList) {
+            log.info("POST多个代替换参数：{}",vUrl);
+        }
+        String tz = autoCutService.autoAllListTask(vUrlList);
+        return RequestBean.Success(tz);
+    }
+
     @License
     @GetMapping(  "/config")
     public RequestBean<String> config() throws IOException {

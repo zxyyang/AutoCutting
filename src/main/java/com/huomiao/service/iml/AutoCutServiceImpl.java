@@ -213,6 +213,16 @@ public class AutoCutServiceImpl implements AutoCutService {
                     title = split[0];
                     url = split[1];
                 }else {
+                    try {
+                        String respond = httpClientUtils.doGet(configInit.getNameApi());
+                        JSONObject jsonObject = JSONObject.parseObject(respond);
+                        Integer code = jsonObject.getInteger("code");
+                        if (Objects.equals(code,200)){
+                            title= jsonObject.getString("title");
+                        }
+                    } catch (IOException e) {
+
+                    }
                     url = videoUrl;
                 }
 
