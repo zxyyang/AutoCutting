@@ -1,0 +1,1 @@
+java -javaagent:AutoCutting-1.0-SNAPSHOT-encrypted.jar -jar AutoCutting-1.0-SNAPSHOT-encrypted.jar
