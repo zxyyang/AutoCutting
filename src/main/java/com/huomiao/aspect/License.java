@@ -1,4 +1,4 @@
-package com.sixj.license.aspect;
+package com.huomiao.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

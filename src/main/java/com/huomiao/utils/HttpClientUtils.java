@@ -92,7 +92,7 @@ public class HttpClientUtils {
         return result.toString();
     }
 
-    public  String doGet(String url) {
+    public  String doGet(String url) throws IOException {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         String result = "";
@@ -114,10 +114,8 @@ public class HttpClientUtils {
             HttpEntity entity = response.getEntity();
             // 通过EntityUtils中的toString方法将结果转换为字符串
             result = EntityUtils.toString(entity);
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+          throw e;
         } finally {
             // 关闭资源
             if (null != response) {

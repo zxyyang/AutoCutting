@@ -1,4 +1,4 @@
-package com.sixj.license.aspect;
+package com.huomiao.aspect;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

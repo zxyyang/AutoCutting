@@ -46,7 +46,7 @@ public class JsonAnalysis {
 
     @Autowired
     private ConfigInit configInit;
-    public String getPlayerUrl(Object jsonUrl,Object videoUrl){
+    public String getPlayerUrl(Object jsonUrl,Object videoUrl) throws IOException {
         String result = httpClientUtils.doGet(String.valueOf(jsonUrl) + videoUrl);
         return result;
     }

@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,10 @@ import java.util.Map;
 @Configuration
 @Data
 public class ConfigInit {
+
+    private String virApi = "https://vir.huomiao.cc/";
+
+    private Date nextDate  ;
     private boolean notice;
 
     private int threadNum;
@@ -195,6 +200,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.nextDate = new Date();
             this.notice = configInit.notice;
             this.threadNum = configInit.threadNum;
             this.sync = configInit.sync;
@@ -235,7 +241,7 @@ public class ConfigInit {
             this.downloadRetry = configInit.downloadRetry;
             this.galleryRetry = configInit.galleryRetry;
             this.reCut = configInit.reCut;
-            log.info("  _____ _   _ _____ _______      ____  _  __\n" +
+            log.info("\n  _____ _   _ _____ _______      ____  _  __\n" +
                     " |_   _| \\ | |_   _|__   __|    / __ \\| |/ /\n" +
                     "   | | |  \\| | | |    | |______| |  | | ' / \n" +
                     "   | | | . ` | | |    | |______| |  | |  <  \n" +
