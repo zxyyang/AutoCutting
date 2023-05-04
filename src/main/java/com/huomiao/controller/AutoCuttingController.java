@@ -47,7 +47,7 @@ public class AutoCuttingController {
     public RequestBean<String> config() throws IOException {
         boolean init = configInit.initUpdate();
         if (init){
-            pushConfig();
+            //pushConfig();
             return RequestBean.Success();
         }else {
             return RequestBean.Error();

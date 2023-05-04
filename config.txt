@@ -1,1 +1,67 @@
-java -javaagent:AutoCutting-1.0-SNAPSHOT-encrypted.jar -jar AutoCutting-1.0-SNAPSHOT-encrypted.jar
+{
+    "notice": true,
+    "threadNum": 6,
+    "aPI": "https://sf.huomiao.cc/files/api.php",
+    "cutTime": 10,
+    "dir": "D:\\Desktop\\files\\",
+    "downloadRetry": 5,
+    "galleryRetry": 5,
+    "galleryVoList": [
+        {
+            "api": "https://fp.ps.netease.com/market/file/new/",
+            "authVo": {
+                "authHeaderMap": {
+                    "Cookie": "_ntes_nnid=ce2dbe771f6f3a70be921c82dd54ffd8,1682497428698; _ntes_nuid=ce2dbe771f6f3a70be921c82dd54ffd8; __bid_n=187c6b27a2945307b34207; FPTOKEN=hbjQWrNkkY3jOiv/3avfGTOJmeJAAe57/OVqK15iI1R4lKArRw97WTE1ylaVjXhEfc5VSvf60uiKSvlCzwl/xeO5s0L8MIIPXlkex1CUknYuACXHw7DLfSXVGi57n1y6UdbQZKdg8gW8h/8Ve3LnF+g+Kzt3AjGYnQX4ze5TnlWAITDMM0poL928jjbDhpahAvco9Pfz0kgMdh2tft5RVk5c1cXDHfuKUEQCWSlKfkBOOMjuoeYxvhbL0xlxDdAQq8zd8por0+TjXV2vkm1ELrUV70kOXw9Myv3Rrm2uedzSru7sgjI+WpUxtGEDhKhoszma623xIqF9ns3Agb5f584sDIpAsxeiEguWyIlY6IK6+mtIod7jdE/W9wOR43BZ1PfXbDik/yZy1p9HEh+wZQ==|215LVrf5CpAluUmxNoeLIJ7wAxqoA6LkLKcshBMbFIg=|10|d93bad00b6b2676cc5080135a571269a; hb_MA-8BB6-AB1502534F5D_source=id.163.com; __oc_uuid=dd944b70-e593-11ed-8636-8770dcc37f62; header_iphone_servtips_undefined=1; NTES_P_UTID=xSWx4sTt3Br2o6vJdTkVxbhyhgh7DiSX|1682666205; timing_user_id=time_69rbmhUweM; _ga=GA1.1.1153460457.1682666595; Qs_lvt_382223=1682666595; _clck=1li3frg|1|fb5|0; Qs_pv_382223=1268032530981721600,2421253415746926000; _ga_C6TGHFPQ1H=GS1.1.1682669831.2.0.1682669831.0.0.0; Device-Id=bZAKryUZQngINahbS3M9; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=tnXoe1M6PeNy4Bju_Bj6THbSSlAZ4ZMZIaR3Qgd1ZZE8uWdmu57zsxbMmNmYnJXl22_EId_YmdpesyDRVhJH_XMdKBGSZPIk.Z1GHOuGORLoU45JmA2xwVFQr0gm9aQfyt7m9BpoZs9H9W4e5u0coyD54xhPXZGETkg4w6oT._42Ss4H8m1VdJNyM_7hm0_yPbpxwcu5R7Gbc_ldeIwP7uSVHl1PC9Gh1q0iFDU5IFbTb; S_INFO=1682868236|0|0&60##|18616823296; P_INFO=18616823296|1682868236|1|netease_buff|00&99|null&null&null#shh&null#10#0|&0|null|18616823296; remember_me=U1104089954|ONCUkYJnGRg11PVYWU1H3CEju8mNzWNc; session=1-G6R_aeJSD2vuYot_HisqRfkpmortHZwaK5dFHTRHfYQE2030144570; csrf_token=IjUxYjczNjFiMGZlNjg4MTcwY2RiOTNkZDA0ZmQyZTUwMmEzNDE1YTQi.FzAZpg.m14jnHY7-MSfmqKH-dHD2t6HN1Q"
+                },
+                "authParam": {
+                    "data.token": "authorization"
+                },
+                "authUrl": "https://buff.163.com/api/feedback/gen_token"
+            },
+            "authentic": true,
+            "errorStr": "http://shp.qpic.cn",
+            "reUrl": "url",
+            "removeParam": false
+        },
+        {
+            "api": "https://hd.yixin.im/se/nos/upload/file",
+            "authentic": false,
+            "formName": "file",
+            "formText": {
+                "uid": "55435107"
+            },
+            "headForm": {
+                "X-YX-ClientVersion": "1",
+                "X-YX-Openid": "NTU0MzUxMDc=",
+                "X-YX-ClientType": "81",
+                "X-YX-CheckSum": "63383532376636343037323933646334",
+                "X-YX-DeviceId": "BROWSER-45317468-88c6-549f-9912-768c41233a29"
+            },
+            "reUrl": "data",
+            "removeParam": false
+        },
+        {
+            "api": "https://www.wegame.com.cn/api/wpicupload/platform/snappic/upload.fcg?without_water_mark=1",
+            "authentic": false,
+            "errorStr": "http://shp.qpic.cn",
+            "formName": "img",
+            "formText": {
+                "app_id": "2",
+                "game_id": "52000000"
+            },
+            "headForm": {
+                "Cookie": "ts_refer=www.baidu.com/link; pgv_pvid=1229701968; ts_uid=1513632913; pgv_info=ssid=s947100525; ts_last=www.wegame.com.cn/feedback; p_uin=o0740444603; pt4_token=kbaeynQI7*efNQSKpdYOgDVCmCovaUKKPqvo3xgS0x0_; p_skey=WoaZ6ZMsS5gSMBCG0BbU6qhsWRz39gKL8G47aIkktGQ_; tgp_id=94840903; tgp_ticket=6461FBA3BFEF845E85FC552C93E158A3F29905F28B5231AD42FED997F4836FDFD5ED7657DE0AFA0C4C3A5184D043A2140B4D044D9B55A2A242EF81F5625279D7BA1B2448C5961B003269273421B42FA390BAE62E2BC090BE467D6438D399FCFC4FBF6E2D0EA856FB2CAC528552C98425D11F6A3BA275442E5D348B538E484205; tgp_env=online; tgp_user_type=0; tgp_biz_ticket=010000000000000000aa4477ab3ced912a757ababdfc37537a2d6a72e9edf16315ceab0c1b73609e82ce61491a96eca4fde6ac83a87438e84edb544416320f622f4e55483a74b21072; client_type=1; region=CN"
+            },
+            "reUrl": "url",
+            "removeParam": false
+        }
+    ],
+    "jsonMap": {
+        "qq.com": "http://sf.huomiao.cc/tx/qq.php/?url=",
+        "iqiyi": "https://sf.huomiao.cc/iqy/iqiyi.php/?url="
+    },
+    "offsetTime": 1,
+    "reCut": false,
+    "sync": true,
+    "token": "token"
+}
