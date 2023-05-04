@@ -216,7 +216,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     if (configInit.isSync()) {
                         //TODO 同步
                         assert cutReVo != null;
-                        boolean upOk = pushM3u8(m3u8Name, videoUrl,cutReVo.getTime());
+                        boolean upOk = pushM3u8(m3u8Name, videoUrl);
                         if (upOk) {
                             jsonAnalysis.forceDelete(m3u8Name);
                         }else {
@@ -501,8 +501,8 @@ public class AutoCutServiceImpl implements AutoCutService {
         return playerUrl;
     }
 
-    public boolean pushM3u8(String name,String videoUrl,long time){
-        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&time="+time;
+    public boolean pushM3u8(String name,String videoUrl){
+        String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken();
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
