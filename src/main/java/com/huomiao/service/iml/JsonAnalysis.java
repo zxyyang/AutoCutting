@@ -409,7 +409,7 @@ public class JsonAnalysis {
           throw new RuntimeException("ts下载失败");
         }
         tsDown.stop();
-        log.info("{}下载时间：{}秒",fileNameHasType,tsDown.getLastTaskTimeMillis()/1000);
+       // log.info("{}下载时间：{}秒",fileNameHasType,tsDown.getLastTaskTimeMillis()/1000);
         return fileNameHasType;
     }
 

@@ -7,7 +7,9 @@ import com.huomiao.config.ConfigInit;
 import com.huomiao.service.AutoCutService;
 import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.vo.RequestBean;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/cut")
+@Slf4j
 public class AutoCuttingController {
 
     @Autowired
@@ -31,6 +34,12 @@ public class AutoCuttingController {
     @License
     @GetMapping("/start")
     public RequestBean<String> start( String vUrl,  String dUrl){
+        if (Objects.isNull(vUrl) || Objects.equals(vUrl,"")){
+            return RequestBean.Error("地址为空");
+        } else if (!vUrl.contains("http")) {
+            return RequestBean.Error("地址错误");
+        }
+        log.info("GET单个代替换参数：{}，{}",vUrl,dUrl);
         String tz = autoCutService.autoAll(vUrl, dUrl);
         return RequestBean.Success(tz);
     }
@@ -38,6 +47,10 @@ public class AutoCuttingController {
     @License
     @PostMapping("/start")
     public RequestBean<String> start(@RequestBody String[] vUrls){
+        if (CollectionUtils.isEmpty(Arrays.asList(vUrls))){
+            return RequestBean.Error("地址为空");
+        }
+        log.info("POST多个代替换参数：{}",vUrls.toString());
         List<String> urlList = new ArrayList<>(Arrays.asList(vUrls));
         String tz = autoCutService.autoAllListTask(urlList);
         return RequestBean.Success(tz);

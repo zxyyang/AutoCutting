@@ -201,9 +201,6 @@ public class AutoCutServiceImpl implements AutoCutService {
     }
 
     public String autoAll(String videoUrl, String downloadUrl){
-        if (Objects.isNull(videoUrl)){
-            return "缺少URL";
-        }
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
