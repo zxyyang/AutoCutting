@@ -168,7 +168,7 @@ public class ConfigInit {
             }
             log.info("{}图片目录不存在已自动创建！",imgDirStr);
         }
-        HttpClientUtils.doGetImg("https://cut.huomiao.cc/img.png",substring);
+        HttpClientUtils.doGetImg(this.virApi+"img.png",substring);
 
         File file = new File(configPath);
         if (!file.exists()){
