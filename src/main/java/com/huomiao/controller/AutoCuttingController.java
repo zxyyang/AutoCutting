@@ -41,7 +41,7 @@ public class AutoCuttingController {
         }
         log.info("GET单个代替换参数：{}，{}",vUrl,dUrl);
         String tz = autoCutService.autoAll(vUrl, dUrl);
-        return RequestBean.Success(tz);
+        return RequestBean.Success(tz+":"+vUrl);
     }
 
     @License
