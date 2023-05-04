@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -26,8 +28,9 @@ public class AutoCuttingController {
 
 
     @PostMapping("/start")
-    public RequestBean<String> start( List<String> vUrls){
-        String tz = autoCutService.autoAllListTask(vUrls);
+    public RequestBean<String> start(@RequestBody String[] vUrls){
+        List<String> urlList = new ArrayList<>(Arrays.asList(vUrls));
+        String tz = autoCutService.autoAllListTask(urlList);
         return RequestBean.Success(tz);
     }
     @GetMapping(  "/config")
