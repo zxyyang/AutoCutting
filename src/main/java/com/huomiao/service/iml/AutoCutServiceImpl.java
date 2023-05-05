@@ -236,7 +236,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     isOk = true;
                 }catch (Exception e){
                     log.error("切片错误：{}",e.getMessage());
-                    msg = "【"+title+"】:"+url+e.getMessage();
+                    msg = "【"+title+"】:"+url+"错误："+e.getMessage();
                     isOk = false;
                 }finally {
                     if (configInit.isSync() && isOk) {
