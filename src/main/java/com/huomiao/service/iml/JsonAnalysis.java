@@ -10,6 +10,7 @@ import com.huomiao.config.ConfigInit;
 import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
+import com.huomiao.utils.SocketManager;
 import com.huomiao.vo.AuthVo;
 import com.huomiao.vo.GalleryVo;
 import lombok.extern.slf4j.Slf4j;
@@ -412,6 +413,11 @@ public class JsonAnalysis {
         tsDown.stop();
        // log.info("{}下载时间：{}秒",fileNameHasType,tsDown.getLastTaskTimeMillis()/1000);
         return fileNameHasType;
+    }
+
+    public void sendSocket(){
+        SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
+        manager.sendMessage("火苗全自动切片Socket测试");
     }
 
     public static void main(String[] args) throws MalformedURLException {

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
+import com.huomiao.utils.SocketManager;
 import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -161,5 +162,11 @@ public class JsonAnalysisTest {
     @Test
     public void down(){
          jsonAnalysis.downLoadVideo("https://sf.huomiao.cc/iqy/cache/iqiyi/65308e4b3ce37488069370f82a487abf.m3u8","https://sf.huomiao.cc/iqy/cache/iqiyi/65308e4b3ce37488069370f82a487abf.m3u8");
+    }
+
+    @Test
+    public void TEST(){
+        SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
+        manager.sendMessage("1233");
     }
 }

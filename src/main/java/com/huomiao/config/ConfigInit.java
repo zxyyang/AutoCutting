@@ -5,6 +5,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.utils.HttpClientUtils;
+import com.huomiao.utils.SocketManager;
 import com.huomiao.vo.GalleryVo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

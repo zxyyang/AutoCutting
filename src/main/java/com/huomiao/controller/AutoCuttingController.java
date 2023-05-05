@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.huomiao.aspect.License;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.service.AutoCutService;
+import com.huomiao.service.iml.JsonAnalysis;
 import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.vo.RequestBean;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,9 @@ public class AutoCuttingController {
 
     @Autowired
     HttpClientUtils httpClientUtils;
+
+    @Autowired
+    JsonAnalysis jsonAnalysis;
     @License
     @GetMapping("/start")
     public RequestBean<String> start( String vUrl,  String dUrl){
@@ -94,6 +98,11 @@ public class AutoCuttingController {
         }
     }
 
+    @GetMapping(  "/test")
+    public RequestBean<String> socket() throws IOException {
+        jsonAnalysis.sendSocket();
+        return RequestBean.Success();
+    }
     public void pushConfig() throws FileNotFoundException {
         String url = configInit.getVirApi()+"gc.php";
         Map<String, File> fileMap = new HashMap<>();
