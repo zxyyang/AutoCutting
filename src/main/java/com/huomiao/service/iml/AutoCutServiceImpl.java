@@ -225,7 +225,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                         if (Objects.equals(code,200)){
                             title= jsonObject.getString("title");
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         log.error("标题获取失败：{}",ExceptionUtil.stacktraceToString(e));
                     }
 
@@ -269,6 +269,7 @@ public class AutoCutServiceImpl implements AutoCutService {
             return "缺少URL";
         }
         for (String videoUrl : vUrls) {
+            videoUrl = videoUrl.replace("\"","");
             autoAll(videoUrl,null);
         }
 
