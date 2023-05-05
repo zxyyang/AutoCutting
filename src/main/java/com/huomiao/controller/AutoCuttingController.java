@@ -43,7 +43,6 @@ public class AutoCuttingController {
         } else if (!vUrl.contains("http")) {
             return RequestBean.Error("地址错误");
         }
-        log.info("GET单个代替换参数：{}，{}",vUrl,dUrl);
          autoCutService.autoAll(vUrl, dUrl);
         return RequestBean.Success("已经提交：【"+vUrl+"】下载地址：【"+dUrl+"】");
     }
@@ -80,11 +79,8 @@ public class AutoCuttingController {
         if (CollectionUtils.isEmpty(vUrlList)){
             return RequestBean.Error("地址为空");
         }
-        for (String vUrl : vUrlList) {
-            log.info("POST多个代替换参数：{}",vUrl);
-        }
         String tz = autoCutService.autoAllListTask(vUrlList);
-        return RequestBean.Success(tz);
+        return RequestBean.Success();
     }
 
     @License
