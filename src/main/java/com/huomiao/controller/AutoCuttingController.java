@@ -79,8 +79,12 @@ public class AutoCuttingController {
         if (CollectionUtils.isEmpty(vUrlList)){
             return RequestBean.Error("地址为空");
         }
-        String tz = autoCutService.autoAllListTask(vUrlList);
-        return RequestBean.Success();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String vUrl : vUrlList) {
+            stringBuilder.append("【").append(vUrl).append("】").append("\n");
+        }
+         autoCutService.autoAllListTask(vUrlList);
+        return RequestBean.Success("批量切提交成功："+stringBuilder);
     }
 
     @License
