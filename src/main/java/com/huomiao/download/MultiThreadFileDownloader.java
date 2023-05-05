@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -35,18 +36,31 @@ public class MultiThreadFileDownloader extends AbstractDownloader {
 
     @Override
     protected void doDownload(String fileURL, String dir, String fileName, HttpHeaders headers) throws IOException {
-        ExecutorService executorService = Executors.newFixedThreadPool(threadNum);
+        ExecutorService executorService = null;
+        long step = 1;
+        int Num = 1;
         long contentLength = headers.getContentLength();
+        if (headers.getContentLength() <1){
+            contentLength = 1;
+        }
+        if (contentLength < threadNum){
+             executorService = Executors.newFixedThreadPool((int) contentLength);
+             Num = (int)contentLength;
+        }else {
+             executorService = Executors.newFixedThreadPool(threadNum);
+            //均分文件的大小
+            step = contentLength / threadNum;
+            Num = threadNum;
+        }
         downloadProgressPrinter.setContentLength(contentLength);
 
-        //均分文件的大小
-        long step = contentLength / threadNum;
+
 
         List<CompletableFuture<File>> futures = new ArrayList<>();
-        for (int index = 0; index < threadNum; index++) {
+        for (int index = 0; index < Num; index++) {
             //计算出每个线程的下载开始位置和结束位置
             String start = step * index + "";
-            String end = index == threadNum - 1 ? "" : (step * (index + 1) - 1) + "";
+            String end = index == Num - 1 ? "" : (step * (index + 1) - 1) + "";
 
             String tempFilePath = dir + File.separator + "." + fileName + ".download." + index;
             FileResponseExtractor extractor = new FileResponseExtractor(index, tempFilePath, downloadProgressPrinter);

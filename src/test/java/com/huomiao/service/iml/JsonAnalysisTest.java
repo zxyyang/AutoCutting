@@ -157,4 +157,9 @@ public class JsonAnalysisTest {
     public void config(){
         System.err.println(JSONObject.toJSONString(configInit));
     }
+
+    @Test
+    public void down(){
+         jsonAnalysis.downLoadVideo("https://sf.huomiao.cc/iqy/cache/iqiyi/65308e4b3ce37488069370f82a487abf.m3u8","https://sf.huomiao.cc/iqy/cache/iqiyi/65308e4b3ce37488069370f82a487abf.m3u8");
+    }
 }

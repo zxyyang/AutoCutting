@@ -62,6 +62,7 @@ public class JsonAnalysis {
             MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
             fileName = multiThreadFileDownloader.downloadMp4(url, configInit.getDir(), fromUrl);
         }catch (Exception e){
+            log.error("下载出错：{}",ExceptionUtil.stacktraceToString(e));
             for (int i = 0; i < configInit.getDownloadRetry(); i++) {
                 try {
                     MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());

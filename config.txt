@@ -1,9 +1,9 @@
 {
+    "nameApi": "https://sf.huomiao.cc/title/title.php/?url=",
     "notice": true,
-    "threadNum": 6,
+    "threadNum": 5,
     "aPI": "https://sf.huomiao.cc/files/api.php",
     "cutTime": 10,
-    "dir": "D:\\Desktop\\files\\",
     "downloadRetry": 5,
     "galleryRetry": 5,
     "galleryVoList": [
@@ -58,7 +58,8 @@
     ],
     "jsonMap": {
         "qq.com": "http://sf.huomiao.cc/tx/qq.php/?url=",
-        "iqiyi": "https://sf.huomiao.cc/iqy/iqiyi.php/?url="
+        "iqiyi": "https://sf.huomiao.cc/iqy/iqiyi.php/?url=",
+        "1":"https://sf.huomiao.cc/json/?url="
     },
     "offsetTime": 1,
     "reCut": false,

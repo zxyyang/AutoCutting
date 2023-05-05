@@ -107,6 +107,9 @@ public class AutoCutServiceImpl implements AutoCutService {
                     if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
                         tsUrlList.add(line);
                     }
+                    if (line.contains("#EXT-X-ENDLIST")){
+                        break;
+                    }
                 }
                 List<Map<String, String>> resultList = tsUrlList.stream().map(line -> {
                     return CompletableFuture.supplyAsync(() -> {
@@ -214,24 +217,20 @@ public class AutoCutServiceImpl implements AutoCutService {
                     url = split[1];
                 }else {
                     try {
-                        String respond = httpClientUtils.doGet(configInit.getNameApi());
+                        String respond = httpClientUtils.doGet(configInit.getNameApi()+videoUrl);
                         JSONObject jsonObject = JSONObject.parseObject(respond);
                         Integer code = jsonObject.getInteger("code");
                         if (Objects.equals(code,200)){
                             title= jsonObject.getString("title");
                         }
                     } catch (IOException e) {
-
+                        log.error("标题获取失败：{}",ExceptionUtil.stacktraceToString(e));
                     }
                     url = videoUrl;
                 }
-
-
-                boolean isOk = false;
                 try {
                     cutReVo = startCut(url, downloadUrl);
                     m3u8Name = cutReVo.getName();
-                    isOk = true;
                 }catch (Exception e){
                     log.error("切片错误：{}",e.getMessage());
                 }finally {
