@@ -212,14 +212,14 @@ public class AutoCutServiceImpl implements AutoCutService {
                 String m3u8Name = "";
                 CutReVo cutReVo = new CutReVo();
                 String title = new String();
-                String url = "";
-                if (videoUrl.contains("$")){
-                    String[] split = videoUrl.split("\\$");
+                String url = videoUrl.trim();
+                if (url.contains("$")){
+                    String[] split = url.split("\\$");
                     title = split[0];
                     url = split[1];
                 }else {
                     try {
-                        String respond = httpClientUtils.doGet(configInit.getNameApi()+videoUrl);
+                        String respond = httpClientUtils.doGet(configInit.getNameApi()+url);
                         JSONObject jsonObject = JSONObject.parseObject(respond);
                         Integer code = jsonObject.getInteger("code");
                         if (Objects.equals(code,200)){
@@ -228,7 +228,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     } catch (IOException e) {
                         log.error("标题获取失败：{}",ExceptionUtil.stacktraceToString(e));
                     }
-                    url = videoUrl;
+
                 }
                 try {
                     cutReVo = startCut(url, downloadUrl);

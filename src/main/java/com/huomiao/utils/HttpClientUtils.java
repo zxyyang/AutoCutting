@@ -122,14 +122,14 @@ public class HttpClientUtils {
                 try {
                     response.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    ExceptionUtil.stacktraceToString(e);
                 }
             }
             if (null != httpClient) {
                 try {
                     httpClient.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    ExceptionUtil.stacktraceToString(e);
                 }
             }
         }
