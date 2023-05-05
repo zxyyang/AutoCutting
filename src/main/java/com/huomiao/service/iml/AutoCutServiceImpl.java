@@ -215,20 +215,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 String url = videoUrl.trim();
                 if (url.contains("$")){
                     String[] split = url.split("\\$");
-                    title = split[0];
                     url = split[1];
-                }else {
-                    try {
-                        String respond = httpClientUtils.doGet(configInit.getNameApi()+url);
-                        JSONObject jsonObject = JSONObject.parseObject(respond);
-                        Integer code = jsonObject.getInteger("code");
-                        if (Objects.equals(code,200)){
-                            title= jsonObject.getString("title");
-                        }
-                    } catch (Exception e) {
-                        log.error("标题获取失败：{}",ExceptionUtil.stacktraceToString(e));
-                    }
-
                 }
                 try {
                     cutReVo = startCut(url, downloadUrl);
@@ -236,21 +223,21 @@ public class AutoCutServiceImpl implements AutoCutService {
                     isOk = true;
                 }catch (Exception e){
                     log.error("切片错误：{}",e.getMessage());
-                    msg = "【"+title+"】:"+url+"错误："+e.getMessage();
+                    msg = "【"+getName(videoUrl.trim())+"】:"+url+"错误："+e.getMessage();
                     isOk = false;
                 }finally {
                     if (configInit.isSync() && isOk) {
                         //TODO 同步
                         boolean upOk = pushM3u8(m3u8Name, url,title);
                         if (!upOk) {
-                            msg = "【"+title+"】:"+url+"同步出错！";
+                            msg = "【"+getName(videoUrl.trim())+"】:"+url+"同步出错！";
                         }
                         jsonAnalysis.forceDelete(m3u8Name);
                     }
                     if (configInit.isNotice()){
                         assert cutReVo != null;
                         if (Objects.isNull(msg) || Objects.equals(msg,"")){
-                            msg = "【"+title+"】:"+url+"切片时间："+cutReVo.getTime();
+                            msg = "【"+getName(videoUrl.trim())+"】:"+url+"切片时间："+cutReVo.getTime();
                         }
                         jsonAnalysis.sendSocket(msg);
                        // pushNotice(m3u8Name,url,cutReVo.getTime(),cutReVo.getMsg(),title);
@@ -263,6 +250,26 @@ public class AutoCutServiceImpl implements AutoCutService {
 
     }
 
+    private String getName(String url){
+        String title= "";
+        if (url.contains("$")){
+            String[] split = url.split("\\$");
+            title = split[0];
+        }else {
+            try {
+                String respond = httpClientUtils.doGet(configInit.getNameApi()+url);
+                JSONObject jsonObject = JSONObject.parseObject(respond);
+                Integer code = jsonObject.getInteger("code");
+                if (Objects.equals(code,200)){
+                    title= jsonObject.getString("title");
+                }
+            } catch (Exception e) {
+                log.error("标题获取失败：{}",ExceptionUtil.stacktraceToString(e));
+            }
+
+        }
+        return title;
+    }
     @Override
     public String autoAllListTask(List<String> vUrls) {
         if (CollectionUtils.isEmpty(vUrls)){

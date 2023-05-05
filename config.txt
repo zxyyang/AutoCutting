@@ -1,9 +1,9 @@
 {
-    "nameApi": "https://sf.huomiao.cc/title/title.php/?url=",
+    "nameApi":"https://sf.huomiao.cc/title/title.php/?url=",
     "notice": true,
-    "threadNum": 5,
+    "threadNum": 3,
     "aPI": "https://sf.huomiao.cc/files/api.php",
-    "cutTime": 10,
+    "cutTime": 6,
     "downloadRetry": 5,
     "galleryRetry": 5,
     "galleryVoList": [
@@ -58,8 +58,10 @@
     ],
     "jsonMap": {
         "qq.com": "http://sf.huomiao.cc/tx/qq.php/?url=",
-        "iqiyi": "https://sf.huomiao.cc/iqy/iqiyi.php/?url=",
-        "1":"https://sf.huomiao.cc/json/?url="
+        "iqiyi": "https://sf.huomiao.cc/cut/iqiyi.php/?url=",
+        "mgtv": "https://sf.huomiao.cc/mg/mg55656567.php/?url=",
+        "youku": "https://sf.huomiao.cc/cut/youku.php/?url=",
+        "mgtv": "https://www.itvbox.cc/qiepianmg.php?url=",
     },
     "offsetTime": 1,
     "reCut": false,
