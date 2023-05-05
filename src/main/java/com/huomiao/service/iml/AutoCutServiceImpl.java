@@ -548,6 +548,9 @@ public class AutoCutServiceImpl implements AutoCutService {
 
     @SneakyThrows
     public boolean pushM3u8(String name, String videoUrl, String title)  {
+        if (Objects.isNull(title) || Objects.equals(title,"")){
+            title = name;
+        }
         String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
