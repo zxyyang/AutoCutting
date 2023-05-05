@@ -147,6 +147,7 @@ public class ConfigInit {
 
     @Bean
     public void init() throws IOException {
+        SocketManager.connectManager("127.0.0.1",9879);
         String property = System.getProperty("os.name");
         if (property.toLowerCase().startsWith("win")){
             this.osLinux= false;

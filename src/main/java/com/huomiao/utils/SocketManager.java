@@ -1,6 +1,7 @@
 package com.huomiao.utils;
 
 import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import java.util.concurrent.Executors;
  * @author Sobadfish
  *
  * */
+@Slf4j
 public class SocketManager {
 
 
@@ -137,13 +139,13 @@ public class SocketManager {
 
         } catch (Exception e) {
             // 不存在服务器
-            System.out.println("不存在服务主机 或 主机无法连接 " + host + " 正在创建端口 " + port + " 的主机");
+            log.info("不存在服务主机 或 主机无法连接 " + host + " 正在创建端口 " + port + " 的主机");
             try {
                 ServerSocket serverSocket = new ServerSocket(port);
                 return new SocketManager(serverSocket);
             } catch (IOException ioException) {
 
-                System.out.println("创建失败 " + ioException.getMessage());
+                log.error("创建失败 " + ioException.getMessage());
 
             }
 
@@ -226,7 +228,7 @@ public class SocketManager {
                 } catch (IOException e) {
 
                     if(socket != null){
-                        System.out.println(socket.getInetAddress()+":"+socket.getPort()+"断开连接");
+                        log.info(socket.getInetAddress()+":"+socket.getPort()+"断开连接");
                     }
 
                 }
@@ -350,7 +352,7 @@ public class SocketManager {
                 @Override
                 public void run() {
                     if (!sendMessage(messageData, getSocketManager())) {
-                        System.out.println("数据发送失败 端口:" + port);
+                        log.info("数据发送失败 端口:" + port);
                     }
                 }
             });
