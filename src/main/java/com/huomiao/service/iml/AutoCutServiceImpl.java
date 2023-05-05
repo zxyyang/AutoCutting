@@ -66,7 +66,7 @@ public class AutoCutServiceImpl implements AutoCutService {
         stopWatch.start();
         String nameMp4OrM3u8 = "";
         String playerUrl = new String();
-        if (Objects.isNull(downloadUrl) || Objects.equals(downloadUrl,"") || !Objects.equals(downloadUrl,"http")) {
+        if (Objects.isNull(downloadUrl) || Objects.equals(downloadUrl,"") || !downloadUrl.contains("http")) {
             //Json解析
             StopWatch jsonSw = new StopWatch();
             jsonSw.start();
