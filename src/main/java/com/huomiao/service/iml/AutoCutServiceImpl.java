@@ -207,6 +207,8 @@ public class AutoCutServiceImpl implements AutoCutService {
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
+                boolean isOk = false;
+                String msg =null;
                 String m3u8Name = "";
                 CutReVo cutReVo = new CutReVo();
                 String title = new String();
@@ -231,22 +233,27 @@ public class AutoCutServiceImpl implements AutoCutService {
                 try {
                     cutReVo = startCut(url, downloadUrl);
                     m3u8Name = cutReVo.getName();
+                    isOk = true;
                 }catch (Exception e){
                     log.error("切片错误：{}",e.getMessage());
+                    msg = "【"+title+"】:"+url+e.getMessage();
+                    isOk = false;
                 }finally {
-                    if (configInit.isSync()) {
+                    if (configInit.isSync() && isOk) {
                         //TODO 同步
-                        assert cutReVo != null;
                         boolean upOk = pushM3u8(m3u8Name, url,title);
-                        if (upOk) {
-                            jsonAnalysis.forceDelete(m3u8Name);
-                        }else {
-                            log.error("上传失败！");
+                        if (!upOk) {
+                            msg = "【"+title+"】:"+url+"同步出错！";
                         }
+                        jsonAnalysis.forceDelete(m3u8Name);
                     }
                     if (configInit.isNotice()){
                         assert cutReVo != null;
-                        pushNotice(m3u8Name,url,cutReVo.getTime(),cutReVo.getMsg(),title);
+                        if (Objects.isNull(msg) || Objects.equals(msg,"")){
+                            msg = "【"+title+"】:"+url+"切片时间："+cutReVo.getTime();
+                        }
+                        jsonAnalysis.sendSocket(msg);
+                       // pushNotice(m3u8Name,url,cutReVo.getTime(),cutReVo.getMsg(),title);
                     }
                 }
             }

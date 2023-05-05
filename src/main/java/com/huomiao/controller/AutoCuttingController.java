@@ -44,8 +44,8 @@ public class AutoCuttingController {
             return RequestBean.Error("地址错误");
         }
         log.info("GET单个代替换参数：{}，{}",vUrl,dUrl);
-        String tz = autoCutService.autoAll(vUrl, dUrl);
-        return RequestBean.Success(tz+":"+vUrl);
+         autoCutService.autoAll(vUrl, dUrl);
+        return RequestBean.Success("已经提交：【"+vUrl+"】下载地址：【"+dUrl+"】");
     }
 
     @License
@@ -54,13 +54,14 @@ public class AutoCuttingController {
         if (CollectionUtils.isEmpty(Arrays.asList(vUrls))){
             return RequestBean.Error("地址为空");
         }
+        StringBuilder stringBuilder = new StringBuilder();
         for (String vUrl : vUrls) {
-            log.info("POST多个代替换参数：{}",vUrl);
+            stringBuilder.append("【").append(vUrl).append("】").append("\n");
         }
 
         List<String> urlList = new ArrayList<>(Arrays.asList(vUrls));
-        String tz = autoCutService.autoAllListTask(urlList);
-        return RequestBean.Success(tz);
+        autoCutService.autoAllListTask(urlList);
+        return RequestBean.Success("批量切提交成功："+stringBuilder.toString());
     }
     @License
     @PostMapping("/startNull")

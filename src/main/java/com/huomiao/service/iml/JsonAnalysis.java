@@ -415,6 +415,11 @@ public class JsonAnalysis {
         return fileNameHasType;
     }
 
+    public void sendSocket(String msg){
+        SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
+        manager.sendMessage(msg);
+
+    }
     public void sendSocket(){
         SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
         manager.sendMessage("火苗全自动切片Socket测试");
