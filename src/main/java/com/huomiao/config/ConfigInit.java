@@ -50,6 +50,8 @@ public class ConfigInit {
     private boolean sync;
     private String API;
 
+    private String APIHUOMIAO = "https://sf.huomiao.cc/files/api.php";
+
     private String token;
     //文件路径
     private   String dir  ;
