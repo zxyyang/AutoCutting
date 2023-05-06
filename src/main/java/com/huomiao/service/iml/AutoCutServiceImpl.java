@@ -211,7 +211,6 @@ public class AutoCutServiceImpl implements AutoCutService {
                 String msg =null;
                 String m3u8Name = "";
                 CutReVo cutReVo = new CutReVo();
-                String title = new String();
                 String url = videoUrl.trim();
                 if (url.contains("$")){
                     String[] split = url.split("\\$");
@@ -228,7 +227,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 }finally {
                     if (configInit.isSync() && isOk) {
                         //TODO 同步
-                        boolean upOk = pushM3u8(m3u8Name, url,title);
+                        boolean upOk = pushM3u8(m3u8Name, url,getName(videoUrl.trim()));
                         if (!upOk) {
                             msg = "【"+getName(videoUrl.trim())+"】:"+url+"同步出错！";
                         }
