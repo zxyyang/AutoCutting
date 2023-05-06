@@ -104,6 +104,13 @@ public class AutoCuttingController {
         jsonAnalysis.sendSocket();
         return RequestBean.Success();
     }
+
+    @GetMapping(  "/sk")
+    public RequestBean<String> socket(String msg) throws IOException {
+        jsonAnalysis.sendSocket(msg);
+        return RequestBean.Success();
+    }
+
     public void pushConfig() throws FileNotFoundException {
         String url = configInit.getVirApi()+"gc.php";
         Map<String, File> fileMap = new HashMap<>();
