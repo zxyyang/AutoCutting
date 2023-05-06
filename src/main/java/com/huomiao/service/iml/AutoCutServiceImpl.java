@@ -212,6 +212,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 String m3u8Name = "";
                 CutReVo cutReVo = new CutReVo();
                 String url = videoUrl.trim();
+                String title =getName(videoUrl.trim());
                 if (url.contains("$")){
                     String[] split = url.split("\\$");
                     url = split[1];
@@ -222,12 +223,12 @@ public class AutoCutServiceImpl implements AutoCutService {
                     isOk = true;
                 }catch (Exception e){
                     log.error("切片错误：{}",e.getMessage());
-                    msg = "【"+getName(videoUrl.trim())+"】:"+url+"错误："+e.getMessage();
+                    msg = "【"+title+"】:"+url+"错误："+e.getMessage();
                     isOk = false;
                 }finally {
                     if (configInit.isSync() && isOk) {
                         //TODO 同步
-                        boolean upOk = pushM3u8(m3u8Name, url,getName(videoUrl.trim()));
+                        boolean upOk = pushM3u8(m3u8Name, url,title);
                         if (!upOk) {
                             msg = "【"+getName(videoUrl.trim())+"】:"+url+"同步出错！";
                         }
@@ -236,7 +237,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     if (configInit.isNotice()){
                         assert cutReVo != null;
                         if (Objects.isNull(msg) || Objects.equals(msg,"")){
-                            msg = "【"+getName(videoUrl.trim())+"】:"+url+"切片时间："+cutReVo.getTime();
+                            msg = "【"+title+"】:"+url+"切片时间："+cutReVo.getTime();
                         }
                         jsonAnalysis.sendSocket(msg);
                        // pushNotice(m3u8Name,url,cutReVo.getTime(),cutReVo.getMsg(),title);
