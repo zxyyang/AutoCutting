@@ -121,15 +121,15 @@ public class HttpClientUtils {
             if (null != response) {
                 try {
                     response.close();
-                } catch (IOException e) {
-                    ExceptionUtil.stacktraceToString(e);
+                } catch (Exception e) {
+                    log.error(ExceptionUtil.stacktraceToString(e));
                 }
             }
             if (null != httpClient) {
                 try {
                     httpClient.close();
-                } catch (IOException e) {
-                    ExceptionUtil.stacktraceToString(e);
+                } catch (Exception e) {
+                    log.error(ExceptionUtil.stacktraceToString(e));
                 }
             }
         }
@@ -643,15 +643,15 @@ public class HttpClientUtils {
             if (null != response) {
                 try {
                     response.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    log.error("关闭资源出错：{}",ExceptionUtil.stacktraceToString(e));
                 }
             }
             if (null != httpClient) {
                 try {
                     httpClient.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    log.error("关闭资源出错：{}",ExceptionUtil.stacktraceToString(e));
                 }
             }
         }

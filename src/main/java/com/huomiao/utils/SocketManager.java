@@ -313,11 +313,7 @@ public class SocketManager {
 
         @Override
         public String toString() {
-            return "PortBack{" +
-                    "host='" + host + '\'' +
-                    ", port=" + port +
-                    ", time=" + time +
-                    '}';
+            return "成功";
         }
     }
 

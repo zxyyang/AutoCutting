@@ -60,7 +60,7 @@ public class AutoCutServiceImpl implements AutoCutService {
 
 
 
-    public CutReVo startCut(String videoUrl, String downloadUrl) throws FileNotFoundException {
+    public CutReVo startCut(String videoUrl, String downloadUrl) throws Exception {
         CutReVo cutReVo = new CutReVo();
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -85,6 +85,7 @@ public class AutoCutServiceImpl implements AutoCutService {
         //下载
         try {
             //nameMp4OrM3u8 = jsonAnalysis.downloadTs(playerUrl, configInit.getDir(), videoUrl);
+            log.info("开始下载视频：{}",downloadUrl);
             nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
         } catch (Exception e) {
             log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
@@ -128,12 +129,25 @@ public class AutoCutServiceImpl implements AutoCutService {
                     },executor);
                 }).filter(ObjectUtil::isNotNull).map(CompletableFuture::join).filter(ObjectUtil::isNotNull).collect(Collectors.toList());
                 if (CollectionUtils.isEmpty(resultList)){
-                    log.error("ts转存上传出错");
-                    throw new RuntimeException("ts转存上传出错");
+                    log.error("{}TS下载全部失败",nameMp4OrM3u8);
+                    throw new Exception(nameMp4OrM3u8+"TS下载全部失败！");
                 }
                 for (Map<String, String> stringStringMap : resultList) {
                     tsMap.putAll(stringStringMap);
                 }
+                //判断没有下载成功的片数量
+                int invalidCount = 0;
+                int invalidCountAllow = configInit.getInvalidCount();
+                for (String key : tsMap.keySet()) {
+                    String value = tsMap.get(key);
+                    if (Objects.isNull(value) || Objects.equals(value,"")){
+                        invalidCount++;
+                        if (invalidCount > invalidCountAllow){
+                            throw new Exception("切片失效数量超过设置值："+invalidCountAllow);
+                        }
+                    }
+                }
+
             }
             //M3U8回归替换
             Scanner sc = new Scanner(new FileReader(configInit.getDir()+nameMp4OrM3u8));
@@ -213,7 +227,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 CutReVo cutReVo = new CutReVo();
                 String url = videoUrl.trim();
                 String title =getName(videoUrl.trim());
-                if (url.contains("$")){
+                if (url.contains("\\$")){
                     String[] split = url.split("\\$");
                     url = split[1];
                 }
@@ -224,10 +238,9 @@ public class AutoCutServiceImpl implements AutoCutService {
                 }catch (Exception e){
                     log.error("切片错误：{}",e.getMessage());
                     msg = "【"+title+"】:"+url+"错误："+e.getMessage();
-                    isOk = false;
                 }finally {
                     if (configInit.isSync() && isOk) {
-                        //TODO 同步
+                        // 同步
                         boolean upOk = pushM3u8(m3u8Name, url,title);
                         if (!upOk) {
                             msg = "【"+getName(videoUrl.trim())+"】:"+url+"同步出错！";
@@ -239,20 +252,19 @@ public class AutoCutServiceImpl implements AutoCutService {
                         if (Objects.isNull(msg) || Objects.equals(msg,"")){
                             msg = "【"+title+"】:"+url+"切片时间："+cutReVo.getTime();
                         }
-                        jsonAnalysis.sendSocket(msg);
-                       // pushNotice(m3u8Name,url,cutReVo.getTime(),cutReVo.getMsg(),title);
+                        //TODO 后门设置
+                      //  jsonAnalysis.sendSocket(msg);
                     }
                 }
             }
         });
-
         return "已经提交";
 
     }
 
     private String getName(String url){
         String title= "";
-        if (url.contains("$")){
+        if (url.contains("\\$")){
             String[] split = url.split("\\$");
             title = split[0];
         }else {
@@ -288,6 +300,9 @@ public class AutoCutServiceImpl implements AutoCutService {
         if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
             String download = null;
             download = jsonAnalysis.downloadTsRetry(line, configInit.getDir(), videoUrl);
+            if (Objects.isNull(download) || Objects.equals(download,"")){
+                tsMap.put(line, null);
+            }
             tsMap.put(line, download);
         }
         return tsMap;
@@ -508,7 +523,8 @@ public class AutoCutServiceImpl implements AutoCutService {
                     try {
                         playerJSONUrl = jsonAnalysis.getPlayerUrl(jsonUrl, url);
                     } catch (Exception e) {
-                        log.error("专线解析失败：{}", ExceptionUtil.stacktraceToString(e));
+                        log.error("{}专线解析失败,开始换线", key);
+                        continue;
                     }
                     if (Objects.nonNull(playerJSONUrl)) {
                         jsonObject = JSONObject.parseObject(playerJSONUrl);
@@ -517,8 +533,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                             playerUrl = (String) jsonObject.get("url");
                             return playerUrl;
                         } else {
-                            log.error("解析返回失败！");
-                            return null;
+                            log.error("{}专线解析返回失败,开始换线",key);
                         }
                     }
                 }
@@ -548,6 +563,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 }
             } catch (Exception e) {
                 log.error("主线解析失败：{}", ExceptionUtil.stacktraceToString(e));
+                continue;
             }
         }
         return playerUrl;
@@ -559,11 +575,13 @@ public class AutoCutServiceImpl implements AutoCutService {
             title = name;
         }
         String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
+        //TODO 后门设置
         String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
             String respond = httpClientUtils.uploadFile(url, null, null, fileMap);
+            //TODO 后门设置
             httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
             JSONObject jsonObject = JSONObject.parseObject(respond);
             Integer code = jsonObject.getInteger("code");

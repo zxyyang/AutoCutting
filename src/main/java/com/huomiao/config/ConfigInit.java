@@ -34,7 +34,7 @@ import java.util.Map;
 @Configuration
 @Data
 public class ConfigInit {
-
+    private int invalidCount ;
     private String virApi = "https://vir.huomiao.cc/";
 
     private String nameApi;
@@ -208,6 +208,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.invalidCount = configInit.invalidCount;
             this.nameApi = configInit.nameApi;
             this.nextDate = new Date();
             this.notice = configInit.notice;
@@ -238,6 +239,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.invalidCount = configInit.invalidCount;
             this.nameApi = configInit.nameApi;
             this.notice = configInit.notice;
             this.threadNum = configInit.threadNum;

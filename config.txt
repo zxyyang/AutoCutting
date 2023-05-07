@@ -1,17 +1,35 @@
 {
-    "nameApi":"https://sf.huomiao.cc/title/title.php/?url=",
+    "invalidCount": 0,
+    "nameApi": "https://sf.huomiao.cc/title/title.php/?url=",
     "notice": true,
-    "threadNum": 3,
+    "threadNum": 2,
     "aPI": "https://sf.huomiao.cc/files/api.php",
     "cutTime": 6,
-    "downloadRetry": 5,
+    "downloadRetry": 2,
     "galleryRetry": 5,
     "galleryVoList": [
+            {
+            "api": "https://hd.yixin.im/se/nos/upload/file",
+            "authentic": false,
+            "formName": "file",
+            "formText": {
+                "uid": "55435107"
+            },
+            "headForm": {
+                "X-YX-ClientVersion": "1",
+                "X-YX-Openid": "NTU0MzUxMDc=",
+                "X-YX-ClientType": "81",
+                "X-YX-CheckSum": "36383433656130656235323330386563",
+                "X-YX-DeviceId": "BROWSER-0758220e-0891-5be9-be30-df8c79bb7de6"
+            },
+            "reUrl": "data",
+            "removeParam": false
+        },
         {
             "api": "https://fp.ps.netease.com/market/file/new/",
             "authVo": {
                 "authHeaderMap": {
-                    "Cookie": "_ntes_nnid=ce2dbe771f6f3a70be921c82dd54ffd8,1682497428698; _ntes_nuid=ce2dbe771f6f3a70be921c82dd54ffd8; __bid_n=187c6b27a2945307b34207; FPTOKEN=hbjQWrNkkY3jOiv/3avfGTOJmeJAAe57/OVqK15iI1R4lKArRw97WTE1ylaVjXhEfc5VSvf60uiKSvlCzwl/xeO5s0L8MIIPXlkex1CUknYuACXHw7DLfSXVGi57n1y6UdbQZKdg8gW8h/8Ve3LnF+g+Kzt3AjGYnQX4ze5TnlWAITDMM0poL928jjbDhpahAvco9Pfz0kgMdh2tft5RVk5c1cXDHfuKUEQCWSlKfkBOOMjuoeYxvhbL0xlxDdAQq8zd8por0+TjXV2vkm1ELrUV70kOXw9Myv3Rrm2uedzSru7sgjI+WpUxtGEDhKhoszma623xIqF9ns3Agb5f584sDIpAsxeiEguWyIlY6IK6+mtIod7jdE/W9wOR43BZ1PfXbDik/yZy1p9HEh+wZQ==|215LVrf5CpAluUmxNoeLIJ7wAxqoA6LkLKcshBMbFIg=|10|d93bad00b6b2676cc5080135a571269a; hb_MA-8BB6-AB1502534F5D_source=id.163.com; __oc_uuid=dd944b70-e593-11ed-8636-8770dcc37f62; header_iphone_servtips_undefined=1; NTES_P_UTID=xSWx4sTt3Br2o6vJdTkVxbhyhgh7DiSX|1682666205; timing_user_id=time_69rbmhUweM; _ga=GA1.1.1153460457.1682666595; Qs_lvt_382223=1682666595; _clck=1li3frg|1|fb5|0; Qs_pv_382223=1268032530981721600,2421253415746926000; _ga_C6TGHFPQ1H=GS1.1.1682669831.2.0.1682669831.0.0.0; Device-Id=bZAKryUZQngINahbS3M9; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=tnXoe1M6PeNy4Bju_Bj6THbSSlAZ4ZMZIaR3Qgd1ZZE8uWdmu57zsxbMmNmYnJXl22_EId_YmdpesyDRVhJH_XMdKBGSZPIk.Z1GHOuGORLoU45JmA2xwVFQr0gm9aQfyt7m9BpoZs9H9W4e5u0coyD54xhPXZGETkg4w6oT._42Ss4H8m1VdJNyM_7hm0_yPbpxwcu5R7Gbc_ldeIwP7uSVHl1PC9Gh1q0iFDU5IFbTb; S_INFO=1682868236|0|0&60##|18616823296; P_INFO=18616823296|1682868236|1|netease_buff|00&99|null&null&null#shh&null#10#0|&0|null|18616823296; remember_me=U1104089954|ONCUkYJnGRg11PVYWU1H3CEju8mNzWNc; session=1-G6R_aeJSD2vuYot_HisqRfkpmortHZwaK5dFHTRHfYQE2030144570; csrf_token=IjUxYjczNjFiMGZlNjg4MTcwY2RiOTNkZDA0ZmQyZTUwMmEzNDE1YTQi.FzAZpg.m14jnHY7-MSfmqKH-dHD2t6HN1Q"
+                    "Cookie": "_ntes_nnid=ce2dbe771f6f3a70be921c82dd54ffd8,1682497428698; _ntes_nuid=ce2dbe771f6f3a70be921c82dd54ffd8; __bid_n=187c6b27a2945307b34207; FPTOKEN=hbjQWrNkkY3jOiv/3avfGTOJmeJAAe57/OVqK15iI1R4lKArRw97WTE1ylaVjXhEfc5VSvf60uiKSvlCzwl/xeO5s0L8MIIPXlkex1CUknYuACXHw7DLfSXVGi57n1y6UdbQZKdg8gW8h/8Ve3LnF+g+Kzt3AjGYnQX4ze5TnlWAITDMM0poL928jjbDhpahAvco9Pfz0kgMdh2tft5RVk5c1cXDHfuKUEQCWSlKfkBOOMjuoeYxvhbL0xlxDdAQq8zd8por0+TjXV2vkm1ELrUV70kOXw9Myv3Rrm2uedzSru7sgjI+WpUxtGEDhKhoszma623xIqF9ns3Agb5f584sDIpAsxeiEguWyIlY6IK6+mtIod7jdE/W9wOR43BZ1PfXbDik/yZy1p9HEh+wZQ==|215LVrf5CpAluUmxNoeLIJ7wAxqoA6LkLKcshBMbFIg=|10|d93bad00b6b2676cc5080135a571269a; hb_MA-8BB6-AB1502534F5D_source=id.163.com; __oc_uuid=dd944b70-e593-11ed-8636-8770dcc37f62; header_iphone_servtips_undefined=1; _ga=GA1.1.1153460457.1682666595; Qs_lvt_382223=1682666595; _clck=1li3frg|1|fb5|0; Qs_pv_382223=1268032530981721600%2C2421253415746926000; _ga_C6TGHFPQ1H=GS1.1.1682669831.2.0.1682669831.0.0.0; wyy_uid=3e6238d6-da72-4ed0-8d68-491830e61f1c; locale=zh_CN; _gcl_au=1.1.416707738.1683189055; __root_domain_v=.163.com; _qddaz=QD.955183189056740; hb_MA-93D5-9AD06EA4329A_source=id.grow.163.com; urs_u=ze--7HxWCmL9hcU9nYOA1di9-7Pm9bAonjJ5-QdnKW8LIzL-aOKNsxbwSUDmTdudgLk4aibLx6O18hxOTJjx7k9w4CSteSF5UQQvAJP92XwCSOzRVFkY0S86uhlvvPKTeWoVNhdpLPXZCoDGgfx-0zvcFuKAqE9h1hljOkL2/lwXFHlFtaSYDw58IzGnwffGhKJjW2EV6kj/IgkE8YEKldpH-0C4bhSX5LCAtDz3DcFSQ/u0q-P/mjjuDVVpiSA9u042-8P5e6KMic4Dv7KuHymyEbE7mI2/xxl7lfLLBhpAvjhLniGpTGH1exGOxJBZ; urs_t=nOK6f055-3UKMhR34K0SnOTg; hb_MA-975A-DBD9471124CE_source=www.baidu.com; hb_MA-B876-A2074BD1D938_source=www.baidu.com; NTES_P_UTID=xSWx4sTt3Br2o6vJdTkVxbhyhgh7DiSX|1683271225; hb_MA-A98F-AAFF6C319272_source=ym.163.com; clueFrom=nim; hb_MA-91DF-2127272A00D5_source=netease.im; hb_MA-AAAB-2D9387BB219C_source=help.mail.163.com; abH=0; abTest=0; fsWebsiteUid=a691884040c64acf895f41983dd466ab; pageContentBiz=YOU_SHU; pageContentBizProduct=other; _nietop_foot=%u9634%u9633%u5E08%7Cyys.163.com%2C%u7EFF%u8335%u4FE1%u4EF0%7Cvlf.163.com%2C%u660E%u65E5%u4E4B%u540E%7Cmrzh.163.com%2C%u68A6%u5E7B%u897F%u6E38%u7535%u8111%u7248%7Cxyq.163.com; timing_user_id=time_yskaNwU5uY; Device-Id=P8awbrtZmWHhO2WWs8by; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=cxD_E.6UArxTxpb9a_dZ3RXbv9.NYAa6UaXS1c.TplqY9dUy9SsiI2vey.yRZL4fqqOnEUORyU8KIp7gb3LBO4eU6oQA_rEuD_zQBh9QhgHxVjSLyPq2CbtK430DOIW.SAUyqG5VWP2yUKO8Qji5to8UwV_ZXwhxC4pYxTTM7FyO8UUmHzoA_LOTGBxa5TLM14iTdltJOJU2o8EIbMkwk.AVkJtAsTiwyfALmD9FImoJv; S_INFO=1683375207|0|0&60##|18616823296; P_INFO=18616823296|1683375207|1|netease_buff|00&99|null&null&null#shh&null#10#0|&0||18616823296; remember_me=U1104089954|Xn7up5dPysUrXoUe3iRGGpNrnODncNys; session=1-Uk6lzQWvLdUBpwbKoZAyj_pV-cY7bboH_hfDAAMXf3Ye2030144570; csrf_token=IjU1NmJjMzZiNjk5MGM1NGZjOTVkYjMxNmYzYzE0NjQ5MTUyYzQwMzUi.FzfWIA.PRB11vhWly_Um3qTq59-kg9CsOU"
                 },
                 "authParam": {
                     "data.token": "authorization"
@@ -23,23 +41,7 @@
             "reUrl": "url",
             "removeParam": false
         },
-        {
-            "api": "https://hd.yixin.im/se/nos/upload/file",
-            "authentic": false,
-            "formName": "file",
-            "formText": {
-                "uid": "55435107"
-            },
-            "headForm": {
-                "X-YX-ClientVersion": "1",
-                "X-YX-Openid": "NTU0MzUxMDc=",
-                "X-YX-ClientType": "81",
-                "X-YX-CheckSum": "63383532376636343037323933646334",
-                "X-YX-DeviceId": "BROWSER-45317468-88c6-549f-9912-768c41233a29"
-            },
-            "reUrl": "data",
-            "removeParam": false
-        },
+
         {
             "api": "https://www.wegame.com.cn/api/wpicupload/platform/snappic/upload.fcg?without_water_mark=1",
             "authentic": false,
@@ -50,7 +52,7 @@
                 "game_id": "52000000"
             },
             "headForm": {
-                "Cookie": "ts_refer=www.baidu.com/link; pgv_pvid=1229701968; ts_uid=1513632913; pgv_info=ssid=s947100525; ts_last=www.wegame.com.cn/feedback; p_uin=o0740444603; pt4_token=kbaeynQI7*efNQSKpdYOgDVCmCovaUKKPqvo3xgS0x0_; p_skey=WoaZ6ZMsS5gSMBCG0BbU6qhsWRz39gKL8G47aIkktGQ_; tgp_id=94840903; tgp_ticket=6461FBA3BFEF845E85FC552C93E158A3F29905F28B5231AD42FED997F4836FDFD5ED7657DE0AFA0C4C3A5184D043A2140B4D044D9B55A2A242EF81F5625279D7BA1B2448C5961B003269273421B42FA390BAE62E2BC090BE467D6438D399FCFC4FBF6E2D0EA856FB2CAC528552C98425D11F6A3BA275442E5D348B538E484205; tgp_env=online; tgp_user_type=0; tgp_biz_ticket=010000000000000000aa4477ab3ced912a757ababdfc37537a2d6a72e9edf16315ceab0c1b73609e82ce61491a96eca4fde6ac83a87438e84edb544416320f622f4e55483a74b21072; client_type=1; region=CN"
+                "Cookie": "ts_refer=www.baidu.com/link; pgv_pvid=1229701968; ts_uid=1513632913; pgv_info=ssid=s7706416759; ts_last=www.wegame.com.cn/feedback; p_uin=o0740444603; pt4_token=7oj5MnMqtxptAxsbXTycTQosH5e5sFrEYfgNZ*r7Ers_; p_skey=k4QbeBW8on3Ji8CglzdMJM4kFvyKiIMBtj7N09*CpGc_; tgp_id=94840903; tgp_ticket=A4C10DBC8C6198954FAA90497C450D337B78235ABCEE5968D25F38D39F47EA21E9C7F8EADB138DE1EE5629B48ED5FF73298F2CF8AAE1DA88280740CCD43A6C2374DA04EB7183418528182A67E1CA59535E9E4BBA64639856553F458A046864BF88FF528BF2EBCF9BB988D06C7BC3DA904D9F0D1641A53D22FD921EC54E94A670; tgp_env=online; tgp_user_type=0; tgp_biz_ticket=010000000000000000e08ba8b4325ce7c0819b10fe1ef13131aebea59d808f305118e579334378d6d694bdfcbb447e0514def2af3be2d0a1e20b1dc89e981d244f67511f662e57c503; client_type=1; region=CN"
             },
             "reUrl": "url",
             "removeParam": false
@@ -58,10 +60,9 @@
     ],
     "jsonMap": {
         "qq.com": "http://sf.huomiao.cc/tx/qq.php/?url=",
-        "iqiyi": "https://sf.huomiao.cc/cut/iqiyi.php/?url=",
-        "mgtv": "https://sf.huomiao.cc/mg/mg55656567.php/?url=",
-        "youku": "https://sf.huomiao.cc/cut/youku.php/?url=",
+        "iqiyi": "https://sf.huomiao.cc/cut/iqy1080.php/?url=",
         "mgtv": "https://www.itvbox.cc/qiepianmg.php?url=",
+        "youku": "https://sf.huomiao.cc/cut/youku.php/?url="
     },
     "offsetTime": 1,
     "reCut": false,

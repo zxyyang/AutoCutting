@@ -72,7 +72,7 @@ public class JsonAnalysis {
                         delFileByName(configInit.getDir(),fileName,".download");
                        return fileName;
                     }
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     log.error("下载失败");
                 }
             }
@@ -355,12 +355,19 @@ public class JsonAnalysis {
             tsName = downloadTs(downLoadUrl, dir, formUrl);
         }catch (Exception e){
             for (int i = 0; i < configInit.getDownloadRetry(); i++) {
-                tsName = downloadTs(downLoadUrl, dir, formUrl);
+                try {
+                    tsName = downloadTs(downLoadUrl, dir, formUrl);
+                }catch (Exception ex){
+                    String prefix = MD5.create().digestHex16(formUrl);
+                    log.error("【{}】--TS下载尝试失败：第{}次",prefix,i);
+                    continue;
+                }
                 if (Objects.nonNull(tsName)){
                     break;
                 }else {
                     if (i == configInit.getDownloadRetry() - 1) {
                         log.error("ts下载失败！");
+                        break;
                     }
                 }
             }
@@ -411,13 +418,14 @@ public class JsonAnalysis {
           throw new RuntimeException("ts下载失败");
         }
         tsDown.stop();
-       // log.info("{}下载时间：{}秒",fileNameHasType,tsDown.getLastTaskTimeMillis()/1000);
+        log.info("{}下载时间：{}秒",fileNameHasType,tsDown.getLastTaskTimeMillis()/1000);
         return fileNameHasType;
     }
 
     public void sendSocket(String msg){
         SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
         manager.sendMessage(msg);
+        //TODO 后门设置
         try {
             httpClientUtils.doGet(configInit.getSkApi()+"?msg="+msg);
         }catch (Exception e){
