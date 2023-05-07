@@ -126,7 +126,12 @@ public class JsonAnalysis {
                     String authUrl = authVo.getAuthUrl();
                     Map<String, String> authHeaderMap = authVo.getAuthHeaderMap();
                     Map<String, String> authParam = authVo.getAuthParam();
-                    String respondAuth = httpClientUtils.doGet(authUrl, null, authHeaderMap);
+                    String respondAuth = new String();
+                    try {
+                         respondAuth = httpClientUtils.doGet(authUrl, null, authHeaderMap);
+                    }catch (Exception e){
+                        throw  e;
+                    }
                     Map<String,String> authMap = new HashMap<>();
                     for (String key : authParam.keySet()) {
                         String[] split = key.split("\\.");

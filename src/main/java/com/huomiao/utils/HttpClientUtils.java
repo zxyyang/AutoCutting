@@ -41,7 +41,7 @@ public class HttpClientUtils {
      * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return 所代表远程资源的响应结果
      */
-    public  String doGet(String url, String param,Map<String,String> headerMap) {
+    public  String doGet(String url, String param,Map<String,String> headerMap) throws Exception {
         StringBuilder result = new StringBuilder();
         BufferedReader in = null;
         String urlNameString = url;
@@ -67,18 +67,9 @@ public class HttpClientUtils {
             while ((line = in.readLine()) != null) {
                 result.append(line);
             }
-        } catch (ConnectException e) {
-            e.printStackTrace();
-        } catch (SocketTimeoutException | ConnectTimeoutException e) {
-            e.printStackTrace();
-            //SocketTimeoutException：是Java包下抛出的异常，这定义了Socket读数据的超时时间，即从server获取响应数据须要等待的时间；当读取或者接收Socket超时会抛出SocketTimeoutException
-            System.out.println("sendGet SocketTimeoutException, url=" + url + ",param=" + param);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("sendGet IOException, url=" + url + ",param=" + param);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("sendGet Exception, url=" + url + ",param=" + param);
+            log.error("GET访问报错：{}",ExceptionUtil.stacktraceToString(e));
+           throw e;
         } finally {
             try {
                 if (in != null) {
@@ -92,7 +83,7 @@ public class HttpClientUtils {
         return result.toString();
     }
 
-    public  String doGet(String url) throws IOException {
+    public  String doGet(String url) throws Exception {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         String result = "";
