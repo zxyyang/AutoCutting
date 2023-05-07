@@ -104,7 +104,7 @@ public class SocketManager {
      * @param socket Socket连接对象
      * */
     public static SocketManager connectManager(Socket socket){
-        //TODO 重新建立线程池 因为上个线程池被关闭了
+        // 重新建立线程池 因为上个线程池被关闭了
         executor = Executors.newCachedThreadPool() ;
         try {
             SocketNode node = SocketNode.getNode(socket);
@@ -422,7 +422,7 @@ public class SocketManager {
             Gson gson = new Gson();
             while (!socket.isClosed()){
                 try {
-                    //TODO 心跳包判断连接是否保持
+                    // 心跳包判断连接是否保持
                     try {
                         socket.sendUrgentData(0);
                     }catch (IOException e){

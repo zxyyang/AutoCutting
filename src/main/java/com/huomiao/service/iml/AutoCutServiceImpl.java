@@ -96,7 +96,6 @@ public class AutoCutServiceImpl implements AutoCutService {
         if (playerUrl.contains(".m3u8")) {
 //            boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
 //            return;
-            //TODO 如果是M3u8格式 处理
             //ts下载映射Map
             Map<String, String> tsMap = new ConcurrentHashMap<>();
             if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
@@ -170,7 +169,7 @@ public class AutoCutServiceImpl implements AutoCutService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            //TODO 二次切割
+            // 二次切割
             if (configInit.isReCut()) {
                 boolean makeMp4 = jsonAnalysis.makeMp4(nameMp4OrM3u8);
                 String replace = nameMp4OrM3u8.replace(".m3u8", "");
