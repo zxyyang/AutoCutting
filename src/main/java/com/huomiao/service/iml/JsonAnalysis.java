@@ -418,6 +418,11 @@ public class JsonAnalysis {
     public void sendSocket(String msg){
         SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
         manager.sendMessage(msg);
+        try {
+            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+msg);
+        }catch (Exception e){
+
+        }
 //        SocketManager managerHUOMIAO = SocketManager.connectManager("61.136.164.154",9879);
 //        manager.sendMessage(msg);
     }
