@@ -45,7 +45,7 @@ public class JsonAnalysisTest {
 
 
     @Test
-  public   void getPlayerUrl() throws InterruptedException, IOException {
+  public   void getPlayerUrl() throws Exception {
         String api = "http://sf.huomiao.cc/tx/qq.php/?url=";
         String urlpla = "https://v.qq.com/x/page/d3355hlkkn2.html";
         StopWatch stopWatch = new StopWatch();

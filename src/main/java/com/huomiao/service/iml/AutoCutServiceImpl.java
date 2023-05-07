@@ -251,8 +251,8 @@ public class AutoCutServiceImpl implements AutoCutService {
                         if (Objects.isNull(msg) || Objects.equals(msg,"")){
                             msg = "【"+title+"】:"+url+"切片时间："+cutReVo.getTime();
                         }
-                        //TODO 后门设置
-                      //  jsonAnalysis.sendSocket(msg);
+
+                        jsonAnalysis.sendSocket(msg);
                     }
                 }
             }
@@ -575,13 +575,13 @@ public class AutoCutServiceImpl implements AutoCutService {
         }
         String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
         //TODO 后门设置
-        String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
+       // String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
             String respond = httpClientUtils.uploadFile(url, null, null, fileMap);
             //TODO 后门设置
-            httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
+           // httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
             JSONObject jsonObject = JSONObject.parseObject(respond);
             Integer code = jsonObject.getInteger("code");
             if (code==200){

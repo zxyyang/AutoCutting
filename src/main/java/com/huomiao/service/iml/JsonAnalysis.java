@@ -47,8 +47,13 @@ public class JsonAnalysis {
 
     @Autowired
     private ConfigInit configInit;
-    public String getPlayerUrl(Object jsonUrl,Object videoUrl) throws IOException {
-        String result = httpClientUtils.doGet(String.valueOf(jsonUrl) + videoUrl);
+    public String getPlayerUrl(Object jsonUrl,Object videoUrl) throws Exception {
+        String result = new String();
+        try {
+             result = httpClientUtils.doGet(String.valueOf(jsonUrl) + videoUrl);
+        }catch (Exception e){
+               throw new Exception("获取下载地址失败！");
+        }
         return result;
     }
 
