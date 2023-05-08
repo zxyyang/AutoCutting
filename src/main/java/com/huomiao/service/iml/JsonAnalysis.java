@@ -13,6 +13,7 @@ import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.utils.SocketManager;
 import com.huomiao.vo.AuthVo;
 import com.huomiao.vo.GalleryVo;
+import com.huomiao.vo.paramVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,7 @@ public class JsonAnalysis {
 
     @Autowired
     private FfmpegUtils ffmpegUtils;
+
 
     @Autowired
     private ConfigInit configInit;
@@ -124,9 +126,21 @@ public class JsonAnalysis {
                 //如果需要认证
                 if (authentic){
                     String authUrl = authVo.getAuthUrl();
-                    Map<String, String> authHeaderMap = authVo.getAuthHeaderMap();
                     Map<String, String> authParam = authVo.getAuthParam();
-                    Map<String, String> authFormMap = authVo.getAuthFormMap();
+                    boolean circulate = authVo.isCirculate();
+                    Map<String,String> authHeaderMap = new HashMap<>();
+                    Map<String,String> authFormMap = new HashMap<>();
+                    int size = authVo.getSize();
+                    List<paramVo> paramVos = authVo.getParamVos();
+                    if (!circulate || size == 0){
+                        authHeaderMap = paramVos.get(0).getAuthHeaderMap();
+                        authFormMap = paramVos.get(0).getAuthFormMap();
+                    }else {
+                        int nowWhich = RandomUtil.randomInt(size+1);
+                        log.info("当前token为第{}个",nowWhich);
+                        authHeaderMap = paramVos.get(nowWhich).getAuthHeaderMap();
+                        authFormMap = paramVos.get(nowWhich).getAuthFormMap();
+                    }
                     String respondAuth = new String();
                     try {
                         if (authVo.isAuthPost()){

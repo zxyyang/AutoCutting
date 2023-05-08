@@ -93,7 +93,7 @@ public class AutoCutServiceImpl implements AutoCutService {
         }
         log.info("视频本地化名字：{}", nameMp4OrM3u8);
         //区分类型
-        if (playerUrl.contains(".m3u8")) {
+        if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
 //            boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
 //            return;
             //ts下载映射Map
@@ -184,7 +184,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     throw new RuntimeException("切片失败");
                 }
             }
-        } else if (playerUrl.contains(".mp4")) {
+        } else if (nameMp4OrM3u8.contains(".mp4") || nameMp4OrM3u8.contains(".MP4")) {
 
             //mp4切片
              localName = nameMp4OrM3u8.replace(".mp4","");
@@ -197,8 +197,8 @@ public class AutoCutServiceImpl implements AutoCutService {
                 throw new RuntimeException("切片失败");
             }
         }else {
-            log.error("未知类型：{}",playerUrl);
-            throw new RuntimeException("下载文件类型未知");
+            log.error("未知类型：{}",nameMp4OrM3u8);
+            throw new RuntimeException("下载文件类型未知："+nameMp4OrM3u8);
         }
         //切完读取行
         StopWatch mergeUpdateSw = new StopWatch();
