@@ -8,6 +8,24 @@
     "downloadRetry": 2,
     "galleryRetry": 5,
     "galleryVoList": [
+                  {
+                "api": "https://fp.ps.netease.com/voice/file/new/",
+                "authVo": {
+                  		"authPost":true,
+                    "authHeaderMap": {
+                        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM1Mzg0NTcsImZyZXNoIjpmYWxzZSwibmJmIjoxNjgzNTM4NDU3LCJpZGVudGl0eSI6IjY0NThjMjE5Nzg1OWZkMzg0ZTllMzlkMCIsImp0aSI6IjU3MTVlNmJmLWEyMTYtNGI4My1hYTlhLWQ3ZGQxYzRiNTY1YyIsInR5cGUiOiJhY2Nlc3MifQ.h_bgjFrSOPLB3iGD5YopzsN2HZj0LlhQunkzp2DU5c8",
+                          "X-Resource":"140206602529592"
+                    },
+                    "authParam": {
+                        "token": "authorization"
+                    },
+                    "authUrl": "https://l.uu.163.com/api/v1/upload-tokens"
+                },
+                "authentic": true,
+                "errorStr": "Require Token",
+                "reUrl": "url",
+                "removeParam": false
+            },
             {
             "api": "https://hd.yixin.im/se/nos/upload/file",
             "authentic": false,
@@ -59,10 +77,10 @@
         }
     ],
     "jsonMap": {
-        "qq.com": "http://sf.huomiao.cc/tx/qq.php/?url=",
-        "iqiyi": "https://sf.huomiao.cc/cut/iqy1080.php/?url=",
-        "mgtv": "https://www.itvbox.cc/qiepianmg.php?url=",
-        "youku": "https://sf.huomiao.cc/cut/youku.php/?url="
+        "qq.com": "https://www.itvbox.cc/3578843152qq.php?url=",
+           "mgtv": "https://www.itvbox.cc/qiepianmg.php?url=",
+           "youku": "https://www.itvbox.cc/3578843152youku.php?url=",
+           "iqiyi": "https://sf.huomiao.cc/cut/iqy1080.php/?url=",
     },
     "offsetTime": 1,
     "reCut": false,
