@@ -126,9 +126,15 @@ public class JsonAnalysis {
                     String authUrl = authVo.getAuthUrl();
                     Map<String, String> authHeaderMap = authVo.getAuthHeaderMap();
                     Map<String, String> authParam = authVo.getAuthParam();
+                    Map<String, String> authFormMap = authVo.getAuthFormMap();
                     String respondAuth = new String();
                     try {
-                         respondAuth = httpClientUtils.doGet(authUrl, null, authHeaderMap);
+                        if (authVo.isAuthPost()){
+                            respondAuth = httpClientUtils.doPost(authUrl, authHeaderMap, authFormMap);
+                        }
+                        else {
+                            respondAuth = httpClientUtils.doGet(authUrl, null, authHeaderMap);
+                        }
                     }catch (Exception e){
                         throw  e;
                     }

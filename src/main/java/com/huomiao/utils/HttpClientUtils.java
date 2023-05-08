@@ -26,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -205,7 +206,70 @@ public class HttpClientUtils {
         }
         return "error";
     }
+    public  String doPost(String requestUrl,Map<String,String> requestHeader,Map<String,String> formTexts){
+        OutputStream out = null;
+        BufferedReader reader = null;
+        String result = "";
+        try {
+            if (requestUrl == null || requestUrl.isEmpty()) {
+                return result;
+            }
+            URL realUrl = new URL(requestUrl);
+            HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
+            connection.setRequestProperty("accept", "text/html, application/xhtml+xml, image/jxr, */*");
+            connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0");
+            if (requestHeader != null && requestHeader.size() > 0) {
+                for (Map.Entry<String, String> entry : requestHeader.entrySet()) {
+                    connection.setRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setRequestMethod("POST");
+            String requestEncoding = "UTF-8";
+            String responseEncoding = "UTF-8";
 
+            if (requestHeader != null && requestHeader.size() > 0) {
+                for (Map.Entry<String, String> entry : requestHeader.entrySet()) {
+                    connection.setRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
+                connection.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+                out = new DataOutputStream(connection.getOutputStream());
+                if (formTexts != null && formTexts.size() > 0) {
+                    String formData = "";
+                    for (Map.Entry<String, String> entry : formTexts.entrySet()) {
+                        formData += entry.getKey() + "=" + entry.getValue() + "&";
+                    }
+                    formData = formData.substring(0, formData.length() - 1);
+                    out.write(formData.toString().getBytes(requestEncoding));
+                }
+
+            out.flush();
+            out.close();
+            out = null;
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), responseEncoding));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            System.out.println("发送POST请求出现异常！");
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return result;
+    }
 
     /**
      * 发送post请求
@@ -316,7 +380,7 @@ public class HttpClientUtils {
                 if (reader != null) {
                     reader.close();
                 }
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -649,10 +713,12 @@ public class HttpClientUtils {
         return result;
     }
 
-//    public static void main(String[] args) {
-//        HttpClientUtils hh = new HttpClientUtils();
-//        File file = new File("D:\\Desktop\\2.png");
-//        String s = hh.uploadFileByByte("https://fp.ps.netease.com/market/file/new/", file);
-//        System.err.println(s);
-//    }
+    public static void main(String[] args) {
+        HttpClientUtils hh = new HttpClientUtils();
+        Map<String,String> head = new HashMap<>();
+        head.put("authorization","Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE2ODM1MzUzODEsImp0aSI6IjE0OWE0OGIzLTI0NGItNDM3ZC05NDE0LWM3OTA5ZTRkY2E0MCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE2ODM1MzUzODEsImZyZXNoIjpmYWxzZSwiaWRlbnRpdHkiOiI2NDU4YjYxNWIwODM1NjAxZGE2OTM3YzAifQ.oG08-TGyuvb3Y9ugltQO9mSCEwz888Q5rFbhay7rQxg");
+        head.put("X-Resource","140386802495440");
+        String s = hh.doPost("https://l.uu.163.com/api/v1/upload-tokens", head,null);
+        System.err.println(s);
+    }
 }
