@@ -8,6 +8,7 @@ import java.util.Map;
 @Data
 public class AuthVo {
 
+    private int delay;
     private  int size;
     private String authUrl;
 

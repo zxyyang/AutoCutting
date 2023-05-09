@@ -7,30 +7,44 @@
     "cutTime": 6,
     "downloadRetry": 2,
     "galleryRetry": 5,
+    "authTempDelay": 10,
     "galleryVoList": [
             {
                 "api": "https://fp.ps.netease.com/market/file/new/",
                 "authVo": {
-                "size": 1,
+                "size": 4,
+                "delay": 100;
                 "circulate" : true,
                 "paramVos":[
                       {
                       "authHeaderMap": {
                       "Cookie": "_ntes_nnid=ce2dbe771f6f3a70be921c82dd54ffd8,1682497428698; _ntes_nuid=ce2dbe771f6f3a70be921c82dd54ffd8; __bid_n=187c6b27a2945307b34207; FPTOKEN=hbjQWrNkkY3jOiv/3avfGTOJmeJAAe57/OVqK15iI1R4lKArRw97WTE1ylaVjXhEfc5VSvf60uiKSvlCzwl/xeO5s0L8MIIPXlkex1CUknYuACXHw7DLfSXVGi57n1y6UdbQZKdg8gW8h/8Ve3LnF+g+Kzt3AjGYnQX4ze5TnlWAITDMM0poL928jjbDhpahAvco9Pfz0kgMdh2tft5RVk5c1cXDHfuKUEQCWSlKfkBOOMjuoeYxvhbL0xlxDdAQq8zd8por0+TjXV2vkm1ELrUV70kOXw9Myv3Rrm2uedzSru7sgjI+WpUxtGEDhKhoszma623xIqF9ns3Agb5f584sDIpAsxeiEguWyIlY6IK6+mtIod7jdE/W9wOR43BZ1PfXbDik/yZy1p9HEh+wZQ==|215LVrf5CpAluUmxNoeLIJ7wAxqoA6LkLKcshBMbFIg=|10|d93bad00b6b2676cc5080135a571269a; hb_MA-8BB6-AB1502534F5D_source=id.163.com; __oc_uuid=dd944b70-e593-11ed-8636-8770dcc37f62; header_iphone_servtips_undefined=1; _ga=GA1.1.1153460457.1682666595; Qs_lvt_382223=1682666595; _clck=1li3frg|1|fb5|0; Qs_pv_382223=1268032530981721600%2C2421253415746926000; _ga_C6TGHFPQ1H=GS1.1.1682669831.2.0.1682669831.0.0.0; wyy_uid=3e6238d6-da72-4ed0-8d68-491830e61f1c; locale=zh_CN; _gcl_au=1.1.416707738.1683189055; __root_domain_v=.163.com; _qddaz=QD.955183189056740; hb_MA-93D5-9AD06EA4329A_source=id.grow.163.com; urs_u=ze--7HxWCmL9hcU9nYOA1di9-7Pm9bAonjJ5-QdnKW8LIzL-aOKNsxbwSUDmTdudgLk4aibLx6O18hxOTJjx7k9w4CSteSF5UQQvAJP92XwCSOzRVFkY0S86uhlvvPKTeWoVNhdpLPXZCoDGgfx-0zvcFuKAqE9h1hljOkL2/lwXFHlFtaSYDw58IzGnwffGhKJjW2EV6kj/IgkE8YEKldpH-0C4bhSX5LCAtDz3DcFSQ/u0q-P/mjjuDVVpiSA9u042-8P5e6KMic4Dv7KuHymyEbE7mI2/xxl7lfLLBhpAvjhLniGpTGH1exGOxJBZ; urs_t=nOK6f055-3UKMhR34K0SnOTg; hb_MA-975A-DBD9471124CE_source=www.baidu.com; hb_MA-B876-A2074BD1D938_source=www.baidu.com; NTES_P_UTID=xSWx4sTt3Br2o6vJdTkVxbhyhgh7DiSX|1683271225; hb_MA-A98F-AAFF6C319272_source=ym.163.com; clueFrom=nim; hb_MA-91DF-2127272A00D5_source=netease.im; hb_MA-AAAB-2D9387BB219C_source=help.mail.163.com; abH=0; abTest=0; fsWebsiteUid=a691884040c64acf895f41983dd466ab; pageContentBiz=YOU_SHU; pageContentBizProduct=other; _nietop_foot=%u9634%u9633%u5E08%7Cyys.163.com%2C%u7EFF%u8335%u4FE1%u4EF0%7Cvlf.163.com%2C%u660E%u65E5%u4E4B%u540E%7Cmrzh.163.com%2C%u68A6%u5E7B%u897F%u6E38%u7535%u8111%u7248%7Cxyq.163.com; timing_user_id=time_yskaNwU5uY; Device-Id=P8awbrtZmWHhO2WWs8by; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=cxD_E.6UArxTxpb9a_dZ3RXbv9.NYAa6UaXS1c.TplqY9dUy9SsiI2vey.yRZL4fqqOnEUORyU8KIp7gb3LBO4eU6oQA_rEuD_zQBh9QhgHxVjSLyPq2CbtK430DOIW.SAUyqG5VWP2yUKO8Qji5to8UwV_ZXwhxC4pYxTTM7FyO8UUmHzoA_LOTGBxa5TLM14iTdltJOJU2o8EIbMkwk.AVkJtAsTiwyfALmD9FImoJv; S_INFO=1683375207|0|0&60##|18616823296; P_INFO=18616823296|1683375207|1|netease_buff|00&99|null&null&null#shh&null#10#0|&0||18616823296; remember_me=U1104089954|Xn7up5dPysUrXoUe3iRGGpNrnODncNys; session=1-Uk6lzQWvLdUBpwbKoZAyj_pV-cY7bboH_hfDAAMXf3Ye2030144570; csrf_token=IjU1NmJjMzZiNjk5MGM1NGZjOTVkYjMxNmYzYzE0NjQ5MTUyYzQwMzUi.FzfWIA.PRB11vhWly_Um3qTq59-kg9CsOU"
                                     },
-                      "authParam": {
-                      "data.token": "authorization"
-                                    }
                       },
                       {
                       "authHeaderMap": {
-                      "Cookie": "Device-Id=EJAxz9eakWELStk3kdGB; P_INFO=13379174206|1683392960|1|netease_buff|00&99|null&null&null#shh&null#10#0|&0|null|13379174206; remember_me=U1103710130|wvqAMa46bwuubyXyu4dD0UnV6bxIvsft; session=1-_t-IxWPtSOjHG7AplSczODxwBs6OCimM7teZLnuXZToS2030557418; Locale-Supported=zh-Hans; game=csgo; csrf_token=ImE4MzQ1ZWQwNTA2ZGMxYzgzNDE4ZmNjYjNkMTQ1ZWRlOWI0ZDI4ZjYi.Fzpx1Q.Rpmt93cBlmAnCAumQLmeNGoTQWA"
+                      "Cookie": "Device-Id=q7SP4JEGmR7FwhIQJwjm; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=SSJSj_eFEm3PC2IV6zSznmSHbBdovlsYdu7yMSP62Tj1HglxHydKU4r8AYzZS_BbpjF1LGjky9lH7noXlzwuoicQggWxygr4YGuCa2.GJkPdAYdHR3iJiE1YBDDTPVgR0plxj.mfR84xlZtqDIKm5Qql9fFv79cX0TEuGoOGNz_rvTOyE8QHbSfByaj_nE6nu5jfxP8t4ETrSUFmO_8lvEdf.0Xe9ttVqDDNYk7PSfHmw; S_INFO=1683587571|0|0&60##|15595580268; P_INFO=15595580268|1683587571|1|netease_buff|00&99|null&null&null#heb&130600#10#0|&0||15595580268; remember_me=U1103751570|ivrZE9AUqxBH5Ey9L6EjB4QIAQZ0Rrlc; session=1-wW6Xd-ikCTUDHYCFhVN-qKZVvARGT9oFUpoMDK97NRUE2030532298; csrf_token=Ijc2NTExNzUwODQ4Zjc4ZjAwMzJkNzQ2YTM4ZmVkM2RmZjI4Y2EzNWEi.FzsUzA.8ug8lrIgyCIpuz9848qBwwxM7vA"
                                     },
-                      "authParam": {
-                      "data.token": "authorization"
-                                    }
+                      },
+                      {
+                      "authHeaderMap": {
+                      "Cookie": "Device-Id=roPTYAppeAiJITVGBTJY; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=dl2lEIeHSBjJlYdopUS4aYpljx0D9vJA5pZgLdVoTmJuqC5iqgFBt6bpCSUF35Zyflj3.weykKSAydnu8D5NnYlmSWikjzlT5XsydBt89IrqfDVeg76ecPea1nnmVcCwYl5iJERSwf6i5G7knOBRWek58SD.Z8sKYmhpMzXMI9QdX1Dqk1PuLhIOb.O4huMuiyNXQi9LqnUnAP.lQBD_UB8xvN7VtYBDdNy_QGsvmjUuP; S_INFO=1683588072|0|0&60##|15595113330; P_INFO=15595113330|1683588072|1|netease_buff|00&99|null&null&null#heb&130600#10#0|&0|null|15595113330; remember_me=U1103745870|PGhwZtgh1u4fjZRxRKRgEO8g2On3b8wU; session=1-DNIv-WRPj-Mg-TWHAgOONiTIqT_MJebcvuECtClybWtJ2030521366; csrf_token=ImY4MWRkYjYyZDQ3MjZiMTA3YjBhYWE0NzkzNjJhZWNhNWZlZGNkNTci.FzsVlg.McPptRCnRnKGjHJgIIJVb_cJyhs"
+                                    },
+                      },
+                      {
+                      "authHeaderMap": {
+                      "Cookie": "Device-Id=82riwL4EXHAxnXUpz8Wp; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=uEzFULEDuuz3XjOOx4V3illaDem5chVLOeSLDu0I3j.QZ2qhZLps8NuclsYrysErc7nEQ9lZD0vj2IzJWTq4E4LcqzjXZczc88Xgs1iM3uKVJKBoGiY.H31o_55j0Y2x6Hqh.CJ1xBNhqdfG5PsJktGqK1lgSKac6jreFOVFwXUqH5MoUOcpKaVLG2XZUYr9nJjWCyK1hjQuqZyuSD7bHKOsb8f68HLTYMHbOmZT8OtVi; S_INFO=1683588312|0|0&60##|13379174206; P_INFO=13379174206|1683588312|1|netease_buff|00&99|null&null&null#heb&130600#10#0|&0|null|13379174206; remember_me=U1103710130|QNYH3das2IyFU9PZpaG5NrPmnBn5OqMH; session=1-VacflqCgNNX4bFOAVrIVw7yRyplh_yQMrmSpPcZ7a_Zc2030557418; csrf_token=IjkxZmYyMGNjMWYxYjEzMWEzZjRmNmY5YmY3NWRiNzg1OGU0YzMxMjEi.FzsY5A.lox5bIneF4GkImFrFzRNFK2xQ78"
+                                    },
+                      },
+                      {
+                      "authHeaderMap": {
+                      "Cookie": "csrf_token=ImM1YTQ5MTkzZDU1OGU5NThkNzI4MGFhOGUwNzQwZDI0ZmVkNjBjMzYi.FzsaAg.-TYKT8708PSmhr4UI2D6qVgKSg0; Device-Id=tekYNsaIDR8QTLJmk8TR; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=rYGSDrZ4dIh7krlDA7viyTH__uhCtes9ImEY6rdHz9KTxaw1xYbLveQsaDOMpvtCzQm.IqaJ5.Omf2rHDZOKlfhhWehAMBS_zxU5d5EMtZfY1tFMDWByQ8Tl2II9dFafpRw1Ks8Cfge1wh.iIZL8PjiwyCNcEyDMp9_m4qG47k3UnSc9JTOrW16lrzSfvPb30oEdUbIyx9fkRr9YhNexN8kcRLPjqtwdDfq09mcTaK4jS; S_INFO=1683589119|0|0&60##|15946683273; P_INFO=15946683273|1683589119|1|netease_buff|00&99|null&null&null#heb&130600#10#0|&0||15946683273; remember_me=U1103751269|oPPyurxLElzAAVDPE7fec6f7TrMgHACB; session=1-GbXjLwXyI1i-MhzOG7d3cKxBBBexp1a89HX3Fka7Zgx32030532413"
+                                    },
                       },
                 ],
+                    "authParam": {
+                                      "data.token": "authorization"
+                                                    },
 
                     "authUrl": "https://buff.163.com/api/feedback/gen_token"
                 },

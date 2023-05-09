@@ -51,10 +51,10 @@ public class HttpClientUtils {
                 urlNameString = urlNameString + "?" + param;
             }
             URL realUrl = new URL(urlNameString);
-            URLConnection connection = realUrl.openConnection();
+            HttpURLConnection connection = (HttpURLConnection)realUrl.openConnection();
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
             if (!CollectionUtils.isEmpty(headerMap)){
                 for (String key : headerMap.keySet()) {
                     connection.setRequestProperty(key, headerMap.get(key));
@@ -62,6 +62,10 @@ public class HttpClientUtils {
 
             }
             connection.connect();
+            int responseCode = connection.getResponseCode();
+            if (!Objects.equals(responseCode,200)){
+                throw new RuntimeException("访问返回状态码："+responseCode+"来自："+url);
+            }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
@@ -77,8 +81,7 @@ public class HttpClientUtils {
                     in.close();
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
-                System.out.println("sendGet Exception, url=" + url + ",param=" + param);
+                throw  ex;
             }
         }
         return result.toString();

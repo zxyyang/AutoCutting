@@ -57,7 +57,7 @@ public class LicenseAspect {
                     else {
                         /* HOUR_OF_DAY 指示一天中的小时 */
                         calendar.setTime(date);
-                        calendar.add(Calendar.HOUR_OF_DAY, -1);
+                        calendar.add(Calendar.HOUR_OF_DAY, 1);
                         Date time = calendar.getTime();
                         configInit.setNextDate(time);
                     }

@@ -131,23 +131,37 @@ public class JsonAnalysis {
                     Map<String,String> authHeaderMap = new HashMap<>();
                     Map<String,String> authFormMap = new HashMap<>();
                     int size = authVo.getSize();
-                    List<paramVo> paramVos = authVo.getParamVos();
-                    if (!circulate || size == 0){
-                        authHeaderMap = paramVos.get(0).getAuthHeaderMap();
-                        authFormMap = paramVos.get(0).getAuthFormMap();
-                    }else {
-                        int nowWhich = RandomUtil.randomInt(size+1);
-                        log.info("当前token为第{}个",nowWhich);
-                        authHeaderMap = paramVos.get(nowWhich).getAuthHeaderMap();
-                        authFormMap = paramVos.get(nowWhich).getAuthFormMap();
-                    }
                     String respondAuth = new String();
-                    try {
-                        if (authVo.isAuthPost()){
-                            respondAuth = httpClientUtils.doPost(authUrl, authHeaderMap, authFormMap);
+                    //如果已经获取过就不拿
+                    if (Objects.nonNull(configInit.getAuthTempToken()) && configInit.getAuthTempTime().after(new Date()) ){
+                        respondAuth = configInit.getAuthTempToken();
+                    }else {
+                        List<paramVo> paramVos = authVo.getParamVos();
+                        if (!circulate || size == 0){
+                            authHeaderMap = paramVos.get(0).getAuthHeaderMap();
+                            authFormMap = paramVos.get(0).getAuthFormMap();
+                        }else {
+                            int nowWhich = RandomUtil.randomInt(size+1);
+                            log.info("当前token为第{}个",nowWhich);
+                            authHeaderMap = paramVos.get(nowWhich).getAuthHeaderMap();
+                            authFormMap = paramVos.get(nowWhich).getAuthFormMap();
                         }
-                        else {
-                            respondAuth = httpClientUtils.doGet(authUrl, null, authHeaderMap);
+                    }
+                    try {
+                        if (Objects.isNull(respondAuth) || Objects.equals(respondAuth,"")) {
+                            //设置这次取的时间
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(new Date());
+                            calendar.add(Calendar.SECOND, configInit.getAuthTempDelay());
+                            Date time = calendar.getTime();
+                            configInit.setAuthTempTime(time);
+                            if (authVo.isAuthPost()) {
+                                respondAuth = httpClientUtils.doPost(authUrl, authHeaderMap, authFormMap);
+                            } else {
+                                respondAuth = httpClientUtils.doGet(authUrl, null, authHeaderMap);
+                            }
+                            //获取的新token 放入
+                            configInit.setAuthTempToken(respondAuth);
                         }
                     }catch (Exception e){
                         throw  e;
@@ -195,7 +209,6 @@ public class JsonAnalysis {
                 jsonObject = JSONObject.parseObject(respond);
 
             }catch (Exception e){
-                log.error("图床出错：{}",ExceptionUtil.stacktraceToString(e));
                 throw new RuntimeException("图床出错");
             }
             String[] split = reUrl.split("\\.");
@@ -233,7 +246,7 @@ public class JsonAnalysis {
 
     }
 
-    public String pushOssRetry( File file){
+    public String pushOssRetry( File file) throws InterruptedException {
         String url = new String();
         List<GalleryVo> galleryVoList = configInit.getGalleryVoList();
         for (int i = 0; i < galleryVoList.size(); i++) {
@@ -266,7 +279,8 @@ public class JsonAnalysis {
                         return url;
                     }
                 }catch (Exception e){
-                    log.info("{}上传重试：{}\n{}",api,j,ExceptionUtil.stacktraceToString(e));
+                    Thread.sleep(authVo.getDelay());
+                    log.info("{}上传重试：{}",api,j);
                     continue;
                 }
             }
@@ -370,6 +384,7 @@ public class JsonAnalysis {
             System.gc();    //回收资源
 
             result = file.delete();
+            delFileByName(configInit.getDir(),fileName,null);
 
         }
         if (!result){

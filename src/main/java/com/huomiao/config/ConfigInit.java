@@ -76,6 +76,12 @@ public class ConfigInit {
 
     private boolean reCut;
 
+    private String authTempToken;
+
+    private Date authTempTime;
+
+    private int authTempDelay;
+
 //    @Bean
 //    public void init() {
 //        this.sync = true;
@@ -208,6 +214,8 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.authTempDelay = configInit.authTempDelay;
+            this.authTempTime = new Date();
             this.invalidCount = configInit.invalidCount;
             this.nameApi = configInit.nameApi;
             this.nextDate = new Date();
@@ -239,6 +247,8 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.authTempDelay = configInit.authTempDelay;
+            this.authTempTime = new Date();
             this.invalidCount = configInit.invalidCount;
             this.nameApi = configInit.nameApi;
             this.notice = configInit.notice;
@@ -271,4 +281,5 @@ public class ConfigInit {
     public static void main(String[] args) throws IOException {
         System.err.println(ConfigInit.class.getClass().getResource("/img/img.png").getPath());
     }
+
 }
