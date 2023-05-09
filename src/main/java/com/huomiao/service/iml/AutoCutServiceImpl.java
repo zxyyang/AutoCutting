@@ -579,7 +579,7 @@ public class AutoCutServiceImpl implements AutoCutService {
         if (Objects.nonNull(configInit.getOtherUpApi()) && !Objects.equals(configInit.getOtherUpApi(),"")){
              urlOther = configInit.getOtherUpApi()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getOtherUpToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
         }
-        String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
+      //  String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
@@ -588,7 +588,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 httpClientUtils.uploadFile(urlOther,null,null,fileMap);
             }
             //TODO 后门设置
-            httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
+          //  httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
             JSONObject jsonObject = JSONObject.parseObject(respond);
             Integer code = jsonObject.getInteger("code");
             if (code==200){

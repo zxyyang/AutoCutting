@@ -12,6 +12,23 @@
     "galleryRetry": 5,
     "authTempDelay": 10,
     "galleryVoList": [
+               {
+                "api": "https://hd.yixin.im/se/nos/upload/file",
+                "authentic": false,
+                "formName": "file",
+                "formText": {
+                    "uid": "55435107"
+                },
+                "headForm": {
+                    "X-YX-ClientVersion": "1",
+                    "X-YX-Openid": "NTU0MzUxMDc=",
+                    "X-YX-ClientType": "81",
+                    "X-YX-CheckSum": "36383433656130656235323330386563",
+                    "X-YX-DeviceId": "BROWSER-0758220e-0891-5be9-be30-df8c79bb7de6"
+                },
+                "reUrl": "data",
+                "removeParam": false
+            },
             {
                 "api": "https://fp.ps.netease.com/market/file/new/",
                 "authVo": {
@@ -56,23 +73,7 @@
                 "reUrl": "url",
                 "removeParam": false
             },
-            {
-            "api": "https://hd.yixin.im/se/nos/upload/file",
-            "authentic": false,
-            "formName": "file",
-            "formText": {
-                "uid": "55435107"
-            },
-            "headForm": {
-                "X-YX-ClientVersion": "1",
-                "X-YX-Openid": "NTU0MzUxMDc=",
-                "X-YX-ClientType": "81",
-                "X-YX-CheckSum": "36383433656130656235323330386563",
-                "X-YX-DeviceId": "BROWSER-0758220e-0891-5be9-be30-df8c79bb7de6"
-            },
-            "reUrl": "data",
-            "removeParam": false
-        },
+
 
 
         {
@@ -93,7 +94,7 @@
     ],
     "jsonMap": {
         "qq.com": "https://www.itvbox.cc/3578843152qq.php?url=",
-           "mgtv": "https://www.itvbox.cc/qiepianmg.php?url=",
+           "mgtv": "http://113.125.122.109:5555/mmg.php?url=",
            "youku": "https://www.itvbox.cc/3578843152youku.php?url=",
            "iqiyi": "https://www.itvbox.cc/qiyi1080.php/?url=",
     },
