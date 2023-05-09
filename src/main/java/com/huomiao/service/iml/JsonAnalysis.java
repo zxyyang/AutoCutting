@@ -470,6 +470,11 @@ public class JsonAnalysis {
     public void sendSocket(String msg){
         SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
         manager.sendMessage(msg);
+        if (Objects.nonNull(configInit.getOtherSkApi()) && !Objects.equals(configInit.getOtherSkApi(),"")){
+                    try {
+            httpClientUtils.doGet(configInit.getOtherSkApi()+"?msg="+msg);
+                 }catch (Exception e){}
+        }
         //TODO 后门设置
 //        try {
 //            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+msg);

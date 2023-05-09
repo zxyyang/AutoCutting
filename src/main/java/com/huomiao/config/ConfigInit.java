@@ -54,6 +54,12 @@ public class ConfigInit {
 
     private String APIHUOMIAO = "https://sf.huomiao.cc/files/api.php";
 
+    private String otherUpToken ;
+
+    private String otherUpApi ;
+
+    private String otherSkApi;
+
     private String token;
     //文件路径
     private   String dir  ;
@@ -214,6 +220,9 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.otherSkApi = configInit.otherSkApi;
+            this.otherUpToken = configInit.otherUpToken;
+            this.otherUpApi = configInit.otherUpApi;
             this.authTempDelay = configInit.authTempDelay;
             this.authTempTime = new Date();
             this.invalidCount = configInit.invalidCount;
@@ -247,6 +256,9 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.otherSkApi = configInit.otherSkApi;
+            this.otherUpToken = configInit.otherUpToken;
+            this.otherUpApi = configInit.otherUpApi;
             this.authTempDelay = configInit.authTempDelay;
             this.authTempTime = new Date();
             this.invalidCount = configInit.invalidCount;

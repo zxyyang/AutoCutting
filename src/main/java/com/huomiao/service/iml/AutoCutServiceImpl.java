@@ -575,11 +575,18 @@ public class AutoCutServiceImpl implements AutoCutService {
         }
         String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
         //TODO 后门设置
+        String urlOther = null;
+        if (Objects.nonNull(configInit.getOtherUpApi()) && !Objects.equals(configInit.getOtherUpApi(),"")){
+             urlOther = configInit.getOtherUpApi()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getOtherUpToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
+        }
        // String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
             String respond = httpClientUtils.uploadFile(url, null, null, fileMap);
+            if (Objects.nonNull(urlOther) && !Objects.equals(urlOther,"")){
+                httpClientUtils.uploadFile(urlOther,null,null,fileMap);
+            }
             //TODO 后门设置
            // httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
             JSONObject jsonObject = JSONObject.parseObject(respond);
