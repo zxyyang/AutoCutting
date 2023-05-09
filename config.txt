@@ -1,4 +1,7 @@
 {
+    "otherUpToken": "",
+    "otherUpApi":"",
+    "otherSkApi":"",
     "invalidCount": 0,
     "nameApi": "https://sf.huomiao.cc/title/title.php/?url=",
     "notice": true,
