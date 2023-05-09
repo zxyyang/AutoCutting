@@ -527,6 +527,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     String playerJSONUrl = new String();
                     try {
                         playerJSONUrl = jsonAnalysis.getPlayerUrl(jsonUrl, url);
+                        log.info("解析返回：{}",playerJSONUrl);
                     } catch (Exception e) {
                         log.error("{}专线解析失败,开始换线", key);
                         continue;
@@ -580,12 +581,12 @@ public class AutoCutServiceImpl implements AutoCutService {
             title = name;
         }
         String url = configInit.getAPI()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
-        //TODO 后门设置
         String urlOther = null;
         if (Objects.nonNull(configInit.getOtherUpApi()) && !Objects.equals(configInit.getOtherUpApi(),"")){
              urlOther = configInit.getOtherUpApi()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getOtherUpToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
         }
-       // String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
+        //TODO 后门设置
+      //  String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
