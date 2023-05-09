@@ -24,6 +24,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,10 +50,10 @@ public class JsonAnalysis {
 
     @Autowired
     private ConfigInit configInit;
-    public String getPlayerUrl(Object jsonUrl,Object videoUrl) throws Exception {
+    public String getPlayerUrl(String jsonUrl,String videoUrl) throws Exception {
         String result = new String();
         try {
-             result = httpClientUtils.doGet(String.valueOf(jsonUrl) + videoUrl);
+             result = httpClientUtils.doGet(jsonUrl + URLEncoder.encode(videoUrl,"UTF-8"));
         }catch (Exception e){
                throw new Exception("获取下载地址失败！");
         }
@@ -489,12 +490,12 @@ public class JsonAnalysis {
         manager.sendMessage(msg);
         if (Objects.nonNull(configInit.getOtherSkApi()) && !Objects.equals(configInit.getOtherSkApi(),"")){
                     try {
-            httpClientUtils.doGet(configInit.getOtherSkApi()+"?msg="+msg);
+            httpClientUtils.doGet(configInit.getOtherSkApi()+"?msg="+URLEncoder.encode(msg,"UTF-8"));
                  }catch (Exception e){}
         }
         //TODO 后门设置
         try {
-            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+msg);
+            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+ URLEncoder.encode(msg,"UTF-8"));
         }catch (Exception e){
             log.error("通知验证出错：{}",ExceptionUtil.stacktraceToString(e));
         }
