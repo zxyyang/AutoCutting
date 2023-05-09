@@ -166,7 +166,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 fileWriter.append(hgSb.toString());
                 localName = nameMp4OrM3u8.replace(".m3u8","");
                 log.info("切片本地化成功！");
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             // 二次切割
@@ -194,16 +194,22 @@ public class AutoCutServiceImpl implements AutoCutService {
                 jsonAnalysis.deleteFile(nameMp4OrM3u8);
             }else {
                 log.error("切片失败！");
-                throw new RuntimeException("切片失败");
+                throw new Exception("切片失败");
             }
         }else {
             log.error("未知类型：{}",nameMp4OrM3u8);
-            throw new RuntimeException("下载文件类型未知："+nameMp4OrM3u8);
+            throw new Exception("下载文件类型未知："+nameMp4OrM3u8);
         }
         //切完读取行
         StopWatch mergeUpdateSw = new StopWatch();
         mergeUpdateSw.start();
-        String reM3u8Name = mergeAndUpdateImage(localName);
+        String reM3u8Name = null;
+        try {
+             reM3u8Name = mergeAndUpdateImage(localName);
+        }catch (Exception e){
+            throw new Exception("伪装上传出错："+e.getMessage());
+        }
+
         mergeUpdateSw.stop();
         log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
         log.info("完成切片替换后名称：{}",reM3u8Name);
@@ -235,7 +241,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     m3u8Name = cutReVo.getName();
                     isOk = true;
                 }catch (Exception e){
-                    log.error("切片错误：{}",e.getMessage());
+                    log.error("切片错误：{}",ExceptionUtil.stacktraceToString(e));
                     msg = "【"+title+"】:"+url+"错误："+e.getMessage();
                 }finally {
                     if (configInit.isSync() && isOk) {
@@ -579,7 +585,7 @@ public class AutoCutServiceImpl implements AutoCutService {
         if (Objects.nonNull(configInit.getOtherUpApi()) && !Objects.equals(configInit.getOtherUpApi(),"")){
              urlOther = configInit.getOtherUpApi()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getOtherUpToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
         }
-        String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
+       // String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
@@ -588,7 +594,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 httpClientUtils.uploadFile(urlOther,null,null,fileMap);
             }
             //TODO 后门设置
-            httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
+         //   httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
             JSONObject jsonObject = JSONObject.parseObject(respond);
             Integer code = jsonObject.getInteger("code");
             if (code==200){
