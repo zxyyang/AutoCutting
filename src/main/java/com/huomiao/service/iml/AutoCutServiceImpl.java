@@ -591,8 +591,12 @@ public class AutoCutServiceImpl implements AutoCutService {
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
             String respond = httpClientUtils.uploadFile(url, null, null, fileMap);
-            if (Objects.nonNull(urlOther) && !Objects.equals(urlOther,"")){
-                httpClientUtils.uploadFile(urlOther,null,null,fileMap);
+            try {
+                if (Objects.nonNull(urlOther) && !Objects.equals(urlOther,"")){
+                    httpClientUtils.uploadFile(urlOther,null,null,fileMap);
+                }
+            }catch (Exception e){
+                log.error("额外同步出错：{}",ExceptionUtil.stacktraceToString(e));
             }
             //TODO 后门设置
          //   httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
