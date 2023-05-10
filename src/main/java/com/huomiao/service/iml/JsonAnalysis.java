@@ -494,11 +494,11 @@ public class JsonAnalysis {
                  }catch (Exception e){}
         }
         //TODO 后门设置
-//        try {
-//            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+ URLEncoder.encode(msg,"UTF-8"));
-//        }catch (Exception e){
-//            log.error("通知验证出错：{}",ExceptionUtil.stacktraceToString(e));
-//        }
+        try {
+            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+ URLEncoder.encode(msg,"UTF-8"));
+        }catch (Exception e){
+            log.error("通知验证出错：{}",ExceptionUtil.stacktraceToString(e));
+        }
     }
     public void sendSocket(){
         SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
