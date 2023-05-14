@@ -16,10 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StopWatch;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -133,14 +130,31 @@ public class JsonAnalysisTest {
 
     @Test
     public void pushOssTest(){
-        String requestUrl = "https://www.wegame.com.cn/api/wpicupload/platform/snappic/upload.fcg?from=feeds&without_water_mark=0";
-        Map<String, String> requestHeader = new HashMap<>();
-        requestHeader.put("Cookie","pkey=00016446AC59007081418F4FAE07E8E411444BFE9900751B2EE2B6578A36F7A079A40404AA3BF56BBC2C5F9476483FF0DEF3E6A83D2B6C03FBE6D6C688E7F9CAE7183CA6BCB779DC491B2F70A96D0980E4F47C7CCB86AC637C890404974989876520A2BB690690BC7C1663AED7B2846E88AD425B40DEDB83; region=CN; tgp_ticket=161F4CED88019464ECCFC49906548BF311DDB45569079F3D7126137A6BEBD6BD1898FED5CFA6C7CF3132B4CC9B424023F2181C3E3CC290CD34BD402D5B1952FC5085367A0FE0CBA95AB92A6D9071AFE578352B76C949578FCEAB751A5B858CE9A8DAB324FD2B329FB3711A7B95D1075F2451A33B437C951AB740292262899F4C; puin=740444603; pt2gguin=o0740444603; tgp_id=94840903; geoid=45; lcid=2052; tgp_env=online; tgp_user_type=0; colorMode=1; pgv_info=ssid=s5275429729; pgv_pvid=6464128896; ts_uid=6501451966; colorMode=1; BGTheme=[object Object]; language=zh_CN; uin=740444603; tgp_biz_ticket=010000000000000000b1d8ffcb158f425ce2f7f053256ff69a6d6c3182098a73306e8fa59f5ceda93e7a03b2b0125a9fab24009eace07fd199bc3cc46ce37c3848253cfb9916a9b32e; ts_last=www.wegame.com.cn/platform/new-profile/icenter.html");
-        Map<String, String> formTexts =new HashMap<>();
-        formTexts.put("game_id","55555");
+        String requestUrl = "https://candidatefeedback.bytedance.com/feedback/image/v1/upload/";
         Map<String, File> files = new HashMap<>();
-        files.put("img",new File(configInit.getDir()+"logo-w.png"));
-        httpClientUtils.uploadFile(requestUrl, requestHeader, formTexts, files );
+        files.put("image",new File(configInit.getDir()+"img.png"));
+        String respond = httpClientUtils.uploadFile(requestUrl, null, null, files);
+        String urlStr ="";
+        JSONObject url = JSONObject.parseObject(respond);
+
+        String[] split = "data.url_list[0].url".split("\\.");
+        ArrayList<String> splitList = new ArrayList<>(Arrays.asList(split));
+        for (int i = 0; i < splitList.size(); i++) {
+            String code = splitList.get(i);
+            if (i == splitList.size()-1){
+                urlStr = url.getString(code);
+            }
+            else {
+                if (code.contains("[") && code.contains("]"))
+                {
+                    String[] split1 = code.split("\\[");
+                    url = url.getJSONArray(split1[0]).getJSONObject(Integer.parseInt(split1[1].replace("]","")));
+                }else {
+                    url = url.getJSONObject(code);
+                }
+            }
+        }
+        System.err.println(url);
 
     }
 

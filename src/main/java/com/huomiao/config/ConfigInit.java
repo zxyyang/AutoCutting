@@ -86,6 +86,8 @@ public class ConfigInit {
 
     private Date authTempTime;
 
+    private boolean openCacheToken;
+
     private int authTempDelay;
 
 //    @Bean

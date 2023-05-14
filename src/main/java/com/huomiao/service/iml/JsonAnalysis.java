@@ -112,7 +112,7 @@ public class JsonAnalysis {
     }
 
 
-    public String pushOss(String api,Map<String,String> formDataMap, Map<String,String> headFormMap, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr,boolean authentic,AuthVo authVo){
+    public String pushOss(String api,Map<String,String> formDataMap, Map<String,String> headFormMap, String formName, File file, String reUrl, String errorStr, String preUrlStr, String nextUrlStr,boolean authentic,AuthVo authVo,boolean getFormAuth,Map<String, String> replaceURLStr){
             if (Objects.isNull(api)){
                 log.error("api为空！");
                 return null;
@@ -134,7 +134,7 @@ public class JsonAnalysis {
                     int size = authVo.getSize();
                     String respondAuth = new String();
                     //如果已经获取过就不拿
-                    if (Objects.nonNull(configInit.getAuthTempToken()) && configInit.getAuthTempTime().after(new Date()) ){
+                    if (Objects.nonNull(configInit.getAuthTempToken()) && configInit.getAuthTempTime().after(new Date()) && configInit.isOpenCacheToken() ){
                         respondAuth = configInit.getAuthTempToken();
                     }else {
                         List<paramVo> paramVos = authVo.getParamVos();
@@ -151,18 +151,27 @@ public class JsonAnalysis {
                     try {
                         if (Objects.isNull(respondAuth) || Objects.equals(respondAuth,"")) {
                             //设置这次取的时间
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(new Date());
-                            calendar.add(Calendar.SECOND, configInit.getAuthTempDelay());
-                            Date time = calendar.getTime();
-                            configInit.setAuthTempTime(time);
+                            if (configInit.isOpenCacheToken()){
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(new Date());
+                                calendar.add(Calendar.SECOND, configInit.getAuthTempDelay());
+                                Date time = calendar.getTime();
+                                configInit.setAuthTempTime(time);
+                            }
+
                             if (authVo.isAuthPost()) {
-                                respondAuth = httpClientUtils.doPost(authUrl, authHeaderMap, authFormMap);
+                                if (authVo.isAuthIsJsonPost()){
+                                    respondAuth = httpClientUtils.doPostJson(authUrl, authHeaderMap, authVo.getAuthJson());
+                                }else {
+                                    respondAuth = httpClientUtils.doPost(authUrl, authHeaderMap, authFormMap);
+                                }
                             } else {
                                 respondAuth = httpClientUtils.doGet(authUrl, null, authHeaderMap);
                             }
                             //获取的新token 放入
-                            configInit.setAuthTempToken(respondAuth);
+                            if (configInit.isOpenCacheToken()){
+                                configInit.setAuthTempToken(respondAuth);
+                            }
                         }
                     }catch (Exception e){
                         throw  e;
@@ -191,8 +200,47 @@ public class JsonAnalysis {
                         }
                         authMap.put(authParam.get(key),authPara);
                     }
-                    respond = httpClientUtils.uploadFileByByte(api, file, authMap);
+                    Map<String,String> relMap = new HashMap<>();
+                    if (!CollectionUtils.isEmpty(replaceURLStr)){
+                        for (String key : replaceURLStr.keySet()) {
+                            String replacement = replaceURLStr.get(key);
+                            //替换
 
+                                String[] split = replacement.split("\\.");
+                                ArrayList<String> splitList = new ArrayList<>(Arrays.asList(split));
+                                JSONObject url = JSONObject.parseObject(respondAuth);
+                                String authPara = new String();
+                                if (CollectionUtils.isEmpty(splitList)){
+                                    authPara = url.toJSONString();
+                                }
+                                if (splitList.size() == 1){
+                                    authPara =  url.getString(splitList.get(0));
+                                }else {
+                                    for (int i = 0; i < splitList.size(); i++) {
+                                        String code = splitList.get(i);
+                                        if (i == splitList.size()-1){
+                                            authPara = url.getString(code);
+                                        }
+                                        else {
+                                            url = url.getJSONObject(code);
+                                        }
+                                    }
+                                }
+                            relMap.put(key,authPara);
+
+
+                        }
+                        if (!CollectionUtils.isEmpty(relMap)){
+                            for (String key : relMap.keySet()) {
+                                api = api.replace(key, relMap.get(key));
+                            }
+                        }
+
+                    }
+                    respond = httpClientUtils.uploadFileByByte(api, file, authMap);
+                    if (getFormAuth){
+                        respond = respondAuth;
+                    }
                 }else {
                     Map<String, File> files = new HashMap<>();
                     files.put(formName, file);
@@ -209,7 +257,9 @@ public class JsonAnalysis {
                 }
                 jsonObject = JSONObject.parseObject(respond);
 
+
             }catch (Exception e){
+                log.debug(ExceptionUtil.stacktraceToString(e));
                 throw new RuntimeException("图床出错");
             }
             String[] split = reUrl.split("\\.");
@@ -228,7 +278,13 @@ public class JsonAnalysis {
                         urlStr = url.getString(code);
                     }
                     else {
-                        url = url.getJSONObject(code);
+                        if (code.contains("[") && code.contains("]"))
+                        {
+                            String[] split1 = code.split("\\[");
+                            url = url.getJSONArray(split1[0]).getJSONObject(Integer.parseInt(split1[1].replace("]","")));
+                        }else {
+                            url = url.getJSONObject(code);
+                        }
                     }
                 }
             }
@@ -259,13 +315,16 @@ public class JsonAnalysis {
             String errorStr = galleryVo.getErrorStr();
             String preUrlStr = galleryVo.getPreUrlStr();
             String nextUrlStr = galleryVo.getNextUrlStr();
+            Map<String, String> replaceURLStr = galleryVo.getReplaceURLStr();
             boolean removeParam = galleryVo.isRemoveParam();
             boolean authentic = galleryVo.isAuthentic();
             AuthVo authVo = galleryVo.getAuthVo();
+            boolean getFormAuth = galleryVo.isGetFormAuth();
             Map<String, String> formText = galleryVo.getFormText();
             for (int j = 0; j < configInit.getGalleryRetry(); j++) {
                 try {
-                    url = pushOss(api, formText, headFormMap, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr,authentic,authVo);
+
+                    url = pushOss(api, formText, headFormMap, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr,authentic,authVo,getFormAuth,replaceURLStr);
                     if (Objects.nonNull(url)){
                         deleteFile(file);
                         //去除参数
@@ -280,7 +339,10 @@ public class JsonAnalysis {
                         return url;
                     }
                 }catch (Exception e){
-                    Thread.sleep(authVo.getDelay());
+                    log.error(ExceptionUtil.stacktraceToString(e));
+                    if(Objects.nonNull(authVo.getDelay())) {
+                        Thread.sleep(authVo.getDelay());
+                    }
                     log.info("{}上传重试：{}",api,j);
                     continue;
                 }

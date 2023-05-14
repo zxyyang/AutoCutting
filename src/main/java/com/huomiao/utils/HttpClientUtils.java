@@ -164,7 +164,7 @@ public class HttpClientUtils {
             log.error("伪装图片获取失败：{}",ExceptionUtil.stacktraceToString(e));
         }
     }
-    public static String doPostJson(String url,String json) throws IOException {
+    public  String doPostJson(String url,Map<String,String> requestHeader,String json) throws IOException {
         // 创建连接池
         CloseableHttpClient httpClient = HttpClients.createDefault();
         // ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -177,6 +177,11 @@ public class HttpClientUtils {
         StringEntity httpEntity = new StringEntity(json,"utf-8");
         // 设置请求格式
         httpPost.setHeader("Content-type","application/json");
+        if (requestHeader != null && requestHeader.size() > 0) {
+            for (Map.Entry<String, String> entry : requestHeader.entrySet()) {
+                httpPost.setHeader(entry.getKey(), entry.getValue());
+            }
+        }
         // 传参
         httpPost.setEntity(httpEntity);
         // 发送请求，并获取返回值
@@ -716,12 +721,14 @@ public class HttpClientUtils {
         return result;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         HttpClientUtils hh = new HttpClientUtils();
         Map<String,String> head = new HashMap<>();
-        head.put("authorization","Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE2ODM1MzUzODEsImp0aSI6IjE0OWE0OGIzLTI0NGItNDM3ZC05NDE0LWM3OTA5ZTRkY2E0MCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE2ODM1MzUzODEsImZyZXNoIjpmYWxzZSwiaWRlbnRpdHkiOiI2NDU4YjYxNWIwODM1NjAxZGE2OTM3YzAifQ.oG08-TGyuvb3Y9ugltQO9mSCEwz888Q5rFbhay7rQxg");
-        head.put("X-Resource","140386802495440");
-        String s = hh.doPost("https://l.uu.163.com/api/v1/upload-tokens", head,null);
+        head.put("AppKey","caee83f25bef456b13b4e9f54c8da4c8");
+        head.put("Checksum","89877036c035c3bf06c016d8e795e2177afc165e");
+        head.put("Curtime","1684048582");
+        head.put("Nonce","xxxxx");
+        String s = hh.doPostJson("https://vcloud.163.com/app/vod/upload/init", head,"{\"originFileName\":\"logo.png\"}");
         System.err.println(s);
     }
 }

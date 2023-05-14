@@ -32,8 +32,11 @@ public class GalleryVo {
 
     private Map<String,String> headForm;
 
+    private Map<String,String> replaceURLStr;
+
     //是否需要认证接口
     private boolean authentic;
 
+    private boolean getFormAuth;
     private AuthVo authVo;
 }
