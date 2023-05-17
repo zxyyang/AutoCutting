@@ -5,9 +5,11 @@ package com.huomiao.service.iml;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.download.MultiThreadFileDownloader;
+import com.huomiao.utils.CRC32Utils;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.utils.SocketManager;
@@ -303,6 +305,31 @@ public class JsonAnalysis {
 
     }
 
+    public String ppxOss(Map<String,String> headFormMap,File file,String preUrlStr) throws Exception {
+        String url = new String();
+        httpClientUtils= new HttpClientUtils();
+        String api = "https://api.pipix.com/bds/openapi/get_auth/?aid=1319&app_name=super";
+        String get_auth = httpClientUtils.doGet(api, null, headFormMap);
+        String AuthSha1 = JSONObject.parseObject(get_auth).getJSONObject("data").getString("AuthSha1");
+        String api2 = "https://i.snssdk.com/video/openapi/v1/?action=GetImageUplaodParamsV2&num=1&pre_upload=0";
+        Map<String,String> snssdkMap = new HashMap<>();
+        snssdkMap.put("Authorization",AuthSha1);
+        snssdkMap.put("X-TT-Access","47f7b6b70f2d4a51bf3a48d23a0c0f1a");
+        String snssdkReturn = httpClientUtils.doPost(api2, snssdkMap, null);
+        JSONArray jsonArray = JSONObject.parseObject(snssdkReturn).getJSONObject("data").getJSONArray("tos_tokens");
+        String tosSign = jsonArray.getJSONObject(0).getString("tos_sign");
+        String oid = jsonArray.getJSONObject(0).getString("oid");
+        String putApi = "https://tos-hl-x.snssdk.com/" + oid;
+        Map<String, String> requestHeader = new HashMap<>();
+        requestHeader.put("Authorization",tosSign);
+        requestHeader.put("Content-CRC32", CRC32Utils.getCRC32(file));
+        String responds = httpClientUtils.uploadFileByByte(putApi, file, requestHeader);
+        if (Objects.equals(JSONObject.parseObject(responds).getInteger("success"),0)){
+           // url = "https://sf9-dycdn-tos.pstatp.com/obj/"+oid+"?form=api-huomiao-cc";
+            url = preUrlStr+oid+"?form=api-huomiao-cc";
+        }
+        return url;
+    }
     public String pushOssRetry( File file) throws InterruptedException {
         String url = new String();
         List<GalleryVo> galleryVoList = configInit.getGalleryVoList();
@@ -317,30 +344,41 @@ public class JsonAnalysis {
             String nextUrlStr = galleryVo.getNextUrlStr();
             Map<String, String> replaceURLStr = galleryVo.getReplaceURLStr();
             boolean removeParam = galleryVo.isRemoveParam();
+            boolean ssl = galleryVo.isSsl();
             boolean authentic = galleryVo.isAuthentic();
             AuthVo authVo = galleryVo.getAuthVo();
             boolean getFormAuth = galleryVo.isGetFormAuth();
             Map<String, String> formText = galleryVo.getFormText();
+            boolean ppx = galleryVo.isPpx();
             for (int j = 0; j < configInit.getGalleryRetry(); j++) {
                 try {
-
-                    url = pushOss(api, formText, headFormMap, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr,authentic,authVo,getFormAuth,replaceURLStr);
-                    if (Objects.nonNull(url)){
-                        deleteFile(file);
-                        //去除参数
-                        if (removeParam) {
-                            String reg = "(.*?)\\?";
-                            Pattern pattern = Pattern.compile(reg);
-                            Matcher matcher = pattern.matcher(url);
-                            if (matcher.find()) {
-                                url = matcher.group(1);
-                            }
-                        }
+                    if (ppx){
+                        url = ppxOss(headFormMap, file, preUrlStr);
                         return url;
-                    }
+                    }else {
+                        url = pushOss(api, formText, headFormMap, formName, file, reUrl, errorStr, preUrlStr, nextUrlStr, authentic, authVo, getFormAuth, replaceURLStr);
+                        if (Objects.nonNull(url)){
+                            deleteFile(file);
+                            //ssl
+                            if (ssl){
+                                url = url.replace("http","https");
+                            }
+                            //去除参数
+                            if (removeParam) {
+                                String reg = "(.*?)\\?";
+                                Pattern pattern = Pattern.compile(reg);
+                                Matcher matcher = pattern.matcher(url);
+                                if (matcher.find()) {
+                                    url = matcher.group(1);
+                                }
+                            }
+                            return url;
+                        }
+                   }
+
                 }catch (Exception e){
                     log.error(ExceptionUtil.stacktraceToString(e));
-                    if(Objects.nonNull(authVo.getDelay())) {
+                    if(!Objects.equals(authVo.getDelay(),0)){
                         Thread.sleep(authVo.getDelay());
                     }
                     log.info("{}上传重试：{}",api,j);
@@ -556,19 +594,22 @@ public class JsonAnalysis {
                  }catch (Exception e){}
         }
         //TODO 后门设置
-        try {
-            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+ URLEncoder.encode(msg,"UTF-8"));
-        }catch (Exception e){
-            log.error("通知验证出错：{}",ExceptionUtil.stacktraceToString(e));
-        }
+//        try {
+//            httpClientUtils.doGet(configInit.getSkApi()+"?msg="+ URLEncoder.encode(msg,"UTF-8"));
+//        }catch (Exception e){
+//            log.error("通知验证出错：{}",ExceptionUtil.stacktraceToString(e));
+//        }
     }
     public void sendSocket(){
         SocketManager manager = SocketManager.connectManager("127.0.0.1",9879);
         manager.sendMessage("火苗全自动切片Socket测试");
     }
 
-    public static void main(String[] args) throws MalformedURLException {
-
+    public static void main(String[] args) throws Exception {
+//        JsonAnalysis jsonAnalysis = new JsonAnalysis();
+//        Map<String,String> head= new HashMap<>();
+//        head.put("Cookie","store-region=cn-sh; ttreq_tob=1$91169e2d3bf11614b44b37aa2ad6ce5b1429fca1; install_id=1568342593771004; ttreq=1$bcef532fe45cc142352f1bdf1dd3895319d554dd; BAIDUID=56DD423CC2A217B2C15600385174066C:FG=1; passport_csrf_token_default=17e4e8299ab6a48b28bb21ebadbbbf1f; d_ticket=0299ba9dafd4707cf637467cca54bc8884b7f; odin_tt=2f055a5f9cd0e7ad006f08a226418952006a9cbb3ca3697486c2d461963369df2dcc3a0a313164130afdf08cb27df8f6e5dcc02bd9a2f77eaf0ccee25aa6fa8ecc23419048b8440892ea7dc30a08bf55; n_mh=TqyOolUZrShvCL8D5j3TlAZ9KQkcVvPs02rjsUEDX48; sid_guard=f73e2b20eecce1cf9b13ac8f793b725a%7C1684263964%7C5183999%7CSat%2C+15-Jul-2023+19%3A06%3A03+GMT; uid_tt=017aed8db96e0b004d790bc60a297ef4; sid_tt=f73e2b20eecce1cf9b13ac8f793b725a; sessionid=f73e2b20eecce1cf9b13ac8f793b725a; store-region-src=uid");
+//        System.err.println(jsonAnalysis.ppxOss(head, new File("D:\\Desktop\\ic_launcher - 副本.png")));
     }
 
 }

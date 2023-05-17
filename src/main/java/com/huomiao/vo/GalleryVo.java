@@ -12,6 +12,8 @@ import java.util.Map;
  */
 @Data
 public class GalleryVo {
+
+    private boolean ppx;
     //接口API
     private String api;
 
@@ -27,6 +29,8 @@ public class GalleryVo {
     private String nextUrlStr;
     //是否去掉返回url”?“后面的参数
     private boolean removeParam;
+
+    private boolean ssl;
 
     private Map<String,String> formText;
 
