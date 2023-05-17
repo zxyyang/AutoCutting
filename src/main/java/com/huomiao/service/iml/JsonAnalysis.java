@@ -51,6 +51,8 @@ public class JsonAnalysis {
 
 
     @Autowired
+    private  CRC32Utils crc32Utils;
+    @Autowired
     private ConfigInit configInit;
     public String getPlayerUrl(String jsonUrl,String videoUrl) throws Exception {
         String result = new String();
@@ -307,7 +309,6 @@ public class JsonAnalysis {
 
     public String ppxOss(Map<String,String> headFormMap,File file,String preUrlStr) throws Exception {
         String url = new String();
-        httpClientUtils= new HttpClientUtils();
         String api = "https://api.pipix.com/bds/openapi/get_auth/?aid=1319&app_name=super";
         String get_auth = httpClientUtils.doGet(api, null, headFormMap);
         String AuthSha1 = JSONObject.parseObject(get_auth).getJSONObject("data").getString("AuthSha1");
@@ -322,7 +323,7 @@ public class JsonAnalysis {
         String putApi = "https://tos-hl-x.snssdk.com/" + oid;
         Map<String, String> requestHeader = new HashMap<>();
         requestHeader.put("Authorization",tosSign);
-        requestHeader.put("Content-CRC32", CRC32Utils.getCRC32(file));
+        requestHeader.put("Content-CRC32", crc32Utils.getCRC32(file));
         String responds = httpClientUtils.uploadFileByByte(putApi, file, requestHeader);
         if (Objects.equals(JSONObject.parseObject(responds).getInteger("success"),0)){
            // url = "https://sf9-dycdn-tos.pstatp.com/obj/"+oid+"?form=api-huomiao-cc";
