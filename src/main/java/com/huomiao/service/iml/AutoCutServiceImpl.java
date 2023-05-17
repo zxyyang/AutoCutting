@@ -256,22 +256,22 @@ public class AutoCutServiceImpl implements AutoCutService {
                     log.error("切片错误：{}",ExceptionUtil.stacktraceToString(e));
                     msg = "【"+title+"】:"+url+"错误："+e.getMessage();
                 }finally {
-//                    if (configInit.isSync() && isOk) {
-//                        // 同步
-//                        boolean upOk = pushM3u8(m3u8Name, url,title);
-//                        if (!upOk) {
-//                            msg = "【"+getName(videoUrl.trim())+"】:"+url+"同步出错！";
-//                        }
-//                        jsonAnalysis.forceDelete(m3u8Name);
-//                    }
-//                    if (configInit.isNotice()){
-//                        assert cutReVo != null;
-//                        if (Objects.isNull(msg) || Objects.equals(msg,"")){
-//                            msg = "【"+title+"】:"+url+"切片时间："+cutReVo.getTime();
-//                        }
-//
-//                        jsonAnalysis.sendSocket(msg);
-//                    }
+                    if (configInit.isSync() && isOk) {
+                        // 同步
+                        boolean upOk = pushM3u8(m3u8Name, url,title);
+                        if (!upOk) {
+                            msg = "【"+getName(videoUrl.trim())+"】:"+url+"同步出错！";
+                        }
+                        jsonAnalysis.forceDelete(m3u8Name);
+                    }
+                    if (configInit.isNotice()){
+                        assert cutReVo != null;
+                        if (Objects.isNull(msg) || Objects.equals(msg,"")){
+                            msg = "【"+title+"】:"+url+"切片时间："+cutReVo.getTime();
+                        }
+
+                        jsonAnalysis.sendSocket(msg);
+                    }
                 }
             }
         });
