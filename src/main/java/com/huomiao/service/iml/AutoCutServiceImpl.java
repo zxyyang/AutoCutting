@@ -2,10 +2,8 @@ package com.huomiao.service.iml;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
-import com.huomiao.download.MultiThreadFileDownloader;
 import com.huomiao.service.AutoCutService;
 import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
@@ -13,20 +11,17 @@ import com.huomiao.vo.CutReVo;
 import com.huomiao.vo.GalleryVo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
-import com.alibaba.ttl.TtlCallable;
+
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 /**
@@ -35,10 +30,12 @@ import java.util.stream.Collectors;
  * @author: zixuan.yang
  * @since: 2023/4/24 14:34
  */
-@Service
+@Service()
 @Slf4j
 public class AutoCutServiceImpl implements AutoCutService {
     final int core = Runtime.getRuntime().availableProcessors();
+
+
     @Autowired
     private JsonAnalysis jsonAnalysis;
 
@@ -46,7 +43,9 @@ public class AutoCutServiceImpl implements AutoCutService {
     private FfmpegUtils ffmpegUtils;
 
     @Autowired
+    @Order(1)
     private ConfigInit configInit;
+
     @Autowired
     @Qualifier("ttlExecutorService")
     private Executor executor;
@@ -54,6 +53,8 @@ public class AutoCutServiceImpl implements AutoCutService {
     @Autowired
     @Qualifier("cutTaskExecutor")
     private Executor taskExecutor;
+
+
     @Autowired
     private HttpClientUtils httpClientUtils;
 
@@ -99,8 +100,8 @@ public class AutoCutServiceImpl implements AutoCutService {
             //ts下载映射Map
             Map<String, String> tsMap = new ConcurrentHashMap<>();
 
-          //  ThreadPoolExecutor executorService =  new ThreadPoolExecutor(core*2/5, core*2/4, 5, TimeUnit.SECONDS,
-                  //  new LinkedBlockingQueue<Runnable>(1024), new ThreadPoolExecutor.AbortPolicy());
+            ThreadPoolExecutor executorService =  new ThreadPoolExecutor(configInit.getDownThreadCount(), core*10, 5, TimeUnit.SECONDS,
+                    new LinkedTransferQueue<>(), new ThreadPoolExecutor.CallerRunsPolicy());
             if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
                 log.error("读取文件{}",configInit.getDir() + nameMp4OrM3u8);
                 Scanner m3u8Content = new Scanner(new FileReader(configInit.getDir()+ nameMp4OrM3u8));
@@ -108,44 +109,44 @@ public class AutoCutServiceImpl implements AutoCutService {
                 while (m3u8Content.hasNextLine()) {
                     String line = m3u8Content.nextLine();
                     if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
-//
-//                        executorService.execute(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Map<String, String> stringStringMap = downloadM3u8(videoUrl, line);
-//                                tsMap.putAll(stringStringMap);
-//                            }
-//                        });
+
+                        executorService.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                Map<String, String> stringStringMap = downloadM3u8(videoUrl, line);
+                                tsMap.putAll(stringStringMap);
+                            }
+                        });
                        tsUrlList.add(line);
                     }
                     if (line.contains("#EXT-X-ENDLIST")){
                         break;
                     }
                 }
-              //  isCompleted(executorService);
-                List<Map<String, String>> resultList = tsUrlList.stream().map(line -> {
-                    return CompletableFuture.supplyAsync(() -> {
-                        try {
-                            return TtlCallable.get(() -> {
-                                Map<String, String> stringStringMap = downloadM3u8(videoUrl, line);
-                                if (!CollectionUtils.isEmpty(stringStringMap)) {
-                                    return stringStringMap;
-                                }
-                                return null;
-                            }).call();
-                        } catch (Exception e) {
-                            log.error("上传出现异常 {} ", ExceptionUtil.stacktraceToString(e));
-                            return null;
-                        }
-                    },executor);
-                }).filter(ObjectUtil::isNotNull).map(CompletableFuture::join).filter(ObjectUtil::isNotNull).collect(Collectors.toList());
-                if (CollectionUtils.isEmpty(resultList)){
-                    log.error("{}TS下载全部失败",nameMp4OrM3u8);
-                    throw new Exception(nameMp4OrM3u8+"TS下载全部失败！");
-                }
-                for (Map<String, String> stringStringMap : resultList) {
-                    tsMap.putAll(stringStringMap);
-                }
+                isCompleted(executorService);
+//                List<Map<String, String>> resultList = tsUrlList.stream().map(line -> {
+//                    return CompletableFuture.supplyAsync(() -> {
+//                        try {
+//                            return TtlCallable.get(() -> {
+//                                Map<String, String> stringStringMap = downloadM3u8(videoUrl, line);
+//                                if (!CollectionUtils.isEmpty(stringStringMap)) {
+//                                    return stringStringMap;
+//                                }
+//                                return null;
+//                            }).call();
+//                        } catch (Exception e) {
+//                            log.error("上传出现异常 {} ", ExceptionUtil.stacktraceToString(e));
+//                            return null;
+//                        }
+//                    },executor);
+//                }).filter(ObjectUtil::isNotNull).map(CompletableFuture::join).filter(ObjectUtil::isNotNull).collect(Collectors.toList());
+//                if (CollectionUtils.isEmpty(resultList)){
+//                    log.error("{}TS下载全部失败",nameMp4OrM3u8);
+//                    throw new Exception(nameMp4OrM3u8+"TS下载全部失败！");
+//                }
+//                for (Map<String, String> stringStringMap : resultList) {
+//                    tsMap.putAll(stringStringMap);
+//                }
                 //判断没有下载成功的片数量
                 int invalidCount = 0;
                 int invalidCountAllow = configInit.getInvalidCount();
@@ -333,8 +334,8 @@ public class AutoCutServiceImpl implements AutoCutService {
         //String ossUrl = new String();
         List<String> tsList = new ArrayList<>();
         Map<String,String> resultMap = new ConcurrentHashMap<>();
-        ThreadPoolExecutor executorService =  new ThreadPoolExecutor(core, core, 5, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(1024), new ThreadPoolExecutor.AbortPolicy());
+        ThreadPoolExecutor executorService =  new ThreadPoolExecutor(configInit.getUpThreadCount(), core*10, 5, TimeUnit.SECONDS,
+                new LinkedTransferQueue<>(), new ThreadPoolExecutor.CallerRunsPolicy());
         while (sc.hasNextLine()){
             String line = sc.nextLine();
             stringBuffer.append(line).append("\n");

@@ -1,7 +1,6 @@
 package com.huomiao.service.iml;
 
 
-
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
@@ -22,12 +21,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -499,10 +503,15 @@ public class JsonAnalysis {
     public String downloadTsRetry(String downLoadUrl,String dir,String formUrl){
        String tsName = new String();
         try {
+          //  MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
+         //   tsName = multiThreadFileDownloader.downloadM3u8(downLoadUrl, dir, formUrl);
             tsName = downloadTs(downLoadUrl, dir, formUrl);
         }catch (Exception e){
             for (int i = 0; i < configInit.getDownloadRetry(); i++) {
                 try {
+                    log.info("【{}】--TS下载重试：第{}次",MD5.create().digestHex16(formUrl),i);
+                 //   MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
+                    //tsName = multiThreadFileDownloader.downloadM3u8(downLoadUrl, dir, formUrl);
                     tsName = downloadTs(downLoadUrl, dir, formUrl);
                 }catch (Exception ex){
                     String prefix = MD5.create().digestHex16(formUrl);
@@ -522,15 +531,32 @@ public class JsonAnalysis {
         return tsName;
       
     }
+    public String  downloadTsOutTime(String downLoadUrl,String dir,String formUrl){
+        Callable<String> task = new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                String s = downloadTs(downLoadUrl, dir, formUrl);
+                return s;
+            }
+        };
+        Future<String> future = Executors.newSingleThreadExecutor().submit(task);
+        try {
+            String resutl = future.get(configInit.getDownOutTime(), TimeUnit.SECONDS);
+            return resutl;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
     public String  downloadTs(String downLoadUrl,String dir,String formUrl)  {
         String fileNameHasType ="";
         StopWatch tsDown = new StopWatch();
         tsDown.start();
-        // 下载网络文件
-        int bytesum = 0;
-        int byteread = 0;
-        String suffix = "";
         try {
+            // 下载网络文件
+            int bytesum = 0;
+            int byteread = 0;
+            String suffix = "";
             if (downLoadUrl.contains(".ts")){
                 suffix = ".ts";
             }else if(downLoadUrl.contains(".png")){

@@ -1,7 +1,6 @@
 package com.huomiao.config;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -17,7 +16,7 @@ import java.util.concurrent.*;
 @Configuration
 @EnableAsync
 public class ThreadPoolConfig {
-
+    final int core = Runtime.getRuntime().availableProcessors();
     /**
      * ttl 线程池
      * 局部变量在线程池应用的问题
@@ -26,9 +25,9 @@ public class ThreadPoolConfig {
      */
     @Bean(name = "ttlExecutorService")
     public Executor ttlExecutorService() {
-        int core = Runtime.getRuntime().availableProcessors();
+
         ExecutorService executorService =
-                new ThreadPoolExecutor(core*2, core*4, 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
+                new ThreadPoolExecutor(core*2, core*10, 2, TimeUnit.SECONDS, new LinkedTransferQueue<>(),
                         new ThreadFactoryBuilder().setNamePrefix("HUOMIAO-TTL-").build(), new ThreadPoolExecutor.CallerRunsPolicy());
         return (executorService);
 
@@ -36,9 +35,8 @@ public class ThreadPoolConfig {
 
     @Bean(name = "cutTaskExecutor")
     public Executor cutTaskExecutor() {
-        int core = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService =
-                new ThreadPoolExecutor(5, 10, 2, TimeUnit.SECONDS, new LinkedBlockingQueue(50000),
+                new ThreadPoolExecutor(5, 10, 2, TimeUnit.SECONDS, new LinkedTransferQueue<>(),
                         new ThreadFactoryBuilder().setNamePrefix("HM-TASK-").build(), new ThreadPoolExecutor.CallerRunsPolicy());
         return (executorService);
 

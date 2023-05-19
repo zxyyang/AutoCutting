@@ -87,6 +87,23 @@ public abstract class AbstractDownloader implements Downloader {
       //  System.err.println("url="+decodeFileURL);
         //通过Http协议的Head方法获取到文件的总大小
         HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "*/*");
+        headers.add("connection", "Keep-Alive");
+        headers.add("user-agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+        headers.add("authority","");
+        if (fileURL.contains("mgtv")){
+            headers.add("referer","https://www.mgtv.com/");
+        } else if (fileURL.contains("iqiyi")) {
+            headers.add("referer","https://www.iqiyi.com/");
+        }else if (fileURL.contains("qq")) {
+            headers.add("referer","https://www.qq.com/");
+        }
+        else if (fileURL.contains("youku")) {
+            headers.add("referer","https://www.youku.com/");
+        }
+        else if (fileURL.contains("bilibili")) {
+            headers.add("referer","https://www.bilibili.com/");
+        }
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<String> entity = restTemplate.exchange(decodeFileURL, HttpMethod.HEAD, requestEntity, String.class);
         String fileName = this.getFileName(decodeFileURL, entity.getHeaders());

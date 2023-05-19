@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(scanBasePackages = "com.huomiao")
+@SpringBootApplication(scanBasePackages = {"com.huomiao.config","com.huomiao"})
 @SpringBootConfiguration()
 @Slf4j
 public class Main {

@@ -1,9 +1,13 @@
 {
+    "taskCount": 3,
+    "downThreadCount": 10,
+    "upThreadCount": 20,
+    "downOutTime": 20,
     "otherUpToken": "maoyingshi",
     "otherUpApi":"https://qie.maoyingshi.cc/api.php",
     "otherSkApi":"",
     "invalidCount": 5,
-    "nameApi": "https://sf.huomiao.cc/title/title.php/?url=",
+    "nameApi": "https://www.itvbox.cc/title/title.php/?url=",
     "notice": true,
     "threadNum": 2,
     "aPI": "https://sf.huomiao.cc/files/api.php",
@@ -28,7 +32,7 @@
     ],
     "jsonMap": {
         "qq.com": "https://sf.huomiao.cc/tx/qq.php/?url=",
-        "iqiyi": "https://sf.huomiao.cc/iqy/iqyp0.php/?url=",
+        "iqiyi": "https://www.itvbox.cc/qiepianqiyi1080.php?url=",
         "mgtv": "https://www.itvbox.cc/qiepianmg.php?url=",
         "youku": "https://www.itvbox.cc/qiepianyouku.php?url="
     },

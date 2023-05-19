@@ -2,7 +2,6 @@ package com.huomiao.config;
 
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.utils.SocketManager;
@@ -15,7 +14,6 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,9 +29,15 @@ import java.util.Map;
  * @since: 2023/4/24 14:49
  */
 @Slf4j
-@Configuration
+@Configuration()
 @Data
 public class ConfigInit {
+
+    private int downThreadCount;
+    private int upThreadCount;
+    private int downOutTime;
+
+    private int taskCount;
     private int invalidCount ;
     private String virApi = "https://vir.huomiao.cc/";
 
@@ -163,86 +167,98 @@ public class ConfigInit {
 //        this.galleryVoList = galleryVoList;
 //    }
 
-    @Bean
-    public void init() throws IOException {
-        SocketManager.connectManager("127.0.0.1",9879);
-        String property = System.getProperty("os.name");
-        if (property.toLowerCase().startsWith("win")){
-            this.osLinux= false;
-        }else {
-            this.osLinux =true;
-        }
-        String substring = ResourceUtils.getURL("img/img.png").getPath();
-        String imgDirStr = ResourceUtils.getURL("img").getPath();
-        String configPath = ResourceUtils.getURL("config.txt").getPath();
-        String dirPath = ResourceUtils.getURL("files").getPath()+"/";
-        if (!this.osLinux){
-            imgDirStr = ResourceUtils.getURL("img").getPath().substring(1);
-             configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
-             dirPath = ResourceUtils.getURL("files").getPath().substring(1);
-        }
-        this.dir = dirPath;
-        File imgDir = new File(imgDirStr);
-        if (!imgDir.exists()){
-            boolean mkdir = imgDir.mkdir();
-            if (!mkdir){
-                log.info("{}图片目录不存在已自动创建失败！",imgDirStr);
-            }
-            log.info("{}图片目录不存在已自动创建！",imgDirStr);
-        }
-        HttpClientUtils.doGetImg(this.virApi+"img.png",substring);
 
-        File file = new File(configPath);
-        if (!file.exists()){
-            boolean newFile = file.createNewFile();
-            if (newFile) {
-                log.info("配置文件不存在，自动创建！");
-            }else {
-                log.info("配置文件不存在，自动创建失败！");
-            }
-        }
-        File dir=new File(dirPath);
-        if (!dir.exists()) {//判断文件目录的存在
-            boolean mkdir = dir.mkdir();
-            if (!mkdir){
-                log.info("{}目录不存在已自动创建失败！",dirPath);
-            }
-            log.info("{}目录不存在已自动创建！",dirPath);
-        }
-        log.error("Config位置:{}",configPath);
-        log.info("                    _____             _       _ __ \n" +
-                "  _________  ____  / __(_)___ _      (_)___  (_) /_\n" +
-                " / ___/ __ \\/ __ \\/ /_/ / __ `/_____/ / __ \\/ / __/\n" +
-                "/ /__/ /_/ / / / / __/ / /_/ /_____/ / / / / / /_  \n" +
-                "\\___/\\____/_/ /_/_/ /_/\\__, /     /_/_/ /_/_/\\__/  \n" +
-                "                      /____/                       ");
-        Path path = Paths.get(configPath);
-        byte[] data = Files.readAllBytes(path);
-        String result = new String(data, "utf-8");
+
+    @Bean()
+    public void init()  {
         try {
-            ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
-            //赋值
-            this.otherSkApi = configInit.otherSkApi;
-            this.otherUpToken = configInit.otherUpToken;
-            this.otherUpApi = configInit.otherUpApi;
-            this.authTempDelay = configInit.authTempDelay;
-            this.authTempTime = new Date();
-            this.invalidCount = configInit.invalidCount;
-            this.nameApi = configInit.nameApi;
-            this.nextDate = new Date();
-            this.notice = configInit.notice;
-            this.threadNum = configInit.threadNum;
-            this.sync = configInit.sync;
-            this.API = configInit.API;
-            this.token = configInit.token;
-            this.cutTime = configInit.cutTime;
-            this.offsetTime=configInit.offsetTime;
-            this.jsonMap = configInit.jsonMap;
-            this.galleryVoList = configInit.galleryVoList;
-            this.downloadRetry = configInit.downloadRetry;
-            this.galleryRetry = configInit.galleryRetry;
-            this.reCut = configInit.reCut;
-            log.info("加载配置成功！");
+
+
+            SocketManager.connectManager("127.0.0.1", 9879);
+            String property = System.getProperty("os.name");
+            if (property.toLowerCase().startsWith("win")) {
+                this.osLinux = false;
+            } else {
+                this.osLinux = true;
+            }
+            String substring = ResourceUtils.getURL("img/img.png").getPath();
+            String imgDirStr = ResourceUtils.getURL("img").getPath();
+            String configPath = ResourceUtils.getURL("config.txt").getPath();
+            String dirPath = ResourceUtils.getURL("files").getPath() + "/";
+            if (!this.osLinux) {
+                imgDirStr = ResourceUtils.getURL("img").getPath().substring(1);
+                configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
+                dirPath = ResourceUtils.getURL("files").getPath().substring(1);
+            }
+            this.dir = dirPath;
+            File imgDir = new File(imgDirStr);
+            if (!imgDir.exists()) {
+                boolean mkdir = imgDir.mkdir();
+                if (!mkdir) {
+                    log.info("{}图片目录不存在已自动创建失败！", imgDirStr);
+                }
+                log.info("{}图片目录不存在已自动创建！", imgDirStr);
+            }
+            HttpClientUtils.doGetImg(this.virApi + "img.png", substring);
+
+            File file = new File(configPath);
+            if (!file.exists()) {
+                boolean newFile = file.createNewFile();
+                if (newFile) {
+                    log.info("配置文件不存在，自动创建！");
+                } else {
+                    log.info("配置文件不存在，自动创建失败！");
+                }
+            }
+            File dir = new File(dirPath);
+            if (!dir.exists()) {//判断文件目录的存在
+                boolean mkdir = dir.mkdir();
+                if (!mkdir) {
+                    log.info("{}目录不存在已自动创建失败！", dirPath);
+                }
+                log.info("{}目录不存在已自动创建！", dirPath);
+            }
+            log.info("Config位置:{}", configPath);
+            log.info("                    _____             _       _ __ \n" +
+                    "  _________  ____  / __(_)___ _      (_)___  (_) /_\n" +
+                    " / ___/ __ \\/ __ \\/ /_/ / __ `/_____/ / __ \\/ / __/\n" +
+                    "/ /__/ /_/ / / / / __/ / /_/ /_____/ / / / / / /_  \n" +
+                    "\\___/\\____/_/ /_/_/ /_/\\__, /     /_/_/ /_/_/\\__/  \n" +
+                    "                      /____/                       ");
+            Path path = Paths.get(configPath);
+            byte[] data = Files.readAllBytes(path);
+            String result = new String(data, "utf-8");
+            try {
+                ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
+                //赋值
+                this.downOutTime = configInit.downOutTime;
+                this.taskCount = configInit.taskCount;
+                this.upThreadCount = configInit.upThreadCount;
+                this.downThreadCount = configInit.downThreadCount;
+                this.otherSkApi = configInit.otherSkApi;
+                this.otherUpToken = configInit.otherUpToken;
+                this.otherUpApi = configInit.otherUpApi;
+                this.authTempDelay = configInit.authTempDelay;
+                this.authTempTime = new Date();
+                this.invalidCount = configInit.invalidCount;
+                this.nameApi = configInit.nameApi;
+                this.nextDate = new Date();
+                this.notice = configInit.notice;
+                this.threadNum = configInit.threadNum;
+                this.sync = configInit.sync;
+                this.API = configInit.API;
+                this.token = configInit.token;
+                this.cutTime = configInit.cutTime;
+                this.offsetTime = configInit.offsetTime;
+                this.jsonMap = configInit.jsonMap;
+                this.galleryVoList = configInit.galleryVoList;
+                this.downloadRetry = configInit.downloadRetry;
+                this.galleryRetry = configInit.galleryRetry;
+                this.reCut = configInit.reCut;
+                log.info("加载配置成功！");
+            } catch (Exception e) {
+                throw e;
+            }
         }catch (Exception e){
             log.error("配置初始化出错！{}", ExceptionUtil.stacktraceToString(e));
         }
@@ -258,6 +274,10 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.downOutTime = configInit.downOutTime;
+            this.taskCount = configInit.taskCount;
+            this.upThreadCount = configInit.upThreadCount;
+            this.downThreadCount = configInit.downThreadCount;
             this.otherSkApi = configInit.otherSkApi;
             this.otherUpToken = configInit.otherUpToken;
             this.otherUpApi = configInit.otherUpApi;
@@ -295,5 +315,6 @@ public class ConfigInit {
     public static void main(String[] args) throws IOException {
         System.err.println(ConfigInit.class.getClass().getResource("/img/img.png").getPath());
     }
+
 
 }
