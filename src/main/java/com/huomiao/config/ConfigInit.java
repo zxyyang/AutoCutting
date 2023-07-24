@@ -183,16 +183,16 @@ public class ConfigInit {
             } else {
                 this.osLinux = true;
             }
-            String substring = ResourceUtils.getURL("img/img.png").getPath();
+          //  String substring = ResourceUtils.getURL("img/img.png").getPath();
             String imgDirStr = ResourceUtils.getURL("img").getPath();
             String configPath = ResourceUtils.getURL("config.txt").getPath();
-            String dirPath = ResourceUtils.getURL("files").getPath() + "/";
+           // String dirPath = ResourceUtils.getURL("files").getPath() + "/";
             if (!this.osLinux) {
                 imgDirStr = ResourceUtils.getURL("img").getPath().substring(1);
                 configPath = ResourceUtils.getURL("config.txt").getPath().substring(1);
-                dirPath = ResourceUtils.getURL("files").getPath().substring(1);
+             //   dirPath = ResourceUtils.getURL("files").getPath().substring(1);
             }
-            this.dir = dirPath;
+         //   this.dir = dirPath;
             File imgDir = new File(imgDirStr);
             if (!imgDir.exists()) {
                 boolean mkdir = imgDir.mkdir();
@@ -212,14 +212,14 @@ public class ConfigInit {
                     log.info("配置文件不存在，自动创建失败！");
                 }
             }
-            File dir = new File(dirPath);
-            if (!dir.exists()) {//判断文件目录的存在
-                boolean mkdir = dir.mkdir();
-                if (!mkdir) {
-                    log.info("{}目录不存在已自动创建失败！", dirPath);
-                }
-                log.info("{}目录不存在已自动创建！", dirPath);
-            }
+//            File dir = new File(dirPath);
+//            if (!dir.exists()) {//判断文件目录的存在
+//                boolean mkdir = dir.mkdir();
+//                if (!mkdir) {
+//                    log.info("{}目录不存在已自动创建失败！", dirPath);
+//                }
+//                log.info("{}目录不存在已自动创建！", dirPath);
+//            }
             log.info("Config位置:{}", configPath);
             log.info("                    _____             _       _ __ \n" +
                     "  _________  ____  / __(_)___ _      (_)___  (_) /_\n" +
@@ -233,6 +233,7 @@ public class ConfigInit {
             try {
                 ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
                 //赋值
+                this.dir = configInit.dir;
                 this.baseDir = configInit.baseDir;
                 this.downOutTime = configInit.downOutTime;
                 this.taskCount = configInit.taskCount;
@@ -277,6 +278,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.dir = configInit.dir;
             this.baseDir = configInit.baseDir;
             this.downOutTime = configInit.downOutTime;
             this.taskCount = configInit.taskCount;
