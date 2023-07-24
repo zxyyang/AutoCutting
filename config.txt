@@ -1,43 +1,22 @@
 {
-    "taskCount": 3,
-    "downThreadCount": 10,
-    "upThreadCount": 20,
-    "downOutTime": 20,
-    "otherUpToken": "maoyingshi",
-    "otherUpApi":"https://qie.maoyingshi.cc/api.php",
-    "otherSkApi":"",
+    "downThreadCount": 2,
+    "downOutTime": 5,
     "invalidCount": 5,
-    "nameApi": "https://www.itvbox.cc/title/title.php/?url=",
+    "nameApi": "https://sf.huomiao.cc/title/title.php/?url=",
     "notice": true,
     "threadNum": 2,
-    "aPI": "https://sf.huomiao.cc/files/api.php",
-    "cutTime": 4,
+    "cutTime": 1,
     "downloadRetry": 2,
     "galleryRetry": 5,
-     "authTempDelay": 5,
 
-    "galleryVoList": [
-                 {
-                "ppx": true,
-                "headForm": {
-                    "Cookie": "MONITOR_WEB_ID=d82781a4-3cca-4c59-afce-696cb42806da; passport_csrf_token=8fd0e899f04df85c0f229bb516a03864; passport_csrf_token_default=8fd0e899f04df85c0f229bb516a03864; odin_tt=02fe6137134346241ed6ab0050deba9c0a43fd3ae19e9d34cf8b108e53c7446d2a3192aa9fb4ddbf02d9a1892e1eed9b41325d3d8f13a2cf8662cccf28de2668; n_mh=TqyOolUZrShvCL8D5j3TlAZ9KQkcVvPs02rjsUEDX48; sso_auth_status=dc1450b239b3fa4903c8805b68eceebe; sso_auth_status_ss=dc1450b239b3fa4903c8805b68eceebe; sso_uid_tt=16f7150e283525362b350d05c7b08a96; sso_uid_tt_ss=16f7150e283525362b350d05c7b08a96; toutiao_sso_user=9feca2644d0313c71037d2a0e8bf791a; toutiao_sso_user_ss=9feca2644d0313c71037d2a0e8bf791a; sid_ucp_sso_v1=1.0.0-KGIzNzRkNzhmNzEyNWYwZDlmNDRiY2YxODdkNzZhZDQ3YmUwOTg3ODkKFwiH_8DPzMy8AxCfwLKiBhinCjgCQOwHGgJsZiIgOWZlY2EyNjQ0ZDAzMTNjNzEwMzdkMmEwZThiZjc5MWE; ssid_ucp_sso_v1=1.0.0-KGIzNzRkNzhmNzEyNWYwZDlmNDRiY2YxODdkNzZhZDQ3YmUwOTg3ODkKFwiH_8DPzMy8AxCfwLKiBhinCjgCQOwHGgJsZiIgOWZlY2EyNjQ0ZDAzMTNjNzEwMzdkMmEwZThiZjc5MWE; passport_auth_status=e90714a1f022a9d11f8da6cc191facad%2Ca928e87841daa923aae77aa45cc6988b; passport_auth_status_ss=e90714a1f022a9d11f8da6cc191facad%2Ca928e87841daa923aae77aa45cc6988b; sid_guard=c10b566cce695bda81b8f94db2126b8b%7C1682743328%7C5184001%7CWed%2C+28-Jun-2023+04%3A42%3A09+GMT; uid_tt=65389dbbbeb91374f9e455937f0b67fe; uid_tt_ss=65389dbbbeb91374f9e455937f0b67fe; sid_tt=c10b566cce695bda81b8f94db2126b8b; sessionid=c10b566cce695bda81b8f94db2126b8b; sessionid_ss=c10b566cce695bda81b8f94db2126b8b; sid_ucp_v1=1.0.0-KDI2MDBiY2MyOGFlMzcwMTk0NjlkNTkxMmU5N2YyODRlYjAyZDY5NGEKFwiH_8DPzMy8AxCgwLKiBhinCjgCQOwHGgJsZiIgYzEwYjU2NmNjZTY5NWJkYTgxYjhmOTRkYjIxMjZiOGI; ssid_ucp_v1=1.0.0-KDI2MDBiY2MyOGFlMzcwMTk0NjlkNTkxMmU5N2YyODRlYjAyZDY5NGEKFwiH_8DPzMy8AxCgwLKiBhinCjgCQOwHGgJsZiIgYzEwYjU2NmNjZTY5NWJkYTgxYjhmOTRkYjIxMjZiOGI; store-region=cn-sh; store-region-src=uid; MONITOR_WEB_ID=d82781a4-3cca-4c59-afce-696cb42806da; _ga=GA1.2.805989990.1684238465; _gid=GA1.2.1047665180.1684238465; s_v_web_id=lhr94xh6_MhpdphZ0_nNAz_4B6Q_ARRD_rMJC3zGRnvxp;"
-                },
-                "preUrlStr":"https://sf1-ttcdn-tos.pstatp.com/obj/",
-            },
-
-
-
-
-
-    ],
     "jsonMap": {
-        "qq.com": "https://sf.huomiao.cc/tx/qq.php/?url=",
-        "iqiyi": "https://www.itvbox.cc/qiepianqiyi1080.php?url=",
-        "mgtv": "https://www.itvbox.cc/qiepianmg.php?url=",
-        "youku": "https://www.itvbox.cc/qiepianyouku.php?url="
+         "qq.com": "https://sf.maoyingshi.cc/qiepianqq.php/?url=",
+          "mgtv": "https://sf.maoyingshi.cc/qiepianmg.php?url=",
+          "youku": "https://sf.maoyingshi.cc/qiepianyouku.php?url=",
+          "iqiyi": "https://sf.maoyingshi.cc/qiepianqiyi1080.php?url=",
+          "bilibili": "https://sf.maoyingshi.cc/qiepianbili.php?url=",
     },
     "offsetTime": 0,
     "reCut": false,
-    "sync": true,
-    "token": "token"
+    "sync": false,
 }

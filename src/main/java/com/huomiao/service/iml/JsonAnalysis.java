@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 @Component
 @Slf4j
 public class JsonAnalysis {
-    private static final String PREFIX = "HUOMIAO";
+    private static final String PREFIX = "MKZY";
     @Autowired
     private HttpClientUtils httpClientUtils;
 
@@ -68,24 +68,25 @@ public class JsonAnalysis {
         return result;
     }
 
-    public String downLoadVideo(String url,String fromUrl)  {
+    public String downLoadVideo(String name,String url,String fromUrl)  {
         String fileName = new String();
+        String dir = configInit.getDir()+"\\"+name;
         try {
-            File file=new File(configInit.getDir());
+            File file=new File(dir);
             if (!file.exists()) {//判断文件目录的存在
                 file.mkdirs();
-                log.info("{}目录不存在已自动创建！",configInit.getDir());
+                log.info("{}目录不存在已自动创建！", dir );
             }
             MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
-            fileName = multiThreadFileDownloader.downloadMp4(url, configInit.getDir(), fromUrl);
+            fileName = multiThreadFileDownloader.downloadMp4(url, dir, fromUrl);
         }catch (Exception e){
             log.error("下载出错：{}",ExceptionUtil.stacktraceToString(e));
             for (int i = 0; i < configInit.getDownloadRetry(); i++) {
                 try {
                     MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
-                    fileName = multiThreadFileDownloader.downloadMp4(url, configInit.getDir(), fromUrl);
+                    fileName = multiThreadFileDownloader.downloadMp4(url, dir, fromUrl);
                     if (Objects.nonNull(fileName)){
-                        delFileByName(configInit.getDir(),fileName,".download");
+                        delFileByName(dir,fileName,".download");
                        return fileName;
                     }
                 } catch (Exception ex) {
@@ -93,7 +94,7 @@ public class JsonAnalysis {
                 }
             }
             //下载失败删除下载的片
-            delFileByName(configInit.getDir(),fileName,".download");
+            delFileByName(dir,fileName,".download");
             log.error("文件下载失败：{}", ExceptionUtil.stacktraceToString(e));
             return null;
         }
@@ -595,7 +596,8 @@ public class JsonAnalysis {
             if (suffix.contains(".mp4")){
                 fileNameHasType = prefix+suffix;
             }else {
-                fileNameHasType = PREFIX + prefix + RandomUtil.randomInt(999999) + suffix;
+                //切到本地去除前缀
+                fileNameHasType = PREFIX  + RandomUtil.randomInt(99999999) + suffix;
             }
             FileOutputStream fs = new FileOutputStream(dir+fileNameHasType);
             byte[] buffer = new byte[1204];

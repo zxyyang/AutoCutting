@@ -2,6 +2,7 @@ package com.huomiao.service.iml;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.crypto.digest.MD5;
 import com.alibaba.fastjson.JSONObject;
 import com.huomiao.config.ConfigInit;
 import com.huomiao.service.AutoCutService;
@@ -62,6 +63,7 @@ public class AutoCutServiceImpl implements AutoCutService {
 
 
     public CutReVo startCut(String videoUrl, String downloadUrl) throws Exception {
+        String name = MD5.create().digestHex16(videoUrl);
         CutReVo cutReVo = new CutReVo();
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -87,13 +89,14 @@ public class AutoCutServiceImpl implements AutoCutService {
         try {
             //nameMp4OrM3u8 = jsonAnalysis.downloadTs(playerUrl, configInit.getDir(), videoUrl);
             log.info("开始下载视频：{}",downloadUrl);
-            nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(playerUrl, videoUrl);
+            nameMp4OrM3u8 = jsonAnalysis.downLoadVideo(name,playerUrl, videoUrl);
         } catch (Exception e) {
             log.error("下载错误：{}", ExceptionUtil.stacktraceToString(e));
             throw new RuntimeException("下载出错");
         }
         log.info("视频本地化名字：{}", nameMp4OrM3u8);
         //区分类型
+        String dir = configInit.getDir()+"\\"+name+"\\";
         if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
 //            boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
 //            return;
@@ -103,8 +106,8 @@ public class AutoCutServiceImpl implements AutoCutService {
             ThreadPoolExecutor executorService =  new ThreadPoolExecutor(configInit.getDownThreadCount(), core*10, 5, TimeUnit.SECONDS,
                     new LinkedTransferQueue<>(), new ThreadPoolExecutor.CallerRunsPolicy());
             if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
-                log.error("读取文件{}",configInit.getDir() + nameMp4OrM3u8);
-                Scanner m3u8Content = new Scanner(new FileReader(configInit.getDir()+ nameMp4OrM3u8));
+               // log.error("读取文件{}", dir + nameMp4OrM3u8);
+                Scanner m3u8Content = new Scanner(new FileReader(dir +"\\"+ nameMp4OrM3u8));
                 List<String> tsUrlList = new ArrayList<>();
                 while (m3u8Content.hasNextLine()) {
                     String line = m3u8Content.nextLine();
@@ -113,7 +116,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                         executorService.execute(new Runnable() {
                             @Override
                             public void run() {
-                                Map<String, String> stringStringMap = downloadM3u8(videoUrl, line);
+                                Map<String, String> stringStringMap = downloadM3u8(name,videoUrl, line);
                                 tsMap.putAll(stringStringMap);
                             }
                         });
@@ -162,7 +165,7 @@ public class AutoCutServiceImpl implements AutoCutService {
 
             }
             //M3U8回归替换
-            Scanner sc = new Scanner(new FileReader(configInit.getDir()+nameMp4OrM3u8));
+            Scanner sc = new Scanner(new FileReader(dir +nameMp4OrM3u8));
             StringBuilder hgSb = new StringBuilder();
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -175,7 +178,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     hgSb.append(line).append("\n");
                 }
             }
-            try (FileWriter fileWriter = new FileWriter(configInit.getDir()+nameMp4OrM3u8)) {
+            try (FileWriter fileWriter = new FileWriter(dir +nameMp4OrM3u8)) {
                 fileWriter.append(hgSb.toString());
                 localName = nameMp4OrM3u8.replace(".m3u8","");
                 log.info("切片本地化成功！");
@@ -187,7 +190,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                 boolean makeMp4 = jsonAnalysis.makeMp4(nameMp4OrM3u8);
                 String replace = nameMp4OrM3u8.replace(".m3u8", "");
                 if (makeMp4) {
-                    jsonAnalysis.delFileByName(configInit.getDir(), replace, ".ts");
+                    jsonAnalysis.delFileByName(dir, replace, ".ts");
                 }
                 boolean cutRe = jsonAnalysis.cutM3u8(replace);
                 if (cutRe) {
@@ -213,25 +216,28 @@ public class AutoCutServiceImpl implements AutoCutService {
             log.error("未知类型：{}",nameMp4OrM3u8);
             throw new Exception("下载文件类型未知："+nameMp4OrM3u8);
         }
-        //切完读取行
-        StopWatch mergeUpdateSw = new StopWatch();
-        mergeUpdateSw.start();
-        String reM3u8Name = null;
-        try {
-             reM3u8Name = mergeAndUpdateImage(localName);
-        }catch (Exception e){
-            throw new Exception("伪装上传出错："+e.getMessage());
-        }
 
-        mergeUpdateSw.stop();
-        log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
-        log.info("完成切片替换后名称：{}",reM3u8Name);
+        if (configInit.isBaseDir()) {
+            //切完读取行
+            StopWatch mergeUpdateSw = new StopWatch();
+            mergeUpdateSw.start();
+            String reM3u8Name = null;
+            try {
+                reM3u8Name = mergeAndUpdateImage(localName);
+            } catch (Exception e) {
+                throw new Exception("伪装上传出错：" + e.getMessage());
+            }
+
+            mergeUpdateSw.stop();
+            log.info("替换上传完成，时间消耗：{}秒",mergeUpdateSw.getLastTaskTimeMillis()/1000);
+            log.info("完成切片替换后名称：{}",reM3u8Name);
+            jsonAnalysis.delFileByName(dir,reM3u8Name.replace(".m3u8",""),".png");
+            jsonAnalysis.delFileByName(dir,reM3u8Name.replace(".m3u8",""),".ts");
+        }
         stopWatch.stop();
         log.info("火苗全自动切片结束！总耗时：{}秒",stopWatch.getLastTaskTimeMillis()/1000);
-        jsonAnalysis.delFileByName(configInit.getDir(),reM3u8Name.replace(".m3u8",""),".png");
-        jsonAnalysis.delFileByName(configInit.getDir(),reM3u8Name.replace(".m3u8",""),".ts");
         cutReVo.setTime(stopWatch.getLastTaskTimeMillis()/1000);
-        cutReVo.setName(reM3u8Name);
+        cutReVo.setName(localName);
         return cutReVo;
     }
 
@@ -244,7 +250,8 @@ public class AutoCutServiceImpl implements AutoCutService {
                 String m3u8Name = "";
                 CutReVo cutReVo = new CutReVo();
                 String url = videoUrl.trim();
-                String title =getName(videoUrl.trim());
+               // String title = "";
+                String title = getName(videoUrl.trim());
                 if (url.contains("\\$")){
                     String[] split = url.split("\\$");
                     url = split[1];
@@ -313,11 +320,11 @@ public class AutoCutServiceImpl implements AutoCutService {
         return "批量切已经提交";
     }
 
-    private Map<String, String> downloadM3u8(String videoUrl, String line) {
+    private Map<String, String> downloadM3u8(String name,String videoUrl, String line) {
         Map<String, String> tsMap = new HashMap<>();
         if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
             String download = null;
-            download = jsonAnalysis.downloadTsRetry(line, configInit.getDir(), videoUrl);
+            download = jsonAnalysis.downloadTsRetry(line, configInit.getDir()+"\\"+name+"\\", videoUrl);
             if (Objects.isNull(download) || Objects.equals(download,"")){
                 tsMap.put(line, null);
             }

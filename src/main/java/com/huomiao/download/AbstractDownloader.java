@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public abstract class AbstractDownloader implements Downloader {
 
-    private static final String PREFIX = "HUOMIAO";
+    private static final String PREFIX = "MKZY";
     protected RestTemplate restTemplate;
     protected DownloadProgressPrinter downloadProgressPrinter;
 

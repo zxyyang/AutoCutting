@@ -55,7 +55,7 @@ public class JsonAnalysisTest {
             Integer code = jsonObject.getInteger("code");
             if (Objects.equals(code,200)){
                 String url = (String)jsonObject.get("url");
-                nameMp4 = jsonAnalysis.downLoadVideo(url,urlpla);
+               // nameMp4 = jsonAnalysis.downLoadVideo(url,urlpla);
                // Thread.sleep(10000);
             System.err.println("视频视频本地化名字："+nameMp4);
             }
@@ -175,7 +175,7 @@ public class JsonAnalysisTest {
 
     @Test
     public void down(){
-         jsonAnalysis.downLoadVideo("https://sf.huomiao.cc/iqy/cache/iqiyi/65308e4b3ce37488069370f82a487abf.m3u8","https://sf.huomiao.cc/iqy/cache/iqiyi/65308e4b3ce37488069370f82a487abf.m3u8");
+        // jsonAnalysis.downLoadVideo("https://sf.huomiao.cc/iqy/cache/iqiyi/65308e4b3ce37488069370f82a487abf.m3u8","https://sf.huomiao.cc/iqy/cache/iqiyi/65308e4b3ce37488069370f82a487abf.m3u8");
     }
 
     @Test

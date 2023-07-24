@@ -35,7 +35,7 @@ public class AutoCuttingController {
 
     @Autowired
     JsonAnalysis jsonAnalysis;
-    @License
+   // @License
     @GetMapping("/start")
     public RequestBean<String> start( String vUrl,  String dUrl){
         if (Objects.isNull(vUrl) || Objects.equals(vUrl,"")){
@@ -47,7 +47,7 @@ public class AutoCuttingController {
         return RequestBean.Success("已经提交：【"+vUrl+"】下载地址：【"+dUrl+"】");
     }
 
-    @License
+   // @License
     @PostMapping("/start")
     public RequestBean<String> start(@RequestBody String[] vUrls){
         if (CollectionUtils.isEmpty(Arrays.asList(vUrls))){
@@ -62,7 +62,7 @@ public class AutoCuttingController {
         autoCutService.autoAllListTask(urlList);
         return RequestBean.Success("批量切提交成功："+stringBuilder.toString());
     }
-    @License
+   // @License
     @PostMapping("/startNull")
     public RequestBean<String> start(@RequestBody String vUrls){
         List<String> vUrlList = new ArrayList<>();
@@ -87,7 +87,7 @@ public class AutoCuttingController {
         return RequestBean.Success("批量切提交成功："+stringBuilder);
     }
 
-    @License
+  //  @License
     @GetMapping(  "/config")
     public RequestBean<String> config() throws IOException {
         boolean init = configInit.initUpdate();

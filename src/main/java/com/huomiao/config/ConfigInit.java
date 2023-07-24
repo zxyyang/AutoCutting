@@ -33,13 +33,15 @@ import java.util.Map;
 @Data
 public class ConfigInit {
 
+    private boolean baseDir;
+
     private int downThreadCount;
     private int upThreadCount;
     private int downOutTime;
 
     private int taskCount;
     private int invalidCount ;
-    private String virApi = "https://vir.huomiao.cc/";
+    private String virApi ;
 
     private String nameApi;
 
@@ -54,9 +56,9 @@ public class ConfigInit {
     private boolean sync;
     private String API;
 
-    private String skApi = "https://autocut.huomiao.cc/cut/sk/";
+    private String skApi ;
 
-    private String APIHUOMIAO = "https://sf.huomiao.cc/files/api.php";
+    private String APIHUOMIAO ;
 
     private String otherUpToken ;
 
@@ -66,7 +68,7 @@ public class ConfigInit {
 
     private String token;
     //文件路径
-    private   String dir  ;
+    private   String dir;
 
     //切片时间
     private int cutTime;
@@ -199,7 +201,7 @@ public class ConfigInit {
                 }
                 log.info("{}图片目录不存在已自动创建！", imgDirStr);
             }
-            HttpClientUtils.doGetImg(this.virApi + "img.png", substring);
+          //  HttpClientUtils.doGetImg(this.virApi + "img.png", substring);
 
             File file = new File(configPath);
             if (!file.exists()) {
@@ -231,6 +233,7 @@ public class ConfigInit {
             try {
                 ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
                 //赋值
+                this.baseDir = configInit.baseDir;
                 this.downOutTime = configInit.downOutTime;
                 this.taskCount = configInit.taskCount;
                 this.upThreadCount = configInit.upThreadCount;
@@ -274,6 +277,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.baseDir = configInit.baseDir;
             this.downOutTime = configInit.downOutTime;
             this.taskCount = configInit.taskCount;
             this.upThreadCount = configInit.upThreadCount;
