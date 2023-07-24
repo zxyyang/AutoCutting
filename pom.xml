@@ -208,27 +208,27 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
-            <plugin>
-                <!-- https://gitee.com/roseboy/classfinal -->
-                <groupId>net.roseboy</groupId>
-                <artifactId>classfinal-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <configuration>
-                    <password>123</password>
-                    <packages>com.huomiao</packages>
-                    <cfgfiles>application.yml</cfgfiles>
-                    <excludes>org.spring</excludes>
-                    <libjars></libjars>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>classFinal</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                &lt;!&ndash; https://gitee.com/roseboy/classfinal &ndash;&gt;-->
+<!--                <groupId>net.roseboy</groupId>-->
+<!--                <artifactId>classfinal-maven-plugin</artifactId>-->
+<!--                <version>1.2.1</version>-->
+<!--                <configuration>-->
+<!--                    <password>123</password>-->
+<!--                    <packages>com.huomiao</packages>-->
+<!--                    <cfgfiles>application.yml</cfgfiles>-->
+<!--                    <excludes>org.spring</excludes>-->
+<!--                    <libjars></libjars>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>classFinal</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
