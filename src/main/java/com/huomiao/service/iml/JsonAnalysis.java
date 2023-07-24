@@ -70,7 +70,8 @@ public class JsonAnalysis {
 
     public String downLoadVideo(String name,String url,String fromUrl)  {
         String fileName = new String();
-        String dir = configInit.getDir()+"\\"+name;
+        //String dir = configInit.getDir()+"\\"+name;
+        String dir = configInit.getDir()+"/"+name;
         try {
             File file=new File(dir);
             if (!file.exists()) {//判断文件目录的存在

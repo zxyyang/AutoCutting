@@ -96,7 +96,8 @@ public class AutoCutServiceImpl implements AutoCutService {
         }
         log.info("视频本地化名字：{}", nameMp4OrM3u8);
         //区分类型
-        String dir = configInit.getDir()+"\\"+name+"\\";
+        String dir = configInit.getDir()+"/"+name+"/";
+      //  String dir = configInit.getDir()+"\\"+name+"\\";
         if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
 //            boolean cutRe = jsonAnalysis.makeMp4(nameMp4OrM3u8);
 //            return;
@@ -107,7 +108,8 @@ public class AutoCutServiceImpl implements AutoCutService {
                     new LinkedTransferQueue<>(), new ThreadPoolExecutor.CallerRunsPolicy());
             if (nameMp4OrM3u8.contains(".m3u8") || nameMp4OrM3u8.contains(".M3U8")) {
                // log.error("读取文件{}", dir + nameMp4OrM3u8);
-                Scanner m3u8Content = new Scanner(new FileReader(dir +"\\"+ nameMp4OrM3u8));
+                Scanner m3u8Content = new Scanner(new FileReader(dir +"/"+ nameMp4OrM3u8));
+                //Scanner m3u8Content = new Scanner(new FileReader(dir +"\\"+ nameMp4OrM3u8));
                 List<String> tsUrlList = new ArrayList<>();
                 while (m3u8Content.hasNextLine()) {
                     String line = m3u8Content.nextLine();
@@ -324,7 +326,8 @@ public class AutoCutServiceImpl implements AutoCutService {
         Map<String, String> tsMap = new HashMap<>();
         if (!line.contains("#") && !line.contains("\n") && !Objects.equals(line, "")) {
             String download = null;
-            download = jsonAnalysis.downloadTsRetry(line, configInit.getDir()+"\\"+name+"\\", videoUrl);
+            download = jsonAnalysis.downloadTsRetry(line, configInit.getDir()+"/"+name+"/", videoUrl);
+          //  download = jsonAnalysis.downloadTsRetry(line, configInit.getDir()+"\\"+name+"\\", videoUrl);
             if (Objects.isNull(download) || Objects.equals(download,"")){
                 tsMap.put(line, null);
             }
