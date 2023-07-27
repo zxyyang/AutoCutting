@@ -642,6 +642,7 @@ public class JsonAnalysis {
             formMap.put("m3u8",taskVo.getM3u8());
             formMap.put("state",String.valueOf(taskVo.getState()));
             formMap.put("eTime",String.valueOf(taskVo.getETime()));
+            formMap.put("msg",taskVo.getMsg());
             httpClientUtils.doPost(configInit.getAPI(),null,formMap);
 //            httpClientUtils.doPostJson(configInit.getAPI(), null,JSON.toJSONString(taskVo));
         }catch (Exception e){
