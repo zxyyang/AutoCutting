@@ -33,6 +33,7 @@ import java.util.Map;
 @Data
 public class ConfigInit {
 
+    private String url;
     private boolean baseDir;
 
     private int downThreadCount;
@@ -176,7 +177,7 @@ public class ConfigInit {
         try {
 
 
-            SocketManager.connectManager("127.0.0.1", 9879);
+           // SocketManager.connectManager("127.0.0.1", 9879);
             String property = System.getProperty("os.name");
             if (property.toLowerCase().startsWith("win")) {
                 this.osLinux = false;
@@ -233,6 +234,7 @@ public class ConfigInit {
             try {
                 ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
                 //赋值
+                this.url=configInit.url;
                 this.dir = configInit.dir;
                 this.baseDir = configInit.baseDir;
                 this.downOutTime = configInit.downOutTime;
@@ -278,6 +280,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.url=configInit.url;
             this.dir = configInit.dir;
             this.baseDir = configInit.baseDir;
             this.downOutTime = configInit.downOutTime;

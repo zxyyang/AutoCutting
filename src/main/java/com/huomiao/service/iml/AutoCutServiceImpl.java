@@ -10,6 +10,7 @@ import com.huomiao.utils.FfmpegUtils;
 import com.huomiao.utils.HttpClientUtils;
 import com.huomiao.vo.CutReVo;
 import com.huomiao.vo.GalleryVo;
+import com.huomiao.vo.TaskVo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,7 +248,7 @@ public class AutoCutServiceImpl implements AutoCutService {
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                boolean isOk = false;
+                TaskVo taskVo = new TaskVo();
                 String msg =null;
                 String m3u8Name = "";
                 CutReVo cutReVo = new CutReVo();
@@ -261,25 +262,17 @@ public class AutoCutServiceImpl implements AutoCutService {
                 try {
                     cutReVo = startCut(url, downloadUrl);
                     m3u8Name = cutReVo.getName();
-                    isOk = true;
                 }catch (Exception e){
                     log.error("切片错误：{}",ExceptionUtil.stacktraceToString(e));
-                    msg = "【"+title+"】:"+url+"错误："+e.getMessage();
+                    msg = "错误："+e.getMessage();
                 }finally {
-                    if (configInit.isSync() && isOk) {
-                        // 同步
-                        boolean upOk = pushM3u8(m3u8Name, url,title);
-                        if (!upOk) {
-                            msg = "【"+getName(videoUrl.trim())+"】:"+url+"同步出错！";
-                        }
-                        jsonAnalysis.forceDelete(m3u8Name);
-                    }
                     if (configInit.isNotice()){
                         assert cutReVo != null;
-                        if (Objects.isNull(msg) || Objects.equals(msg,"")){
-                            msg = "【"+title+"】:"+url+"切片时间："+cutReVo.getTime();
-                        }
-
+                        taskVo.setMsg(msg);
+                        taskVo.setUrl(videoUrl);
+                        taskVo.setM3u8(configInit.getUrl()+m3u8Name+"/"+m3u8Name+".m3u8");
+                        taskVo.setETime();
+                        taskVo.setState(1);
                         jsonAnalysis.sendSocket(msg);
                     }
                 }
