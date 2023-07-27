@@ -255,8 +255,14 @@ public class AutoCutServiceImpl implements AutoCutService {
                 int state = 0;
                 CutReVo cutReVo = new CutReVo();
                 String url = videoUrl.trim();
-               // String title = "";
-                String title = getName(videoUrl.trim());
+                String title = "";
+                try {
+                    title = getName(videoUrl.trim());
+                }catch (Exception e){
+                    log.error(videoUrl+"标题获取失败！"+ExceptionUtil.stacktraceToString(e));
+                     title = "名称未获取";
+                }
+
                 if (url.contains("\\$")){
                     String[] split = url.split("\\$");
                     url = split[1];
@@ -272,6 +278,7 @@ public class AutoCutServiceImpl implements AutoCutService {
                     state =2;
                 }finally {
                     if (configInit.isNotice()){
+                        taskVo.setName(title);
                         taskVo.setMsg(msg);
                         taskVo.setUrl(videoUrl);
                         taskVo.setM3u8(configInit.getUrl()+m3u8Name+"/"+m3u8Name+".m3u8");
