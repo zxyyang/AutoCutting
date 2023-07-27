@@ -636,7 +636,14 @@ public class JsonAnalysis {
 
     public void sendMsg(TaskVo taskVo) {
         try {
-            httpClientUtils.doPostJson(configInit.getAPI(), null,JSON.toJSONString(taskVo));
+            Map<String,String> formMap = new HashMap<>();
+            formMap.put("name",taskVo.getName());
+            formMap.put("url",taskVo.getUrl());
+            formMap.put("m3u8",taskVo.getM3u8());
+            formMap.put("state",String.valueOf(taskVo.getState()));
+            formMap.put("eTime",String.valueOf(taskVo.getETime()));
+            httpClientUtils.doPost(configInit.getAPI(),null,formMap);
+//            httpClientUtils.doPostJson(configInit.getAPI(), null,JSON.toJSONString(taskVo));
         }catch (Exception e){
             log.error("发送消息失败！"+ExceptionUtil.stacktraceToString(e));
         }
