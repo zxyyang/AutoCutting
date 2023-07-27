@@ -251,6 +251,8 @@ public class AutoCutServiceImpl implements AutoCutService {
                 TaskVo taskVo = new TaskVo();
                 String msg =null;
                 String m3u8Name = "";
+                int etime = 0;
+                int state = 0;
                 CutReVo cutReVo = new CutReVo();
                 String url = videoUrl.trim();
                // String title = "";
@@ -262,18 +264,20 @@ public class AutoCutServiceImpl implements AutoCutService {
                 try {
                     cutReVo = startCut(url, downloadUrl);
                     m3u8Name = cutReVo.getName();
+                    etime = (int)cutReVo.getTime();
+                    state=1;
                 }catch (Exception e){
                     log.error("切片错误：{}",ExceptionUtil.stacktraceToString(e));
                     msg = "错误："+e.getMessage();
+                    state =2;
                 }finally {
                     if (configInit.isNotice()){
-                        assert cutReVo != null;
                         taskVo.setMsg(msg);
                         taskVo.setUrl(videoUrl);
                         taskVo.setM3u8(configInit.getUrl()+m3u8Name+"/"+m3u8Name+".m3u8");
-                        taskVo.setETime();
-                        taskVo.setState(1);
-                        jsonAnalysis.sendSocket(msg);
+                        taskVo.setETime(etime);
+                        taskVo.setState(state);
+                        jsonAnalysis.sendMsg(taskVo);
                     }
                 }
             }
