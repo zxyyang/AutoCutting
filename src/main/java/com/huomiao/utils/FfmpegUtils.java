@@ -60,7 +60,7 @@ public class FfmpegUtils {
      */
     //ffmpeg.exe -loglevel info -i %stream_input% -g 250 -r 15 -sc_threshold 0 -preset slow -keyint_min 15 -c:v libx264 -ar 44100 -b:v 200k -b:a 64k -profile:v baseline -level 3.0 -s 400x224 -aspect 16:9 -maxrate 200k -bufsize 1000k -map 0 -flags -global_header -f segment -segment_time 10 -segment_wrap 3 -segment_list_flags +live -segment_list_type m3u8 -segment_list playlist.m3u8 -segment_format mpegts segment%05d.ts 1>output.txt
     public int execute(String name) {
-        String inVideoPath = configInit.getDir() + name+".mp4";
+        String inVideoPath = configInit.getDir() +"/"+ name+"/"+name+".mp4";
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("切片");
       //  log.info("ffmepg位置：{}", ffmpegPath);
@@ -81,9 +81,7 @@ public class FfmpegUtils {
                 .append(" -preset ultrafast ")
                 // 输出位置
                 .append(" -hls_segment_filename ")
-                .append(" "+configInit.getDir())
-                .append("HUOMIAO")
-                .append(name)
+                .append(" "+configInit.getDir()+"/"+ name+"/")
                 .append("%09d.ts ")
                 .append(inVideoPath.replace(".mp4",".m3u8 "))
                 .toString();
