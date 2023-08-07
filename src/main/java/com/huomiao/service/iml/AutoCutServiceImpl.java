@@ -210,7 +210,8 @@ public class AutoCutServiceImpl implements AutoCutService {
              log.info("MP4切割开始！");
             boolean cutRe = jsonAnalysis.cutM3u8(localName);
             if (cutRe){
-                jsonAnalysis.deleteFile(nameMp4OrM3u8);
+                String inVideoPath = configInit.getDir() +"/"+ name+"/"+name+".mp4";
+                jsonAnalysis.deleteFile(inVideoPath);
             }else {
                 log.error("切片失败！");
                 throw new Exception("切片失败");

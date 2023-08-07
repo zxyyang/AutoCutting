@@ -416,6 +416,29 @@ public class JsonAnalysis {
         return delete;
     }
 
+
+    public boolean forceDeleteMp4(String fileName) {
+        File file =new File(fileName);
+        boolean result = file.delete();
+
+        int tryCount = 0;
+
+        while (!result && tryCount++ < 10) {
+
+            System.gc();    //回收资源
+
+            result = file.delete();
+            delFileByName(configInit.getDir(),fileName,null);
+
+        }
+        if (!result){
+            log.error("删除失败");
+        }
+        return result;
+
+    }
+
+
     public boolean deleteFilePath(String fileName){
         File file =new File(fileName);
         boolean delete = file.delete();

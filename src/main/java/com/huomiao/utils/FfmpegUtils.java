@@ -77,11 +77,11 @@ public class FfmpegUtils {
                 .append(configInit.getOffsetTime())
                 .append("  -f hls -threads ")
                 // 线程数，10个线程，10个左右最优
-                .append(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum())
+                .append(configInit.getThreadNum())
                 .append(" -preset ultrafast ")
                 // 输出位置
                 .append(" -hls_segment_filename ")
-                .append(" "+configInit.getDir()+"/"+ name+"/")
+                .append(" "+configInit.getDir()+"/"+ name+"/"+"MKZY")
                 .append("%09d.ts ")
                 .append(inVideoPath.replace(".mp4",".m3u8 "))
                 .toString();
