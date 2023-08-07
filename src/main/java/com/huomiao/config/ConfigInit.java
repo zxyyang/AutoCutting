@@ -50,6 +50,8 @@ public class ConfigInit {
     private boolean notice;
 
     private int threadNum;
+
+    private int cutThreadNum;
     private boolean osLinux;
 
     private File img;
@@ -234,6 +236,7 @@ public class ConfigInit {
             try {
                 ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
                 //赋值
+                this.cutThreadNum = configInit.cutThreadNum;
                 this.url=configInit.url;
                 this.dir = configInit.dir;
                 this.baseDir = configInit.baseDir;
@@ -280,6 +283,7 @@ public class ConfigInit {
         try {
             ConfigInit configInit = JSONObject.parseObject(result, ConfigInit.class);
             //赋值
+            this.cutThreadNum = configInit.cutThreadNum;
             this.url=configInit.url;
             this.dir = configInit.dir;
             this.baseDir = configInit.baseDir;

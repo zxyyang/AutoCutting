@@ -81,13 +81,13 @@ public class JsonAnalysis {
                 file.mkdirs();
                 log.info("{}目录不存在已自动创建！", dir );
             }
-            MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
+            MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(configInit.getThreadNum());
             fileName = multiThreadFileDownloader.downloadMp4(url, dir, fromUrl);
         }catch (Exception e){
             log.error("下载出错：{}",ExceptionUtil.stacktraceToString(e));
             for (int i = 0; i < configInit.getDownloadRetry(); i++) {
                 try {
-                    MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum());
+                    MultiThreadFileDownloader multiThreadFileDownloader = new MultiThreadFileDownloader(configInit.getThreadNum());
                     fileName = multiThreadFileDownloader.downloadMp4(url, dir, fromUrl);
                     if (Objects.nonNull(fileName)){
                         delFileByName(dir,fileName,".download");

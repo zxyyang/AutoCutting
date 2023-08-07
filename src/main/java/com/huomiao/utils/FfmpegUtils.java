@@ -77,7 +77,7 @@ public class FfmpegUtils {
                 .append(configInit.getOffsetTime())
                 .append("  -f hls -threads ")
                 // 线程数，10个线程，10个左右最优
-                .append(configInit.getThreadNum())
+                .append(configInit.getCutThreadNum())
                 .append(" -preset ultrafast ")
                 // 输出位置
                 .append(" -hls_segment_filename ")
@@ -142,7 +142,7 @@ public class FfmpegUtils {
                 //.append(" -c copy  ")
                 .append("  -threads ")
 //                // 线程数，10个线程，10个左右最优
-                .append(Runtime.getRuntime().availableProcessors()*configInit.getThreadNum())
+                .append(configInit.getCutThreadNum())
                 .append(" -preset ultrafast ")
                 .append(configInit.getDir()+inVideoPath.replace(".m3u8",".mp4 "))
                 .toString();

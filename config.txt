@@ -7,7 +7,9 @@
     "invalidCount": 5,
     "nameApi": "https://sf.maoyingshi.cc/title/title.php/?url=",
     "notice": true,
-    "threadNum": 2,
+    "threadNum": 20,
+    "cutThreadNum":200,
+
     "cutTime": 9,
     "downloadRetry": 0,
     "galleryRetry": 2,
