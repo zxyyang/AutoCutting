@@ -36,7 +36,7 @@ public class ThreadPoolConfig {
     @Bean(name = "cutTaskExecutor")
     public Executor cutTaskExecutor() {
         ExecutorService executorService =
-                new ThreadPoolExecutor(3, 3, 2, TimeUnit.SECONDS, new LinkedTransferQueue<>(),
+                new ThreadPoolExecutor(1, 1, 2, TimeUnit.SECONDS, new LinkedTransferQueue<>(),
                         new ThreadFactoryBuilder().setNamePrefix("HM-TASK-").build(), new ThreadPoolExecutor.CallerRunsPolicy());
         return (executorService);
 
